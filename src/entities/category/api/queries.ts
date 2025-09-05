@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/shared/lib/query-keys';
+import { QUERY_KEYS } from '@/shared/lib';
 import { categoryApi } from './category-api';
 import type { CategoryQueryParams } from '../model/types';
 

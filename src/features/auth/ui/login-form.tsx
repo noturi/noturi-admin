@@ -1,12 +1,12 @@
 'use client';
 
 import { useActionState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
 import { toast } from 'sonner';
-import { loginAction } from '../action';
+import { loginAction } from '../api';
 
 export function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, null);

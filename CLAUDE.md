@@ -27,12 +27,13 @@ project/
 │   ├── features/                 # 비즈니스 기능 (CUD 작업)
 │   ├── entities/                 # 비즈니스 엔티티 (읽기 전용)
 │   └── shared/                   # 공통 모듈들
-│       ├── api/                  # API 설정
-│       ├── config/               # 설정
-│       ├── constants/            # 상수
-│       ├── lib/                  # 유틸리티
-│       ├── types/                # 전역 타입
-│       └── utils/                # 헬퍼 함수
+│       ├── api/                  # API 클라이언트, 설정
+│       ├── ui/                   # 재사용 가능한 UI 컴포넌트 (shadcn/ui)
+│       └── lib/                  # 유틸리티, 상수, 훅, 설정 등
+│           ├── model/            # 상수, 타입, 스키마
+│           ├── config/           # 설정, 인증, 쿼리
+│           ├── utils/            # 유틸리티 함수
+│           └── hooks/            # 커스텀 훅
 ```
 
 ### FSD 레이어별 역할
@@ -41,20 +42,32 @@ project/
 
 - 데이터베이스 타입을 읽기 전용으로 사용
 - 뷰모델 타입 (display/read 컴포넌트용)
-- `model/`, `api/`, `ui/`, `lib/` 구조
+- `api/`, `lib/`, `ui/` 구조 (model은 lib 하위)
 - **중요**: 모든 읽기 작업 (GET/SELECT)은 entities 레이어에
 
 #### **features**: 비즈니스 로직 (CUD 작업)
 
 - 데이터베이스 타입을 서버 액션과 mutation에 사용
-- `action/` 폴더에 서버 액션 (create*, update*, delete\* 등)
+- `api/` 폴더에 서버 액션 (create*, update*, delete\* 등)
+- `lib/` 폴더에 스키마, 타입 등 (model은 lib 하위)
 - 데이터 변환 (데이터베이스 ↔ 뷰모델)
 - **중요**: features는 entities에서 읽기 작업 import 가능
 
 #### **widgets**: 복합 UI 블록
 
 - 여러 features나 entities를 조합한 UI 컴포넌트
+- `ui/` 세그먼트 필수
 - 각 슬라이스는 `index.ts`로 깔끔한 public API 제공
+
+#### **shared**: 공통 모듈
+
+- `api/`: API 클라이언트, 설정
+- `ui/`: shadcn/ui 등 재사용 가능한 UI 컴포넌트
+- `lib/`: 모든 공통 라이브러리
+  - `lib/model/`: 상수, 타입, 스키마
+  - `lib/config/`: 설정, 인증, 쿼리
+  - `lib/utils/`: 유틸리티 함수
+  - `lib/hooks/`: 커스텀 훅
 
 ## 디렉토리 역할
 

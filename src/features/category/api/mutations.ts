@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { categoryApi } from '@/entities/category/api';
-import { QUERY_KEYS } from '@/shared/lib/query-keys';
+import { QUERY_KEYS } from '@/shared/lib';
 import type { CreateCategoryRequest, UpdateCategoryRequest } from '@/entities/category/model/types';
 
 /**

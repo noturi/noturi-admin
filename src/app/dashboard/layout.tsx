@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import { auth } from '@/shared/lib/auth.server';
-import { AppSidebar } from '@/widgets/sidebar/app-sidebar';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { auth } from '@/shared/lib';
+import { AppSidebar } from '@/widgets/ui/app-sidebar';
+import { SidebarProvider, SidebarInset } from '@/shared/ui/sidebar';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth();
