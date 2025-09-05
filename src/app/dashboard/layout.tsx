@@ -1,0 +1,21 @@
+import { redirect } from 'next/navigation';
+import { auth } from '@/shared/lib/auth.server';
+import { AppSidebar } from '@/widgets/sidebar/app-sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    redirect('/auth/login');
+  }
+
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <main className="flex-1 space-y-4 p-8 pt-6">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
