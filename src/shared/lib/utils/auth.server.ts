@@ -19,7 +19,6 @@ export async function getAuthData() {
   }
 }
 
-// Clerk의 auth() 함수처럼 사용할 수 있는 헬퍼
 export async function auth() {
   const authData = await getAuthData();
 
