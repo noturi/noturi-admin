@@ -24,7 +24,7 @@ const items = [
   },
   {
     title: '사용자 관리',
-    url: ROUTES.DASHBOARD.USERS,
+    url: ROUTES.DASHBOARD.USER,
     icon: Users,
   },
   {
