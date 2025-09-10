@@ -11,7 +11,7 @@ export class UserException extends Error {
 
   constructor(message: string, options?: UserExceptionOptions) {
     super(message);
-    
+
     this.name = options?.name || 'UserException';
     this.cause = options?.cause;
     this.details = options?.details;
