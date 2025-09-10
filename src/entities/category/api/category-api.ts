@@ -25,28 +25,32 @@ export class CategoryApi {
 
     const url = searchParams.toString() ? `${this.baseUrl}?${searchParams.toString()}` : this.baseUrl;
 
-    return api.client.get(url).json<Category[]>();
+    const response = await api.client.get(url);
+    return response.json<Category[]>();
   }
 
   /**
    * 카테고리 상세 조회
    */
   async getById(id: string): Promise<Category> {
-    return api.client.get(`${this.baseUrl}/${id}`).json<Category>();
+    const response = await api.client.get(`${this.baseUrl}/${id}`);
+    return response.json<Category>();
   }
 
   /**
    * 카테고리 생성
    */
   async create(data: CreateCategoryRequest): Promise<Category> {
-    return api.client.post(this.baseUrl, { json: data }).json<Category>();
+    const response = await api.client.post(this.baseUrl, { json: data });
+    return response.json<Category>();
   }
 
   /**
    * 카테고리 수정
    */
   async update(id: string, data: UpdateCategoryRequest): Promise<Category> {
-    return api.client.put(`${this.baseUrl}/${id}`, { json: data }).json<Category>();
+    const response = await api.client.put(`${this.baseUrl}/${id}`, { json: data });
+    return response.json<Category>();
   }
 
   /**

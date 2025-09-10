@@ -1,12 +1,17 @@
-export const formatDate = (date: string | Date) => {
-  return new Intl.DateTimeFormat('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(date));
-};
+export function formatDate(date: Date | string | number | undefined, opts: Intl.DateTimeFormatOptions = {}) {
+  if (!date) return '';
+
+  try {
+    return new Intl.DateTimeFormat('en-US', {
+      month: opts.month ?? 'long',
+      day: opts.day ?? 'numeric',
+      year: opts.year ?? 'numeric',
+      ...opts,
+    }).format(new Date(date));
+  } catch {
+    return '';
+  }
+}
 
 export const formatDateShort = (date: string | Date) => {
   return new Intl.DateTimeFormat('ko-KR', {

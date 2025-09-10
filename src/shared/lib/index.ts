@@ -2,10 +2,11 @@ export { cn } from './utils/utils';
 
 export * from './hooks/use-mobile';
 
-export * from './model/routes';
-export * from './model/colors';
-export * from './model/messages';
-export * from './model/api';
+export * from './routes';
+export * from './colors';
+export * from './messages';
+export * from './api';
+export * from './end-point';
 
 export * from './utils/auth';
 export * from './utils/auth.server';

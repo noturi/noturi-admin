@@ -1,38 +1,48 @@
 import type { HTTPError } from 'ky';
+import { notFound } from 'next/navigation';
+// package
+import { UserException } from '@/shared/lib/utils/user-exception';
+
+// ----------------------------------------------------------------------
+
+// export const parseErrorData = async (error: HTTPError) => {
+//   const { message, statusCode } = await error.response.json<ResJson<null>>();
+
+//   return { statusCode, message };
+// };
+
+// ----------------------------------------------------------------------
 
 export class HttpError {
-  private static getErrorMessage(status: number): string {
+  private static errorStatus(status: number) {
     switch (status) {
-      case 400:
       case 401:
-        return '이메일 또는 비밀번호가 올바르지 않습니다.';
+        throw new UserException('AuthError', { name: status.toString(), cause: 'Unauthorized' });
       case 403:
-        return '접근 권한이 없습니다.';
+        throw new UserException('ForbiddenError', { name: status.toString(), cause: 'Forbidden' });
       case 404:
-        return '요청한 리소스를 찾을 수 없습니다.';
+        return notFound();
       case 500:
-        return '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+        throw new UserException('ServerError', { name: status.toString(), cause: 'Internal Server Error' });
       case 502:
+        throw new UserException('NginxError', { name: status.toString(), cause: 'Bad Gateway' });
       case 503:
-        return '서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
+        throw new UserException('NginxError', { name: status.toString(), cause: 'Service Unavailable' });
       default:
-        return '알 수 없는 오류가 발생했습니다.';
+        return;
     }
   }
 
-  // Server Actions용 - 에러 메시지만 반환
-  static getServerActionError(error: HTTPError | Error): string {
-    if (error instanceof Error && 'response' in error) {
-      const httpError = error as HTTPError;
-      return this.getErrorMessage(httpError.response.status);
-    }
-
-    return '로그인에 실패했습니다.';
-  }
-
-  // 기존 메소드들은 그대로 유지
   static async backend(error: HTTPError) {
     const { status } = error.response;
-    return this.getErrorMessage(status);
+
+    return this.errorStatus(status);
+  }
+
+  static async gateway(error: HTTPError) {
+    const { status } = error.response;
+    if (status === 404) return;
+
+    return this.errorStatus(status);
   }
 }

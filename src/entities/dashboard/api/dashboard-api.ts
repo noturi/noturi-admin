@@ -19,11 +19,13 @@ export interface DashboardActivitiesResponse {
 }
 
 export const getDashboardStatistics = async (): Promise<DashboardStatistics> => {
-  const serverApi = await getServerApiWithAuth();
-  return serverApi.get('dashboard/statistics').json<DashboardStatistics>();
+  const serverApi = getServerApiWithAuth();
+  const response = await serverApi.get('dashboard/statistics');
+  return response.json<DashboardStatistics>();
 };
 
 export const getDashboardActivities = async (): Promise<DashboardActivitiesResponse> => {
-  const serverApi = await getServerApiWithAuth();
-  return serverApi.get('dashboard/activities').json<DashboardActivitiesResponse>();
+  const serverApi = getServerApiWithAuth();
+  const response = await serverApi.get('dashboard/activities');
+  return response.json<DashboardActivitiesResponse>();
 };
