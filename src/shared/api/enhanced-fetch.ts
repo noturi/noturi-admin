@@ -1,4 +1,5 @@
-import { HttpError } from '@/shared/lib';
+// import { HttpError } from '@/shared/lib';
+// import { HTTPError } from 'ky';
 
 interface EnhancedFetchOptions extends RequestInit {
   json?: unknown;
@@ -11,6 +12,8 @@ interface EnhancedFetchOptions extends RequestInit {
   };
 }
 
+type BeforeRequestHook = (options: RequestInit) => Promise<RequestInit> | RequestInit;
+
 interface EnhancedResponse extends Response {
   json<T = unknown>(): Promise<T>;
 }
@@ -18,14 +21,25 @@ interface EnhancedResponse extends Response {
 export class EnhancedFetch {
   private baseUrl: string;
   private defaultOptions: RequestInit;
+  private beforeRequest?: BeforeRequestHook;
 
-  constructor(baseUrl: string, defaultOptions: RequestInit = {}) {
+  constructor(baseUrl: string, defaultOptions: RequestInit = {}, beforeRequest?: BeforeRequestHook) {
     this.baseUrl = baseUrl;
     this.defaultOptions = defaultOptions;
+    this.beforeRequest = beforeRequest;
   }
 
   private buildUrl(input: string, searchParams?: URLSearchParams | Record<string, string>): string {
-    let url = input.startsWith('http') ? input : `${this.baseUrl}/${input.replace(/^\//, '')}`;
+    let url: string;
+
+    if (input.startsWith('http')) {
+      url = input;
+    } else {
+      const baseUrl = this.baseUrl || '';
+
+      const cleanInput = input.replace(/^\//, '');
+      url = baseUrl.endsWith('/') ? `${baseUrl}${cleanInput}` : `${baseUrl}/${cleanInput}`;
+    }
 
     if (searchParams) {
       const params = searchParams instanceof URLSearchParams ? searchParams : new URLSearchParams(searchParams);
@@ -40,10 +54,14 @@ export class EnhancedFetch {
 
     const url = this.buildUrl(input, searchParams);
 
-    const mergedOptions: RequestInit = {
+    let mergedOptions: RequestInit = {
       ...this.defaultOptions,
       ...fetchOptions,
     };
+
+    if (this.beforeRequest) {
+      mergedOptions = await this.beforeRequest(mergedOptions);
+    }
 
     // JSON 처리
     if (json !== undefined) {
@@ -55,15 +73,12 @@ export class EnhancedFetch {
     }
 
     try {
-      // Next.js fetch 사용 (모든 캐싱 옵션 포함)
       const response = await fetch(url, mergedOptions);
 
-      // 에러 처리
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      // Response 확장
       const enhancedResponse = response as EnhancedResponse;
       const originalJson = enhancedResponse.json.bind(enhancedResponse);
 
@@ -74,10 +89,6 @@ export class EnhancedFetch {
 
       return enhancedResponse;
     } catch (error) {
-      // HttpError 처리
-      if (error instanceof Error) {
-        HttpError.backend(error as Error);
-      }
       throw error;
     }
   }
