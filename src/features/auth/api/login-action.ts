@@ -1,10 +1,9 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { loginSchema } from '../lib/schema';
-import { serverApi } from '@/shared/api/api-server';
-import { HttpError } from '@/shared/lib';
+import { serverApi } from '@/shared/api/server-api';
+import { setAuthCookies } from '@/shared/lib/utils/cookie-utils';
 
 interface LoginState {
   error?: string;
@@ -19,51 +18,23 @@ export async function loginAction(prevState: LoginState | null, formData: FormDa
     password: formData.get('password'),
   };
 
-  console.log('🔍 Login attempt:', { email: rawData.email, password: '***' });
-
   const validatedData = loginSchema.safeParse(rawData);
 
-  if (!validatedData.success) {
-    return {
-      error: '이메일 또는 비밀번호가 올바르지 않습니다.',
-      fieldErrors: validatedData.error.flatten().fieldErrors,
-      email: rawData.email as string,
-      password: rawData.password as string,
-    };
-  }
+  console.log('validatedData', validatedData);
 
   try {
-    console.log('🚀 Making API request to:', 'auth/login');
-    console.log('📦 Request data:', validatedData.data);
-    console.log('🌐 Full URL:', `${process.env.NEXT_PUBLIC_API_URL}/admin/auth/login`);
+    const apiResponse = await serverApi.post('auth/login', {
+      json: validatedData.data,
+    });
 
-    const response = await serverApi
-      .post('auth/login', {
-        json: validatedData.data,
-      })
-      .json<{
-        accessToken: string;
-        user: { id: string; email: string; role: 'ADMIN' | 'SUPER_ADMIN' };
-      }>();
+    const response = await apiResponse.json<{
+      accessToken: string;
+      user: { id: string; email: string; role: 'ADMIN' | 'SUPER_ADMIN' };
+    }>();
 
     console.log('✅ Login successful:', { user: response.user });
 
-    const cookieStore = await cookies();
-    cookieStore.set('auth-token', response.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
-    });
-
-    cookieStore.set('user-info', JSON.stringify(response.user), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
-    });
-
-    console.log('🍪 Cookies set successfully');
+    await setAuthCookies(response.accessToken, response.user);
   } catch (error) {
     console.error('❌ Login failed:', error);
 
@@ -79,12 +50,11 @@ export async function loginAction(prevState: LoginState | null, formData: FormDa
     }
 
     return {
-      error: HttpError.getServerActionError(error as Error),
+      error: '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.',
       email: rawData.email as string,
       password: rawData.password as string,
     };
   }
 
-  console.log('🚀 Redirecting to dashboard...');
   redirect('/dashboard');
 }
