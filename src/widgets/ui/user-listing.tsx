@@ -2,6 +2,7 @@ import { columns } from '@/entities/user/ui/uesrs-tables/columns';
 import { userApi } from '@/entities/user/api/user-api';
 import { UserTable } from '@/entities/user/ui/user-listing';
 import { searchParamsCache } from '@/shared/lib';
+import { UserQueryParams } from '@/entities/user/model/types';
 
 type UserListingPage = Record<string, never>;
 
@@ -19,7 +20,7 @@ export default async function UserListingPage({}: UserListingPage) {
     ...(role && { role }),
   };
 
-  const response = await userApi.getList(filters);
+  const response = await userApi.getList(filters as UserQueryParams);
   const users = response.data;
   const totalUsers = response.total;
 
