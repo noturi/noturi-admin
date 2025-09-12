@@ -9,6 +9,7 @@ import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 
 import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
+import UserListingPage from '@/widgets/ui/user-listing';
 
 export const metadata = {
   title: 'Dashboard: Products',
@@ -29,7 +30,9 @@ export default async function Page(props: Props) {
           <Heading title="사용자 관리" description="앱 사용자" />
         </div>
         <Separator />
-        <Suspense fallback={<DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />}></Suspense>
+        <Suspense fallback={<DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />}>
+          <UserListingPage />
+        </Suspense>
       </div>
     </PageContainer>
   );
