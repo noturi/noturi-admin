@@ -3,10 +3,9 @@ import { Badge } from '@/shared/ui/badge';
 import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 
 import { Column, ColumnDef } from '@tanstack/react-table';
-import { Mail, User as UserIcon, Calendar, Shield } from 'lucide-react';
-import Image from 'next/image';
-import { CellAction } from '@/entities/user/ui/uesrs-tables/cell-action';
-import { User } from '@/shared/lib';
+import { Mail, Calendar, Shield } from 'lucide-react';
+
+import { User } from '@/entities/user/model/types';
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -18,7 +17,7 @@ export const columns: ColumnDef<User>[] = [
 
       return (
         <div className="relative h-8 w-8">
-          <Image src={avatarUrl || '/default-avatar.png'} alt={name} fill className="rounded-full object-cover" />
+          {/* <Image src={avatarUrl || '/default-avatar.png'} alt={name} fill className="rounded-full object-cover" /> */}
         </div>
       );
     },
@@ -28,12 +27,6 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: 'name',
     header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="Name" />,
     cell: ({ cell }) => <div className="font-medium">{cell.getValue<string>()}</div>,
-    meta: {
-      label: 'Name',
-      placeholder: 'Search users...',
-      variant: 'text',
-      icon: UserIcon,
-    },
     enableColumnFilter: true,
   },
   {
@@ -54,12 +47,6 @@ export const columns: ColumnDef<User>[] = [
         {cell.getValue<string>()}
       </div>
     ),
-    meta: {
-      label: 'Email',
-      placeholder: 'Search by email...',
-      variant: 'text',
-      icon: Mail,
-    },
     enableColumnFilter: true,
   },
   {
@@ -102,9 +89,5 @@ export const columns: ColumnDef<User>[] = [
         </div>
       );
     },
-  },
-  {
-    id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />,
   },
 ];
