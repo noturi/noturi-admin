@@ -1,4 +1,4 @@
-import { getServerApiWithAuth } from '@/shared/api/api-server';
+import { serverApi } from '@/shared/api/server-api';
 
 export interface DashboardStatistics {
   totalUsers: number;
@@ -19,13 +19,11 @@ export interface DashboardActivitiesResponse {
 }
 
 export const getDashboardStatistics = async (): Promise<DashboardStatistics> => {
-  const serverApi = getServerApiWithAuth();
   const response = await serverApi.get('dashboard/statistics');
   return response.json<DashboardStatistics>();
 };
 
 export const getDashboardActivities = async (): Promise<DashboardActivitiesResponse> => {
-  const serverApi = getServerApiWithAuth();
   const response = await serverApi.get('dashboard/activities');
   return response.json<DashboardActivitiesResponse>();
 };
