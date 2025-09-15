@@ -1,5 +1,5 @@
 import { columns } from '@/entities/user/ui/uesrs-tables/columns';
-import { userApi } from '@/entities/user/api/user-api';
+import { getUserList } from '@/entities/user/api/user-api';
 import { UserTable } from '@/entities/user/ui/user-listing';
 import { searchParamsCache } from '@/shared/lib';
 import { UserQueryParams } from '@/entities/user/model/types';
@@ -17,12 +17,13 @@ export default async function UserListingPage({}: UserListingPage) {
     page,
     limit,
     ...(keyword && { keyword }),
-    ...(role && { role }),
+    ...(role && { role: role as UserQueryParams['role'] }),
   };
 
-  const response = await userApi.getList(filters as UserQueryParams);
+  const response = await getUserList(filters);
+
   const users = response.data;
-  const totalUsers = response.total;
+  const totalUsers = response.meta.totalItems;
 
   return <UserTable data={users} totalItems={totalUsers} columns={columns} />;
 }
