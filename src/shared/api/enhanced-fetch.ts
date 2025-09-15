@@ -3,7 +3,7 @@
 
 interface EnhancedFetchOptions extends RequestInit {
   json?: unknown;
-  searchParams?: URLSearchParams | Record<string, string>;
+  searchParams?: URLSearchParams | Record<string, unknown>;
   timeout?: number;
   prefixUrl?: string;
   retry?: {
@@ -29,7 +29,7 @@ export class EnhancedFetch {
     this.beforeRequest = beforeRequest;
   }
 
-  private buildUrl(input: string, searchParams?: URLSearchParams | Record<string, string>): string {
+  private buildUrl(input: string, searchParams?: URLSearchParams | Record<string, unknown>): string {
     let url: string;
 
     if (input.startsWith('http')) {
@@ -42,7 +42,10 @@ export class EnhancedFetch {
     }
 
     if (searchParams) {
-      const params = searchParams instanceof URLSearchParams ? searchParams : new URLSearchParams(searchParams);
+      const params =
+        searchParams instanceof URLSearchParams
+          ? searchParams
+          : new URLSearchParams(searchParams as Record<string, string>);
       url += `?${params.toString()}`;
     }
 
@@ -93,23 +96,28 @@ export class EnhancedFetch {
     }
   }
 
-  async get(url: string, options?: Omit<EnhancedFetchOptions, 'method'>) {
-    return this.enhancedFetch(url, { ...options, method: 'GET' });
+  async get<T = unknown>(url: string, options?: Omit<EnhancedFetchOptions, 'method'>): Promise<T> {
+    const response = await this.enhancedFetch(url, { ...options, method: 'GET' });
+    return response.json<T>();
   }
 
-  async post(url: string, options?: Omit<EnhancedFetchOptions, 'method'>) {
-    return this.enhancedFetch(url, { ...options, method: 'POST' });
+  async post<T = unknown>(url: string, options?: Omit<EnhancedFetchOptions, 'method'>): Promise<T> {
+    const response = await this.enhancedFetch(url, { ...options, method: 'POST' });
+    return response.json<T>();
   }
 
-  async put(url: string, options?: Omit<EnhancedFetchOptions, 'method'>) {
-    return this.enhancedFetch(url, { ...options, method: 'PUT' });
+  async put<T = unknown>(url: string, options?: Omit<EnhancedFetchOptions, 'method'>): Promise<T> {
+    const response = await this.enhancedFetch(url, { ...options, method: 'PUT' });
+    return response.json<T>();
   }
 
-  async patch(url: string, options?: Omit<EnhancedFetchOptions, 'method'>) {
-    return this.enhancedFetch(url, { ...options, method: 'PATCH' });
+  async patch<T = unknown>(url: string, options?: Omit<EnhancedFetchOptions, 'method'>): Promise<T> {
+    const response = await this.enhancedFetch(url, { ...options, method: 'PATCH' });
+    return response.json<T>();
   }
 
-  async delete(url: string, options?: Omit<EnhancedFetchOptions, 'method'>) {
-    return this.enhancedFetch(url, { ...options, method: 'DELETE' });
+  async delete<T = unknown>(url: string, options?: Omit<EnhancedFetchOptions, 'method'>): Promise<T> {
+    const response = await this.enhancedFetch(url, { ...options, method: 'DELETE' });
+    return response.json<T>();
   }
 }
