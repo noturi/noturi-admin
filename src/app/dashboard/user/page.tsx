@@ -1,18 +1,14 @@
 import PageContainer from '@/shared/ui/page-container';
-
 import { Heading } from '@/shared/ui/heading';
 import { Separator } from '@/shared/ui/separator';
-
 import { searchParamsCache } from '@/shared/lib/utils/search-params';
-
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
-
 import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
 import UserListingPage from '@/widgets/ui/user-listing';
 
 export const metadata = {
-  title: 'Dashboard: Products',
+  title: 'Dashboard: Users',
 };
 
 type Props = {
