@@ -1,43 +1,40 @@
 import { z } from 'zod';
 
-// 1. Zod 스키마 정의
 export const UserSchema = z.object({
   id: z.string().uuid(),
   nickname: z.string(),
   email: z.string().email(),
   name: z.string(),
   avatarUrl: z.string().url().nullable(),
-  providers: z.array(z.enum(['GOOGLE', 'APPLE', 'KAKAO', 'NAVER'])),
+  providers: z.array(z.enum(['GOOGLE', 'APPLE', 'KAKAO', 'NAVER'])).optional(),
   isStatsPublic: z.boolean(),
   role: z.enum(['USER', 'ADMIN', 'SUPER_ADMIN']),
-  memoCount: z.number(),
-  categoryCount: z.number(),
+  memoCount: z.number().optional(),
+  categoryCount: z.number().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
 
-// 2. 타입 추론해서 변수에 저장
 export type User = z.infer<typeof UserSchema>;
 
-// 3. Request/Response 타입들
 export type CreateUserRequest = Pick<User, 'nickname' | 'email' | 'name' | 'avatarUrl' | 'role'>;
-
 export type UpdateUserRequest = Partial<CreateUserRequest>;
-
 export type UserResponse = User;
 
-// 페이지네이션 응답 스키마
 export const UserListResponseSchema = z.object({
   data: z.array(UserSchema),
-  page: z.number(),
-  limit: z.number(),
-  total: z.number(),
-  totalPages: z.number(),
+  meta: z.object({
+    page: z.number(),
+    limit: z.number(),
+    totalItems: z.number(),
+    totalPages: z.number(),
+    hasNext: z.boolean(),
+    hasPrev: z.boolean(),
+  }),
 });
 
 export type UserListResponse = z.infer<typeof UserListResponseSchema>;
 
-// API 에러 타입
 export const ApiErrorSchema = z.object({
   statusCode: z.number(),
   code: z.number(),
@@ -47,10 +44,12 @@ export const ApiErrorSchema = z.object({
 
 export type ApiError = z.infer<typeof ApiErrorSchema>;
 
-// Query Parameters
-export type UserQueryParams = {
-  keyword?: string;
-  role?: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
-  page?: number;
-  limit?: number;
-};
+// Query Parameters Schema
+export const UserQueryParamsSchema = z.object({
+  keyword: z.string().optional(),
+  role: z.enum(['USER', 'ADMIN', 'SUPER_ADMIN']).optional(),
+  page: z.number().min(1).optional(),
+  limit: z.number().min(1).max(100).optional(),
+});
+
+export type UserQueryParams = z.infer<typeof UserQueryParamsSchema>;
