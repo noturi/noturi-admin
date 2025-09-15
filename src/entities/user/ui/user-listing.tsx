@@ -19,10 +19,10 @@ export function UserTable<TData, TValue>({ data, totalItems, columns }: UserTabl
   const pageCount = Math.ceil(totalItems / pageSize);
 
   const { table } = useDataTable({
-    data, // user data
-    columns, // user columns
+    data,
+    columns,
     pageCount: pageCount,
-    shallow: false, //Setting to false triggers a network request with the updated querystring.
+    shallow: false,
     debounceMs: 500,
   });
 
