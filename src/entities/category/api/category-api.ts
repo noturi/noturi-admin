@@ -1,4 +1,4 @@
-import { api } from '@/shared/api';
+import { clientApi } from '@/shared/api/api';
 import type { Category, CreateCategoryRequest, UpdateCategoryRequest, CategoryQueryParams } from '../model/types';
 
 /**
@@ -25,39 +25,35 @@ export class CategoryApi {
 
     const url = searchParams.toString() ? `${this.baseUrl}?${searchParams.toString()}` : this.baseUrl;
 
-    const response = await api.client.get(url);
-    return response.json<Category[]>();
+    return clientApi.get<Category[]>(url);
   }
 
   /**
    * 카테고리 상세 조회
    */
   async getById(id: string): Promise<Category> {
-    const response = await api.client.get(`${this.baseUrl}/${id}`);
-    return response.json<Category>();
+    return clientApi.get<Category>(`${this.baseUrl}/${id}`);
   }
 
   /**
    * 카테고리 생성
    */
   async create(data: CreateCategoryRequest): Promise<Category> {
-    const response = await api.client.post(this.baseUrl, { json: data });
-    return response.json<Category>();
+    return clientApi.post<Category>(this.baseUrl, { json: data });
   }
 
   /**
    * 카테고리 수정
    */
   async update(id: string, data: UpdateCategoryRequest): Promise<Category> {
-    const response = await api.client.put(`${this.baseUrl}/${id}`, { json: data });
-    return response.json<Category>();
+    return clientApi.put<Category>(`${this.baseUrl}/${id}`, { json: data });
   }
 
   /**
    * 카테고리 삭제
    */
   async delete(id: string): Promise<void> {
-    await api.client.delete(`${this.baseUrl}/${id}`);
+    return clientApi.delete(`${this.baseUrl}/${id}`);
   }
 }
 
