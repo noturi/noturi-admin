@@ -5,7 +5,6 @@ export const searchParams = {
   perPage: parseAsInteger.withDefault(10),
   keyword: parseAsString,
   role: parseAsString,
-  // advanced filter
   // filters: getFiltersStateParser().withDefault([]),
   // joinOperator: parseAsStringEnum(['and', 'or']).withDefault('and')
 };
