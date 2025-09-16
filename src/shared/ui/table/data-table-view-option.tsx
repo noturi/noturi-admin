@@ -6,7 +6,7 @@ import { Settings2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/shared/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
-import { cn } from '@/shared/lib/utils/utils';
+import { cn } from '@/shared/lib';
 import { CheckIcon, ChevronDownIcon } from 'lucide-react';
 import { useMemo } from 'react';
 

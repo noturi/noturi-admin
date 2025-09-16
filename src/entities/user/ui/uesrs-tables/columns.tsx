@@ -48,6 +48,11 @@ export const columns: ColumnDef<User>[] = [
       </div>
     ),
     enableColumnFilter: true,
+    meta: {
+      label: 'Email',
+      variant: 'text',
+      placeholder: '이메일을 검색하세요.',
+    },
   },
   {
     id: 'role',
@@ -63,16 +68,37 @@ export const columns: ColumnDef<User>[] = [
         </Badge>
       );
     },
+    enableColumnFilter: true,
+    meta: {
+      label: 'Role',
+      variant: 'multiSelect',
+      options: [
+        { label: 'Admin', value: 'ADMIN' },
+        { label: 'User', value: 'USER' },
+      ],
+    },
   },
   {
     accessorKey: 'memoCount',
     header: 'MEMOS',
     cell: ({ cell }) => <div className="text-center font-mono">{cell.getValue<number>()}</div>,
+    enableColumnFilter: true,
+    meta: {
+      label: 'Memo Count',
+      variant: 'number',
+      placeholder: 'Filter by count...',
+    },
   },
   {
     accessorKey: 'categoryCount',
     header: 'CATEGORIES',
     cell: ({ cell }) => <div className="text-center font-mono">{cell.getValue<number>()}</div>,
+    enableColumnFilter: true,
+    meta: {
+      label: 'Category Count',
+      variant: 'number',
+      placeholder: 'Filter by count...',
+    },
   },
   {
     id: 'createdAt',
@@ -88,6 +114,11 @@ export const columns: ColumnDef<User>[] = [
           {date.toLocaleDateString()}
         </div>
       );
+    },
+    enableColumnFilter: true,
+    meta: {
+      label: 'Created Date',
+      variant: 'dateRange',
     },
   },
 ];

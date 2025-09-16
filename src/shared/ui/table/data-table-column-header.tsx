@@ -8,8 +8,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../dropdown-menu';
-import { cn } from '../../lib';
+} from '@/shared/ui/dropdown-menu';
+import { cn } from '@/shared/lib';
 import { ChevronDownIcon, ChevronUpIcon, ArrowUpDownIcon, EyeOff, XIcon } from 'lucide-react';
 
 interface DataTableColumnHeaderProps<TData, TValue> extends React.ComponentProps<typeof DropdownMenuTrigger> {

@@ -30,8 +30,8 @@ import {
 import * as React from 'react';
 
 import { useDebouncedCallback } from '@/shared/lib/hooks/use-debounced-callback';
-import { getSortingStateParser } from '@/shared/lib/utils/parser';
-import type { ExtendedColumnSort } from '@/shared/lib/model/data-table';
+import { getSortingStateParser } from '@/shared/ui/table/parsers';
+import type { ExtendedColumnSort } from '@/shared/ui/table/data-table.type';
 
 const PAGE_KEY = 'page';
 const PER_PAGE_KEY = 'perPage';
@@ -99,7 +99,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
 
   const pagination: PaginationState = React.useMemo(() => {
     return {
-      pageIndex: page - 1, // zero-based index -> one-based index
+      pageIndex: page - 1,
       pageSize: perPage,
     };
   }, [page, perPage]);

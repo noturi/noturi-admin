@@ -1,6 +1,6 @@
 'use client';
 
-import type { Option } from '@/shared/lib/model/data-table';
+import type { Option } from '@/shared/ui/table/data-table.type';
 import type { Column } from '@tanstack/react-table';
 import { PlusCircle, XCircle } from 'lucide-react';
 
@@ -17,7 +17,7 @@ import {
 } from '@/shared/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { Separator } from '@/shared/ui/separator';
-import { cn } from '@/shared/lib/utils/utils';
+import { cn } from '@/shared/lib';
 import * as React from 'react';
 import { CheckIcon } from 'lucide-react';
 

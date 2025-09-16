@@ -9,7 +9,7 @@ import { Label } from '@/shared/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { Separator } from '@/shared/ui/separator';
 import { Slider } from '@/shared/ui/slider';
-import { cn } from '@/shared/lib/utils/utils';
+import { cn } from '@/shared/lib';
 import { PlusCircle, XCircle } from 'lucide-react';
 
 interface Range {

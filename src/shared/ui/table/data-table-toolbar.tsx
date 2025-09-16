@@ -7,7 +7,7 @@ import { DataTableSliderFilter } from '@/shared/ui/table/data-table-slider-filte
 import { DataTableViewOptions } from '@/shared/ui/table/data-table-view-option';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
-import { cn } from '@/shared/lib/utils/utils';
+import { cn } from '@/shared/lib';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
 import { DataTableDateFilter } from './data-table-date-filter';
 
