@@ -23,14 +23,12 @@ export async function loginAction(prevState: LoginState | null, formData: FormDa
   console.log('validatedData', validatedData);
 
   try {
-    const apiResponse = await serverApi.post('auth/login', {
-      json: validatedData.data,
-    });
-
-    const response = await apiResponse.json<{
+    const response = await serverApi.post<{
       accessToken: string;
       user: { id: string; email: string; role: 'ADMIN' | 'SUPER_ADMIN' };
-    }>();
+    }>('auth/login', {
+      json: validatedData.data,
+    });
 
     console.log('✅ Login successful:', { user: response.user });
 
