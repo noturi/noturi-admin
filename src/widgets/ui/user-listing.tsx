@@ -8,9 +8,9 @@ type UserListingPage = Record<string, never>;
 
 export default async function UserListingPage({}: UserListingPage) {
   // Showcasing the use of search params cache in nested RSCs
-  const page = searchParamsCache.get('page') ?? 1;
+  const page = searchParamsCache.get('page');
   const keyword = searchParamsCache.get('keyword');
-  const limit = searchParamsCache.get('perPage') ?? 20;
+  const limit = searchParamsCache.get('perPage');
   const role = searchParamsCache.get('role');
 
   const filters = {
@@ -23,7 +23,7 @@ export default async function UserListingPage({}: UserListingPage) {
   const response = await getUserList(filters);
 
   const users = response.data;
-  const totalUsers = response.meta.totalItems;
+  const pageCount = response.meta.totalPages;
 
-  return <UserTable data={users} totalItems={totalUsers} columns={columns} />;
+  return <UserTable data={users} pageCount={pageCount} columns={columns} />;
 }
