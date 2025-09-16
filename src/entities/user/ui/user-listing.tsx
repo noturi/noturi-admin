@@ -10,18 +10,16 @@ import { parseAsInteger, useQueryState } from 'nuqs';
 
 interface UserTableParams<TData, TValue> {
   data: TData[];
-  totalItems: number;
+  pageCount: number;
   columns: ColumnDef<TData, TValue>[];
 }
-export function UserTable<TData, TValue>({ data, totalItems, columns }: UserTableParams<TData, TValue>) {
-  const [pageSize] = useQueryState('perPage', parseAsInteger.withDefault(10));
-
-  const pageCount = Math.ceil(totalItems / pageSize);
+export function UserTable<TData, TValue>({ data, pageCount, columns }: UserTableParams<TData, TValue>) {
+  useQueryState('perPage', parseAsInteger.withDefault(10));
 
   const { table } = useDataTable({
     data,
     columns,
-    pageCount: pageCount,
+    pageCount,
     shallow: false,
     debounceMs: 500,
   });
