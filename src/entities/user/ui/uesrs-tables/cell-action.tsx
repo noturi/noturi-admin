@@ -25,15 +25,15 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(data.id)}>Copy user ID</DropdownMenuItem>
+        <DropdownMenuLabel>액션</DropdownMenuLabel>
+        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(data.id)}>사용자 ID 복사</DropdownMenuItem>
         <DropdownMenuItem>
           <Edit className="mr-2 h-4 w-4" />
-          Edit
+          수정
         </DropdownMenuItem>
         <DropdownMenuItem className="text-red-600">
           <Trash className="mr-2 h-4 w-4" />
-          Delete
+          삭제
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

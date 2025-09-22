@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState, useEffect } from 'react';
+import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
@@ -52,6 +53,15 @@ export function LoginForm() {
               {isPending ? '로그인 중...' : '로그인'}
             </Button>
           </form>
+
+          <div className="mt-4 text-center">
+            <p className="text-muted-foreground text-sm">
+              계정이 없으신가요?
+              <Link href="/auth/register" className="text-primary underline-offset-4 hover:underline">
+                회원가입
+              </Link>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

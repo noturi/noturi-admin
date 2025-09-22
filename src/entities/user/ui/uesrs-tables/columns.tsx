@@ -27,7 +27,7 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: 'name',
     header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="Name" />,
     cell: ({ cell }) => <div className="font-medium">{cell.getValue<string>()}</div>,
-    enableColumnFilter: true,
+    enableHiding: false,
   },
   {
     id: 'nickname',
@@ -48,6 +48,7 @@ export const columns: ColumnDef<User>[] = [
       </div>
     ),
     enableColumnFilter: true,
+    enableHiding: false,
     meta: {
       label: 'Email',
       variant: 'text',
@@ -68,7 +69,6 @@ export const columns: ColumnDef<User>[] = [
         </Badge>
       );
     },
-    enableColumnFilter: true,
     meta: {
       label: 'Role',
       variant: 'multiSelect',
@@ -82,7 +82,7 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: 'memoCount',
     header: 'MEMOS',
     cell: ({ cell }) => <div className="text-center font-mono">{cell.getValue<number>()}</div>,
-    enableColumnFilter: true,
+
     meta: {
       label: 'Memo Count',
       variant: 'number',
@@ -93,7 +93,6 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: 'categoryCount',
     header: 'CATEGORIES',
     cell: ({ cell }) => <div className="text-center font-mono">{cell.getValue<number>()}</div>,
-    enableColumnFilter: true,
     meta: {
       label: 'Category Count',
       variant: 'number',

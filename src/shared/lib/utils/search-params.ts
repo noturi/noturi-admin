@@ -3,8 +3,9 @@ import { createSearchParamsCache, createSerializer, parseAsInteger, parseAsStrin
 export const searchParams = {
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
-  keyword: parseAsString,
+  email: parseAsString,
   role: parseAsString,
+  createdAt: parseAsString,
   // filters: getFiltersStateParser().withDefault([]),
   // joinOperator: parseAsStringEnum(['and', 'or']).withDefault('and')
 };

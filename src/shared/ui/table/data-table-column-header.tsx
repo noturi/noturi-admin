@@ -55,7 +55,7 @@ export function DataTableColumnHeader<TData, TValue>({
               onClick={() => column.toggleSorting(false)}
             >
               <ChevronUpIcon />
-              Asc
+              오름차순
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               className="[&_svg]:text-muted-foreground relative pr-8 pl-2 [&>span:first-child]:right-2 [&>span:first-child]:left-auto"
@@ -63,12 +63,12 @@ export function DataTableColumnHeader<TData, TValue>({
               onClick={() => column.toggleSorting(true)}
             >
               <ChevronDownIcon />
-              Desc
+              내림차순
             </DropdownMenuCheckboxItem>
             {column.getIsSorted() && (
               <DropdownMenuItem className="[&_svg]:text-muted-foreground pl-2" onClick={() => column.clearSorting()}>
                 <XIcon />
-                Reset
+                초기화
               </DropdownMenuItem>
             )}
           </>
@@ -80,7 +80,7 @@ export function DataTableColumnHeader<TData, TValue>({
             onClick={() => column.toggleVisibility(false)}
           >
             <EyeOff />
-            Hide
+            컬럼 숨기기
           </DropdownMenuCheckboxItem>
         )}
       </DropdownMenuContent>

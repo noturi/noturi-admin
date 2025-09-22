@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import { PaginatedResponse } from '@/shared/api/types';
+
+// =================================================================================
+// Core User Entity
+// =================================================================================
 
 export const UserSchema = z.object({
   id: z.string().uuid(),
@@ -17,39 +22,27 @@ export const UserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>;
 
+// =================================================================================
+// API Payloads & Responses
+// =================================================================================
+
 export type CreateUserRequest = Pick<User, 'nickname' | 'email' | 'name' | 'avatarUrl' | 'role'>;
 export type UpdateUserRequest = Partial<CreateUserRequest>;
 export type UserResponse = User;
 
-export const UserListResponseSchema = z.object({
-  data: z.array(UserSchema),
-  meta: z.object({
-    page: z.number(),
-    limit: z.number(),
-    totalItems: z.number(),
-    totalPages: z.number(),
-    hasNext: z.boolean(),
-    hasPrev: z.boolean(),
-  }),
-});
+// The actual API response for a list of users (flat structure)
+export type UserListResponse = PaginatedResponse<User>;
 
-export type UserListResponse = z.infer<typeof UserListResponseSchema>;
+// =================================================================================
+// API Query Parameters
+// =================================================================================
 
-export const ApiErrorSchema = z.object({
-  statusCode: z.number(),
-  code: z.number(),
-  message: z.string(),
-  details: z.record(z.string(), z.any()).optional(),
-});
-
-export type ApiError = z.infer<typeof ApiErrorSchema>;
-
-// Query Parameters Schema
 export const UserQueryParamsSchema = z.object({
   keyword: z.string().optional(),
   role: z.enum(['USER', 'ADMIN', 'SUPER_ADMIN']).optional(),
   page: z.number().min(1).optional(),
   limit: z.number().min(1).max(100).optional(),
+  createdAt: z.string().optional(),
 });
 
 export type UserQueryParams = z.infer<typeof UserQueryParamsSchema>;

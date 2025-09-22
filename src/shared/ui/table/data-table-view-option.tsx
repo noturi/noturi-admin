@@ -31,15 +31,15 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
           className="ml-auto hidden h-8 lg:flex"
         >
           <Settings2 />
-          View
+          컬럼 설정
           <ChevronDownIcon className="ml-auto opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-44 p-0">
         <Command>
-          <CommandInput placeholder="Search columns..." />
+          <CommandInput placeholder="컬럼을 검색하세요." />
           <CommandList>
-            <CommandEmpty>No columns found.</CommandEmpty>
+            <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
             <CommandGroup>
               {columns.map((column) => (
                 <CommandItem key={column.id} onSelect={() => column.toggleVisibility(!column.getIsVisible())}>

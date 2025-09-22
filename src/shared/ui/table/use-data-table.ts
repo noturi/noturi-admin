@@ -151,10 +151,15 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     if (enableAdvancedFilter) return {};
 
     return filterableColumns.reduce<Record<string, Parser<string> | Parser<string[]>>>((acc, column) => {
-      if (column.meta?.options) {
-        acc[column.id ?? ''] = parseAsArrayOf(parseAsString, ARRAY_SEPARATOR).withOptions(queryStateOptions);
+      const columnId = column.id ?? '';
+      if (!columnId) return acc;
+
+      if (column.meta?.variant === 'dateRange') {
+        acc[columnId] = parseAsArrayOf(parseAsString, ARRAY_SEPARATOR).withOptions(queryStateOptions);
+      } else if (column.meta?.options) {
+        acc[columnId] = parseAsArrayOf(parseAsString, ARRAY_SEPARATOR).withOptions(queryStateOptions);
       } else {
-        acc[column.id ?? ''] = parseAsString.withOptions(queryStateOptions);
+        acc[columnId] = parseAsString.withOptions(queryStateOptions);
       }
       return acc;
     }, {});

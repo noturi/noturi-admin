@@ -52,7 +52,7 @@ export function DataTable<TData>({ table, actionBar, children }: DataTableProps<
             ) : (
               <TableRow>
                 <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
-                  No results.
+                  검색 결과가 없습니다.
                 </TableCell>
               </TableRow>
             )}
