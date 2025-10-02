@@ -5,7 +5,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { registerPasswordSchema, type FunnelState } from '../lib/schema';
+import { registerPasswordSchema, type FunnelState } from '../lib/types';
 
 interface PasswordStepProps {
   defaultValues: FunnelState;
