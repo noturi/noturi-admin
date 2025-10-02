@@ -18,10 +18,10 @@ export interface DashboardActivitiesResponse {
   activities: DashboardActivity[];
 }
 
-export const getDashboardStatistics = async (): Promise<DashboardStatistics> => {
+export const getDashboardStatistics = async () => {
   return serverApi.get<DashboardStatistics>('dashboard/statistics');
 };
 
-export const getDashboardActivities = async (): Promise<DashboardActivitiesResponse> => {
+export const getDashboardActivities = async () => {
   return serverApi.get<DashboardActivitiesResponse>('dashboard/activities');
 };
