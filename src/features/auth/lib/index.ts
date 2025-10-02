@@ -10,4 +10,4 @@ export {
   type RegisterPasswordForm,
   type RegisterForm,
   type FunnelState,
-} from './schema';
+} from './types';
