@@ -5,8 +5,6 @@ export const loginSchema = z.object({
   password: z.string().min(6, { message: '비밀번호는 최소 6자 이상이어야 합니다' }),
 });
 
-export type LoginForm = z.infer<typeof loginSchema>;
-
 // 회원가입 스키마
 export const registerEmailSchema = z.object({
   email: z.string().email({ message: '유효한 이메일을 입력해주세요' }),
@@ -40,10 +38,25 @@ export const registerSchema = z
     path: ['confirmPassword'],
   });
 
+export const authResponseSchema = z.object({
+  accessToken: z.string(),
+  user: z.object({
+    id: z.string(),
+    email: z.string(),
+    role: z.enum(['ADMIN', 'SUPER_ADMIN']),
+    name: z.string().optional(),
+    nickname: z.string().optional(),
+    avatarUrl: z.string().optional(),
+    isStatsPublic: z.boolean().optional(),
+  }),
+});
+
 export type RegisterEmailForm = z.infer<typeof registerEmailSchema>;
 export type RegisterRoleForm = z.infer<typeof registerRoleSchema>;
 export type RegisterPasswordForm = z.infer<typeof registerPasswordSchema>;
 export type RegisterForm = z.infer<typeof registerSchema>;
+export type LoginForm = z.infer<typeof loginSchema>;
+export type AuthResponse = z.infer<typeof authResponseSchema>;
 
 // 퍼널 상태 타입
 export interface FunnelState {
