@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { loginSchema } from '../lib/types';
 import { setAuthCookies } from '@/shared/lib/utils/cookie-utils';
 import { login } from './api';
+import { HttpError } from '@/shared/lib/utils/http-error';
 
 interface LoginState {
   error?: string;
@@ -31,7 +32,7 @@ export async function loginAction(_prevState: LoginState | null, formData: FormD
     await setAuthCookies(response.accessToken, response.user);
   } catch (error) {
     return {
-      error: '이메일 또는 비밀번호가 올바르지 않습니다.',
+      error: HttpError.getErrorMessage(error),
       email: rawData.email as string,
       password: rawData.password as string,
     };
