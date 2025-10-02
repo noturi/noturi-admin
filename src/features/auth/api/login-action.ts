@@ -1,54 +1,37 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { loginSchema } from '../lib/schema';
-import { serverApi } from '@/shared/api/server-api';
+import { loginSchema } from '../lib/types';
 import { setAuthCookies } from '@/shared/lib/utils/cookie-utils';
+import { login } from './api';
 
 interface LoginState {
   error?: string;
-  fieldErrors?: Record<string, string[]>;
   email?: string;
   password?: string;
 }
 
-export async function loginAction(prevState: LoginState | null, formData: FormData) {
+export async function loginAction(_prevState: LoginState | null, formData: FormData) {
   const rawData = {
     email: formData.get('email'),
     password: formData.get('password'),
   };
 
-  const validatedData = loginSchema.safeParse(rawData);
-
-  console.log('validatedData', validatedData);
+  const validation = loginSchema.safeParse(rawData);
+  if (!validation.success) {
+    return {
+      error: '입력값을 확인해주세요.',
+      email: rawData.email as string,
+      password: rawData.password as string,
+    };
+  }
 
   try {
-    const response = await serverApi.post<{
-      accessToken: string;
-      user: { id: string; email: string; role: 'ADMIN' | 'SUPER_ADMIN' };
-    }>('auth/login', {
-      json: validatedData.data,
-    });
-
-    console.log('✅ Login successful:', { user: response.user });
-
+    const response = await login(validation.data);
     await setAuthCookies(response.accessToken, response.user);
   } catch (error) {
-    console.error('❌ Login failed:', error);
-
-    // 에러 응답 내용 확인
-    if (error && typeof error === 'object' && 'response' in error) {
-      const httpError = error as { response: { text(): Promise<string> } };
-      try {
-        const errorText = await httpError.response.text();
-        console.error('📄 Server error response:', errorText);
-      } catch {
-        console.error('❌ Could not read error response');
-      }
-    }
-
     return {
-      error: '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.',
+      error: '이메일 또는 비밀번호가 올바르지 않습니다.',
       email: rawData.email as string,
       password: rawData.password as string,
     };
