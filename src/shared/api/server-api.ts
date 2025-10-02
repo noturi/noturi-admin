@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { END_POINT } from '@/shared/lib';
 import { EnhancedFetch } from './enhanced-fetch';
+import { HttpError } from '@/shared/lib/utils/http-error';
 
 async function getTokenFromCookies() {
   const cookieStore = await cookies();
@@ -23,5 +24,8 @@ export const serverApi = new EnhancedFetch(
         ...(token && { Authorization: `Bearer ${token}` }),
       },
     };
+  },
+  async (error) => {
+    await HttpError.backend(error);
   }
 );
