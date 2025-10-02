@@ -79,7 +79,14 @@ export class EnhancedFetch {
       const response = await fetch(url, mergedOptions);
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const error = new Error(`HTTP ${response.status}: ${response.statusText}`) as Error & {
+          response: { status: number; text(): Promise<string> };
+        };
+        error.response = {
+          status: response.status,
+          text: () => response.text(),
+        };
+        throw error;
       }
 
       const enhancedResponse = response as EnhancedResponse;
