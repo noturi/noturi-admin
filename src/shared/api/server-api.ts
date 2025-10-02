@@ -8,7 +8,7 @@ async function getTokenFromCookies() {
 }
 
 export const serverApi = new EnhancedFetch(
-  (END_POINT.BASE_URL || '') + '/admin',
+  END_POINT.BASE_URL + '/admin',
   {
     headers: {
       'Content-Type': 'application/json',
