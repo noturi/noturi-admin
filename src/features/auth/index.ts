@@ -1,4 +1,4 @@
-export { loginAction, registerAction } from './api';
+export { loginAction, registerAction, logoutAction } from './api';
 export {
   loginSchema,
   type LoginForm,
@@ -11,5 +11,6 @@ export {
   type RegisterPasswordForm,
   type RegisterForm,
   type FunnelState,
-} from './lib';
+  type AuthUser,
+} from './model';
 export { LoginForm as LoginFormComponent, EmailStep, RoleStep, PasswordStep } from './ui';

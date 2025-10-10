@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Label } from '@/shared/ui/label';
-import { registerRoleSchema } from '../lib/types';
+import { registerRoleSchema } from '../model/types';
 
 interface RoleStepProps {
   defaultValue?: 'ADMIN' | 'SUPER_ADMIN';

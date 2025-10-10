@@ -10,4 +10,5 @@ export {
   type RegisterPasswordForm,
   type RegisterForm,
   type FunnelState,
+  type AuthUser,
 } from './types';

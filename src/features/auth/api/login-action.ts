@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { loginSchema } from '../lib/types';
+import { loginSchema } from '../model/types';
 import { setAuthCookies } from '@/shared/lib/utils/cookie-utils';
 import { login } from './api';
 import { HttpError } from '@/shared/lib/utils/http-error';

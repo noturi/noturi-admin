@@ -5,29 +5,37 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { registerEmailSchema } from '../lib/types';
+import { registerEmailSchema, type RegisterEmailForm } from '../model/types';
 
 interface EmailStepProps {
-  defaultValue?: string;
-  next: (email: string) => void;
+  defaultValues?: Partial<RegisterEmailForm>;
+  next: (data: RegisterEmailForm) => void;
 }
 
-export function EmailStep({ defaultValue = '', next }: EmailStepProps) {
-  const [email, setEmail] = useState(defaultValue);
-  const [error, setError] = useState<string>('');
+export function EmailStep({ defaultValues = {}, next }: EmailStepProps) {
+  const [email, setEmail] = useState(defaultValues.email || '');
+  const [name, setName] = useState(defaultValues.name || '');
+  const [nickname, setNickname] = useState(defaultValues.nickname || '');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = registerEmailSchema.safeParse({ email });
+    const result = registerEmailSchema.safeParse({ email, name, nickname });
 
     if (!result.success) {
-      setError(result.error.issues[0]?.message || '유효한 이메일을 입력해주세요');
+      const newErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        if (issue.path[0]) {
+          newErrors[issue.path[0].toString()] = issue.message;
+        }
+      });
+      setErrors(newErrors);
       return;
     }
 
-    setError('');
-    next(email);
+    setErrors({});
+    next(result.data);
   };
 
   return (
@@ -35,7 +43,7 @@ export function EmailStep({ defaultValue = '', next }: EmailStepProps) {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl">회원가입</CardTitle>
-          <CardDescription className="text-center">1/3단계: 이메일 주소를 입력해주세요</CardDescription>
+          <CardDescription className="text-center">1/3단계: 기본 정보를 입력해주세요</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -49,9 +57,37 @@ export function EmailStep({ defaultValue = '', next }: EmailStepProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className={error ? 'border-red-500' : ''}
+                className={errors.email ? 'border-red-500' : ''}
               />
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">이름</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="이름을 입력하세요"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className={errors.name ? 'border-red-500' : ''}
+              />
+              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nickname">닉네임</Label>
+              <Input
+                id="nickname"
+                name="nickname"
+                type="text"
+                placeholder="닉네임을 입력하세요"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                required
+                className={errors.nickname ? 'border-red-500' : ''}
+              />
+              {errors.nickname && <p className="text-sm text-red-500">{errors.nickname}</p>}
             </div>
             <Button type="submit" className="w-full">
               다음 단계

@@ -8,6 +8,8 @@ export const loginSchema = z.object({
 // 회원가입 스키마
 export const registerEmailSchema = z.object({
   email: z.string().email({ message: '유효한 이메일을 입력해주세요' }),
+  name: z.string().min(1, { message: '이름을 입력해주세요' }),
+  nickname: z.string().min(1, { message: '닉네임을 입력해주세요' }),
 });
 
 export const registerRoleSchema = z.object({
@@ -26,24 +28,20 @@ export const registerPasswordSchema = z
     path: ['confirmPassword'],
   });
 
-export const registerSchema = z
-  .object({
-    email: z.string().email({ message: '유효한 이메일을 입력해주세요' }),
-    role: z.enum(['ADMIN', 'SUPER_ADMIN']),
-    password: z.string().min(8, { message: '비밀번호는 최소 8자 이상이어야 합니다' }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: '비밀번호가 일치하지 않습니다',
-    path: ['confirmPassword'],
-  });
+export const registerSchema = z.object({
+  email: z.string().email({ message: '유효한 이메일을 입력해주세요' }),
+  name: z.string().min(1, { message: '이름을 입력해주세요' }),
+  nickname: z.string().min(1, { message: '닉네임을 입력해주세요' }),
+  role: z.enum(['ADMIN', 'SUPER_ADMIN']),
+  password: z.string().min(8, { message: '비밀번호는 최소 8자 이상이어야 합니다' }),
+});
 
 export const authResponseSchema = z.object({
   accessToken: z.string(),
   user: z.object({
     id: z.string(),
     email: z.string(),
-    role: z.enum(['ADMIN', 'SUPER_ADMIN']),
+    roles: z.array(z.enum(['ADMIN', 'SUPER_ADMIN', 'USER'])),
     name: z.string().optional(),
     nickname: z.string().optional(),
     avatarUrl: z.string().optional(),
@@ -58,9 +56,14 @@ export type RegisterForm = z.infer<typeof registerSchema>;
 export type LoginForm = z.infer<typeof loginSchema>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
 
+// 인증된 사용자 타입
+export type AuthUser = AuthResponse['user'];
+
 // 퍼널 상태 타입
 export interface FunnelState {
   email?: string;
+  name?: string;
+  nickname?: string;
   role?: 'ADMIN' | 'SUPER_ADMIN';
   password?: string;
   currentStep: 'email' | 'role' | 'password';
