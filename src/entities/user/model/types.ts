@@ -10,7 +10,7 @@ export const UserSchema = z.object({
   nickname: z.string(),
   email: z.string().email(),
   name: z.string(),
-  avatarUrl: z.string().url().nullable(),
+  avatarUrl: z.string().url().optional(),
   providers: z.array(z.enum(['GOOGLE', 'APPLE', 'KAKAO', 'NAVER'])).optional(),
   isStatsPublic: z.boolean(),
   role: z.enum(['USER', 'ADMIN', 'SUPER_ADMIN']),
