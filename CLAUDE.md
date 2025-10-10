@@ -47,7 +47,7 @@ project/
 
 #### **features**: 비즈니스 로직 (CUD 작업)
 
-- `api/actions.ts`: Server Actions (create*, update*, delete* 등)
+- `api/actions.ts`: Server Actions (create*, update*, delete\* 등)
 - `lib/` 폴더에 스키마, 타입 등 (model은 lib 하위)
 - 데이터 변환 (데이터베이스 ↔ 뷰모델)
 - **중요**: features는 entities에서 읽기 작업 import 가능
