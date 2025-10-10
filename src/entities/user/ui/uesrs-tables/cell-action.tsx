@@ -1,15 +1,10 @@
 'use client';
 
 import { Button } from '@/shared/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/shared/ui/dropdown-menu';
-import { User } from '@/shared/lib';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu';
+import { User } from '@/entities/user/model/types';
+import { MoreHorizontal, Trash } from 'lucide-react';
+import { deleteUser } from '@/features/user/api';
 
 interface CellActionProps {
   data: User;
@@ -25,13 +20,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>액션</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(data.id)}>사용자 ID 복사</DropdownMenuItem>
-        <DropdownMenuItem>
-          <Edit className="mr-2 h-4 w-4" />
-          수정
-        </DropdownMenuItem>
-        <DropdownMenuItem className="text-red-600">
+        <DropdownMenuItem className="text-red-600" onClick={() => deleteUser(data.id)}>
           <Trash className="mr-2 h-4 w-4" />
           삭제
         </DropdownMenuItem>
