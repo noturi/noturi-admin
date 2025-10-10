@@ -3,8 +3,10 @@
 import { EmailStep, RoleStep, PasswordStep, type FunnelState, registerAction } from '@/features/auth';
 import { useFunnel } from '@/shared/lib';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
-export default function RegisterPage() {
+export default function UserRegisterPage() {
+  const router = useRouter();
   const [Funnel, funnelState, updateFunnelState, clearFunnelState] = useFunnel(['email', 'role', 'password'] as const, {
     initialStep: 'email',
     history: 'replace',
@@ -44,8 +46,9 @@ export default function RegisterPage() {
             if (result?.error) {
               toast.error(result.error);
             } else {
-              toast.success('회원가입이 완료되었습니다!');
+              toast.success('사용자 등록이 완료되었습니다!');
               clearFunnelState();
+              router.push('/dashboard/user');
             }
           }}
         />

@@ -1,7 +1,8 @@
 import PageContainer from '@/shared/ui/page-container';
 import { Heading } from '@/shared/ui/heading';
 import { Separator } from '@/shared/ui/separator';
-import { searchParamsCache } from '@/shared/lib/utils/search-params';
+
+import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
@@ -17,7 +18,8 @@ type Props = {
 
 export default async function Page(props: Props) {
   const searchParams = await props.searchParams;
-  searchParamsCache.parse(searchParams);
+  const { cache } = getSearchParams(PageType.USER);
+  cache.parse(searchParams);
 
   return (
     <PageContainer scrollable={false}>

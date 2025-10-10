@@ -1,12 +1,11 @@
 'use client';
-import { Badge } from '@/shared/ui/badge';
 import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 
 import { Column, ColumnDef } from '@tanstack/react-table';
-import { Shield } from 'lucide-react';
 
 import { User } from '@/entities/user/model/types';
 import { CellAction } from './cell-action';
+import { can, AuthUser } from '@/shared/lib/permissions';
 
 // Helper function to convert null to undefined for avatarUrl
 const normalizeUser = (user: Record<string, unknown>): User =>
@@ -15,7 +14,21 @@ const normalizeUser = (user: Record<string, unknown>): User =>
     avatarUrl: user.avatarUrl === null ? undefined : user.avatarUrl,
   }) as User;
 
-export const columns: ColumnDef<User>[] = [
+const CellActionWrapper: React.FC<{ data: User; currentUser: AuthUser }> = ({ data, currentUser }) => {
+  if (!currentUser) {
+    return null;
+  }
+
+  const permissions = can(currentUser);
+
+  const hasAnyPermission = permissions.deleteUser(data) || permissions.updateUser(data);
+
+  if (!hasAnyPermission) return null;
+
+  return <CellAction data={data} permissions={permissions} />;
+};
+
+export const getColumns = (currentUser: AuthUser): ColumnDef<User>[] => [
   {
     id: 'name',
     accessorKey: 'name',
@@ -40,29 +53,6 @@ export const columns: ColumnDef<User>[] = [
       label: 'Email',
       variant: 'text',
       placeholder: '이메일을 검색하세요.',
-    },
-  },
-  {
-    id: 'role',
-    accessorKey: 'role',
-    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="역할" />,
-    cell: ({ cell }) => {
-      const role = cell.getValue<string>();
-
-      return (
-        <Badge variant={role === 'ADMIN' ? 'destructive' : 'secondary'} className="capitalize">
-          <Shield className="mr-1 h-3 w-3" />
-          {role.toLowerCase()}
-        </Badge>
-      );
-    },
-    meta: {
-      label: 'Role',
-      variant: 'multiSelect',
-      options: [
-        { label: 'Admin', value: 'ADMIN' },
-        { label: 'User', value: 'USER' },
-      ],
     },
   },
   {
@@ -103,7 +93,7 @@ export const columns: ColumnDef<User>[] = [
   {
     id: 'actions',
     header: '작업',
-    cell: ({ row }) => <CellAction data={normalizeUser(row.original)} />,
+    cell: ({ row }) => <CellActionWrapper data={normalizeUser(row.original)} currentUser={currentUser} />,
     enableHiding: false,
   },
 ];

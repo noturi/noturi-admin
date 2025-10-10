@@ -7,14 +7,19 @@ import { useDataTable } from '@/shared/ui/table/use-data-table';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { parseAsInteger, useQueryState } from 'nuqs';
+import { getUserColumns } from '@/entities/user/ui/uesrs-tables/user-columns';
+import { AuthUser } from '@/shared/lib/permissions';
+import { User } from '../model/types';
 
-interface UserTableParams<TData, TValue> {
-  data: TData[];
+interface UserTableParams {
+  data: User[];
   pageCount: number;
-  columns: ColumnDef<TData, TValue>[];
+  currentUser: AuthUser;
 }
-export function UserTable<TData, TValue>({ data, pageCount, columns }: UserTableParams<TData, TValue>) {
+export function UserTable({ data, pageCount, currentUser }: UserTableParams) {
   useQueryState('perPage', parseAsInteger.withDefault(10));
+
+  const columns = getUserColumns(currentUser);
 
   const { table } = useDataTable({
     data,
