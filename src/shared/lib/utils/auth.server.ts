@@ -1,6 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { AuthUser } from '@/features/auth';
 
 export async function getAuthData() {
   const cookieStore = await cookies();
@@ -12,7 +13,7 @@ export async function getAuthData() {
   }
 
   try {
-    const user = JSON.parse(userInfo);
+    const user: AuthUser = JSON.parse(userInfo);
     return { token, user, isAuthenticated: true };
   } catch {
     return null;

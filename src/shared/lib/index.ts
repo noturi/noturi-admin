@@ -18,3 +18,4 @@ export * from './utils/search-params';
 export * from './utils/role';
 export * from './utils/utils';
 export * from './utils/analytics';
+export * from './permissions';

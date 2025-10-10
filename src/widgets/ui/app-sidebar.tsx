@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, Settings, BarChart3, FolderOpen, LogOut } from 'lucide-react';
+import { Users, Settings, BarChart3, FolderOpen, LogOut, UserCog } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +14,7 @@ import {
   SidebarFooter,
 } from '@/shared/ui/sidebar';
 import { useAuthStore, ROUTES } from '@/shared/lib';
+import { logoutAction } from '@/features/auth';
 import Link from 'next/link';
 
 const items = [
@@ -28,6 +29,11 @@ const items = [
     icon: Users,
   },
   {
+    title: '운영자 관리',
+    url: '/dashboard/operator',
+    icon: UserCog,
+  },
+  {
     title: '카테고리 관리',
     url: ROUTES.DASHBOARD.CATEGORIES,
     icon: FolderOpen,
@@ -40,7 +46,7 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
 
   return (
     <Sidebar>
@@ -74,7 +80,7 @@ export function AppSidebar() {
       <SidebarFooter className="border-sidebar-border border-t">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={logout}>
+            <SidebarMenuButton onClick={() => logoutAction()}>
               <LogOut />
               <span>로그아웃</span>
             </SidebarMenuButton>
