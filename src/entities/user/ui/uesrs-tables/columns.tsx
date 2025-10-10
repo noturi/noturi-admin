@@ -3,50 +3,37 @@ import { Badge } from '@/shared/ui/badge';
 import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 
 import { Column, ColumnDef } from '@tanstack/react-table';
-import { Mail, Calendar, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 import { User } from '@/entities/user/model/types';
+import { CellAction } from './cell-action';
+
+// Helper function to convert null to undefined for avatarUrl
+const normalizeUser = (user: Record<string, unknown>): User =>
+  ({
+    ...user,
+    avatarUrl: user.avatarUrl === null ? undefined : user.avatarUrl,
+  }) as User;
 
 export const columns: ColumnDef<User>[] = [
   {
-    accessorKey: 'avatarUrl',
-    header: 'AVATAR',
-    cell: ({ row }) => {
-      const avatarUrl = row.getValue('avatarUrl') as string;
-      const name = row.getValue('name') as string;
-
-      return (
-        <div className="relative h-8 w-8">
-          {/* <Image src={avatarUrl || '/default-avatar.png'} alt={name} fill className="rounded-full object-cover" /> */}
-        </div>
-      );
-    },
-  },
-  {
     id: 'name',
     accessorKey: 'name',
-    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="Name" />,
+    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="이름" />,
     cell: ({ cell }) => <div className="font-medium">{cell.getValue<string>()}</div>,
     enableHiding: false,
   },
   {
     id: 'nickname',
     accessorKey: 'nickname',
-    header: ({ column }: { column: Column<User, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Nickname" />
-    ),
-    cell: ({ cell }) => <div className="text-muted-foreground">@{cell.getValue<string>()}</div>,
+    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="닉네임" />,
+    cell: ({ cell }) => <div className="text-muted-foreground">{cell.getValue<string>()}</div>,
   },
   {
     id: 'email',
     accessorKey: 'email',
-    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="Email" />,
-    cell: ({ cell }) => (
-      <div className="flex items-center gap-2">
-        <Mail className="text-muted-foreground h-4 w-4" />
-        {cell.getValue<string>()}
-      </div>
-    ),
+    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="이메일" />,
+    cell: ({ cell }) => <div>{cell.getValue<string>()}</div>,
     enableColumnFilter: true,
     enableHiding: false,
     meta: {
@@ -58,7 +45,7 @@ export const columns: ColumnDef<User>[] = [
   {
     id: 'role',
     accessorKey: 'role',
-    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="Role" />,
+    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="역할" />,
     cell: ({ cell }) => {
       const role = cell.getValue<string>();
 
@@ -80,7 +67,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: 'memoCount',
-    header: 'MEMOS',
+    header: '평가 메모 수',
     cell: ({ cell }) => <div className="text-center font-mono">{cell.getValue<number>()}</div>,
 
     meta: {
@@ -91,7 +78,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: 'categoryCount',
-    header: 'CATEGORIES',
+    header: '카테고리 수',
     cell: ({ cell }) => <div className="text-center font-mono">{cell.getValue<number>()}</div>,
     meta: {
       label: 'Category Count',
@@ -102,22 +89,21 @@ export const columns: ColumnDef<User>[] = [
   {
     id: 'createdAt',
     accessorKey: 'createdAt',
-    header: ({ column }: { column: Column<User, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Created" />
-    ),
+    header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="생성일" />,
     cell: ({ cell }) => {
       const date = new Date(cell.getValue<string>());
-      return (
-        <div className="flex items-center gap-2">
-          <Calendar className="text-muted-foreground h-4 w-4" />
-          {date.toLocaleDateString()}
-        </div>
-      );
+      return <div className="flex items-center gap-2">{date.toLocaleDateString()}</div>;
     },
     enableColumnFilter: true,
     meta: {
       label: 'Created Date',
       variant: 'dateRange',
     },
+  },
+  {
+    id: 'actions',
+    header: '작업',
+    cell: ({ row }) => <CellAction data={normalizeUser(row.original)} />,
+    enableHiding: false,
   },
 ];
