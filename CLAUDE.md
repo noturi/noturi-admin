@@ -47,8 +47,7 @@ project/
 
 #### **features**: 비즈니스 로직 (CUD 작업)
 
-- 데이터베이스 타입을 서버 액션과 mutation에 사용
-- `api/` 폴더에 서버 액션 (create*, update*, delete\* 등)
+- `api/actions.ts`: Server Actions (create*, update*, delete* 등)
 - `lib/` 폴더에 스키마, 타입 등 (model은 lib 하위)
 - 데이터 변환 (데이터베이스 ↔ 뷰모델)
 - **중요**: features는 entities에서 읽기 작업 import 가능
@@ -100,7 +99,7 @@ project/
 
 ### Features 구조
 
-- `api/`: API 관련 (mutations, queries)
+- `api/actions.ts`: Server Actions (CUD 작업)
 - `lib/`: 비즈니스 로직 & Service Layer
 - `ui/`: Feature 전용 UI 컴포넌트
 - `index.ts`: feature 전체 export
@@ -109,7 +108,6 @@ project/
 
 - **API Layer**: 순수하게 서버 데이터만 조회/변경
 - **Service Layer**: 데이터 변환, 비즈니스 로직 처리
-- **Query Layer**: API + Service 조합, 캐싱
 - **UI Layer**: Feature 전용 컴포넌트
 
 ### Types 위치
@@ -172,25 +170,25 @@ project/
 - 명시적 타이핑 사용
 - 타입 안전한 라우팅 (ROUTES 상수 활용)
 
-## React Query 패턴
+## API 패턴 (Server Actions)
 
-### queryOptions 사용 (TanStack Query v5)
+### API 구조
 
-- 타입 안전한 쿼리 정의를 위한 헬퍼 함수
-- `queryOptions()`로 쿼리 옵션 객체 생성
-- 재사용 가능한 쿼리 설정
+- **entities/[entity]/api/**: 읽기 전용 Server Actions (GET)
+- **features/[entity]/api/actions.ts**: CUD Server Actions
+- **shared/api/**: 공통 API 클라이언트 및 설정
 
 ### 네이밍 규칙
 
-- Query: `userListQuery`, `userDetailQuery`
-- Mutation: `useCreateUserMutation`, `useUpdateUserMutation`
-- Query Keys: QUERY_KEYS 객체로 중앙 관리
+- GET Actions: `getUserList`, `getUserById`
+- CUD Actions: `createUser`, `updateUser`, `deleteUser`
+- 모든 Actions는 `'use server'` 지시어 사용
 
-### 데이터 조작 위치
+### 데이터 흐름
 
-- **API Layer**: 순수 서버 데이터 조회/변경
-- **Service Layer**: 서버 데이터 변환 및 비즈니스 로직 처리
-- **UI Layer**: 표시용 데이터만 사용
+- **Server Components**: entities API에서 직접 데이터 페칭
+- **Client Components**: features API의 Server Actions 호출
+- **revalidatePath**: CUD 작업 후 자동 페이지 새로고침
 
 ## shadcn/ui 사용 규칙
 
@@ -200,7 +198,7 @@ project/
 
 ### 사용 패턴
 
-- `@/components/ui/`에서 import
+- `@/shared/ui/`에서 import
 - `cn()` 함수로 className 조합
 
 ## 인증 & 권한
@@ -239,7 +237,7 @@ project/
 - **Package Manager**: pnpm
 - **Build Tool**: Turbopack
 - **UI**: shadcn/ui + Tailwind CSS
-- **State**: React hooks + server state
+- **State**: React hooks + Server Actions
 - **Language**: TypeScript
 
 ### Server Components First
