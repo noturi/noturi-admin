@@ -5,7 +5,7 @@ import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-heade
 import { Column, ColumnDef } from '@tanstack/react-table';
 
 import { Operator } from '@/entities/operator/model/types';
-import { CellAction } from '@/entities/user/ui/uesrs-tables/cell-action';
+import { CellAction } from './cell-action';
 import { can, AuthUser } from '@/shared/lib/permissions';
 
 const getRoleDisplay = (role: string) => {
@@ -27,21 +27,11 @@ const CellActionWrapper: React.FC<{ data: Operator; currentUser: AuthUser }> = (
   if (!currentUser) return null;
 
   const permissions = can(currentUser);
-  // Convert operator to user format for permission check
-  const userForPermCheck = {
-    ...data,
-    roles: [data.role],
-    name: data.name || '',
-    nickname: data.nickname || '',
-    isStatsPublic: data.isStatsPublic || false,
-    memoCount: 0,
-    categoryCount: 0,
-  };
-  const hasAnyPermission = permissions.deleteUser(userForPermCheck) || permissions.updateUser(userForPermCheck);
+  const hasAnyPermission = permissions.deleteOperator(data) || permissions.updateOperator(data);
 
   if (!hasAnyPermission) return null;
 
-  return <CellAction data={userForPermCheck} permissions={permissions} />;
+  return <CellAction data={data} />;
 };
 
 export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[] {
