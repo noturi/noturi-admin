@@ -2,12 +2,16 @@
 
 import { Button } from '@/shared/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu';
-import { User } from '@/entities/user/model/types';
+import { Operator } from '@/entities/operator/model/types';
 import { MoreHorizontal, Trash, Edit } from 'lucide-react';
-import { deleteUser } from '@/features/user/api';
+
+// TODO: Implement deleteOperator function
+const deleteOperator = (id: string) => {
+  console.log('TODO: Delete operator', id);
+};
 
 interface CellActionProps {
-  data: User;
+  data: Operator;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -24,7 +28,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <Edit className="mr-2 h-4 w-4" />
           수정
         </DropdownMenuItem>
-        <DropdownMenuItem className="text-red-600" onClick={() => deleteUser(data.id)}>
+        <DropdownMenuItem className="text-red-600" onClick={() => deleteOperator(data.id)}>
           <Trash className="mr-2 h-4 w-4" />
           삭제
         </DropdownMenuItem>
