@@ -7,7 +7,6 @@ import { User } from '@/entities/user/model/types';
 import { CellAction } from './cell-action';
 import { can, AuthUser } from '@/shared/lib/permissions';
 
-// Helper function to convert null to undefined for avatarUrl
 const normalizeUser = (user: Record<string, unknown>): User =>
   ({
     ...user,
@@ -22,7 +21,7 @@ const CellActionWrapper: React.FC<{ data: User; currentUser: AuthUser }> = ({ da
 
   if (!hasAnyPermission) return null;
 
-  return <CellAction data={data} permissions={permissions} />;
+  return <CellAction data={data} />;
 };
 
 export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
