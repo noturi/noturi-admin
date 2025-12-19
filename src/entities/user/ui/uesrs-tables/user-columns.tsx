@@ -39,6 +39,7 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
       },
       enableSorting: true,
       enableHiding: false,
+      enableColumnFilter: true,
       meta: {
         label: 'Email',
         variant: 'text',
@@ -54,8 +55,11 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
 
         return <div className="w-[100px] truncate">{name}</div>;
       },
+      enableColumnFilter: true,
       meta: {
         label: 'Name',
+        variant: 'text',
+        placeholder: '이름을 검색하세요.',
       },
     },
     {

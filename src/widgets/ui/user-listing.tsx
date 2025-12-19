@@ -18,6 +18,7 @@ export default async function UserListingPage({}: UserListingPage) {
 
   const page = cache.get('page');
   const email = cache.get('email');
+  const name = cache.get('name');
   const limit = cache.get('perPage');
   const createdAt = cache.get('createdAt');
 
@@ -25,6 +26,7 @@ export default async function UserListingPage({}: UserListingPage) {
     page,
     limit,
     ...(email && { email }),
+    ...(name && { name }),
     ...(createdAt && { createdAt }),
   };
 

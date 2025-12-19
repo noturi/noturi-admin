@@ -9,6 +9,7 @@ export enum PageType {
 const pageConfigs = {
   [PageType.USER]: {
     email: true,
+    name: true,
     createdAt: true,
   },
   [PageType.OPERATOR]: {
