@@ -34,4 +34,3 @@ export function CategoryTable({ data, pageCount }: CategoryTableParams) {
     </DataTable>
   );
 }
-

@@ -35,4 +35,3 @@ export default async function CategoryListingPage({}: CategoryListingPage) {
 
   return <CategoryTable data={categories} pageCount={pageCount} />;
 }
-

@@ -38,4 +38,3 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     </DropdownMenu>
   );
 };
-
