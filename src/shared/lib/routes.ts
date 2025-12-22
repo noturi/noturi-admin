@@ -6,7 +6,7 @@ export const ROUTES = {
   DASHBOARD: {
     HOME: '/dashboard',
     USER: '/dashboard/user',
-    CATEGORIES: '/dashboard/categories',
+    CATEGORY: '/dashboard/category',
     SETTINGS: '/dashboard/settings',
   },
 } as const;

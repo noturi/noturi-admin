@@ -17,36 +17,36 @@ import { useAuthStore, ROUTES } from '@/shared/lib';
 import { logoutAction } from '@/features/auth';
 import Link from 'next/link';
 
-const items = [
-  {
-    title: '대시보드',
-    url: ROUTES.DASHBOARD.HOME,
-    icon: BarChart3,
-  },
-  {
-    title: '사용자 관리',
-    url: ROUTES.DASHBOARD.USER,
-    icon: Users,
-  },
-  {
-    title: '운영자 관리',
-    url: '/dashboard/operator',
-    icon: UserCog,
-  },
-  {
-    title: '카테고리 관리',
-    url: ROUTES.DASHBOARD.CATEGORIES,
-    icon: FolderOpen,
-  },
-  {
-    title: '설정',
-    url: ROUTES.DASHBOARD.SETTINGS,
-    icon: Settings,
-  },
-];
-
 export function AppSidebar() {
   const { user } = useAuthStore();
+
+  const items = [
+    {
+      title: '대시보드',
+      url: ROUTES.DASHBOARD.HOME,
+      icon: BarChart3,
+    },
+    {
+      title: '사용자 관리',
+      url: ROUTES.DASHBOARD.USER,
+      icon: Users,
+    },
+    {
+      title: '운영자 관리',
+      url: '/dashboard/operator',
+      icon: UserCog,
+    },
+    {
+      title: '카테고리 관리',
+      url: ROUTES.DASHBOARD.CATEGORY,
+      icon: FolderOpen,
+    },
+    {
+      title: '설정',
+      url: ROUTES.DASHBOARD.SETTINGS,
+      icon: Settings,
+    },
+  ];
 
   return (
     <Sidebar>
@@ -63,16 +63,18 @@ export function AppSidebar() {
           <SidebarGroupLabel>메뉴</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items
+                .filter((item) => item.url)
+                .map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
