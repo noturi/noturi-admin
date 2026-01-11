@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, Settings, BarChart3, FolderOpen, LogOut, UserCog } from 'lucide-react';
+import { Users, Settings, BarChart3, FolderOpen, LogOut, UserCog, Bell } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -40,6 +40,11 @@ export function AppSidebar() {
       title: '카테고리 관리',
       url: ROUTES.DASHBOARD.CATEGORY,
       icon: FolderOpen,
+    },
+    {
+      title: '알림 관리',
+      url: ROUTES.DASHBOARD.NOTIFICATION,
+      icon: Bell,
     },
     {
       title: '설정',

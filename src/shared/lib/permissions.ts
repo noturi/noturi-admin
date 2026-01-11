@@ -20,6 +20,11 @@ export interface Permissions {
   createOperator: (operator?: Operator) => boolean;
   updateOperator: (operator?: Operator) => boolean;
   deleteOperator: (operator?: Operator) => boolean;
+
+  // Notification 관련 권한
+  viewNotification: (notification?: unknown) => boolean;
+  createNotification: (notification?: unknown) => boolean;
+  updateNotification: (notification?: unknown) => boolean;
 }
 
 const permissionsFactoryMap: Partial<Record<UserRole, (currentUser: AuthUser) => Permissions>> = {
@@ -35,6 +40,11 @@ const permissionsFactoryMap: Partial<Record<UserRole, (currentUser: AuthUser) =>
     createOperator: () => true,
     updateOperator: (targetOperator?: Operator) => !targetOperator || targetOperator.id !== currentUser.id,
     deleteOperator: (targetOperator?: Operator) => !targetOperator || targetOperator.id !== currentUser.id,
+
+    // Notification 권한
+    viewNotification: () => true,
+    createNotification: () => true,
+    updateNotification: () => true,
   }),
   ADMIN: (currentUser: AuthUser) => ({
     // User 권한
@@ -48,6 +58,11 @@ const permissionsFactoryMap: Partial<Record<UserRole, (currentUser: AuthUser) =>
     createOperator: () => false,
     updateOperator: (targetOperator?: Operator) => !targetOperator || targetOperator.id === currentUser.id,
     deleteOperator: () => false,
+
+    // Notification 권한
+    viewNotification: () => true,
+    createNotification: () => true,
+    updateNotification: () => true,
   }),
 };
 

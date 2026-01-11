@@ -4,6 +4,7 @@ export enum PageType {
   USER = 'user',
   OPERATOR = 'operator',
   CATEGORY = 'category',
+  NOTIFICATION = 'notification',
 }
 
 const pageConfigs = {
@@ -19,6 +20,11 @@ const pageConfigs = {
   },
   [PageType.CATEGORY]: {
     name: true,
+    createdAt: true,
+  },
+  [PageType.NOTIFICATION]: {
+    isActive: true,
+    isRepeat: true,
     createdAt: true,
   },
 };
