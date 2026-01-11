@@ -25,7 +25,7 @@ const CellActionWrapper: React.FC<{ data: User; currentUser: AuthUser }> = ({ da
 
   if (!hasAnyPermission) return null;
 
-  return <CellAction data={data} permissions={permissions} />;
+  return <CellAction data={data} />;
 };
 
 export const getColumns = (currentUser: AuthUser): ColumnDef<User>[] => [

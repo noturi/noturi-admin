@@ -3,6 +3,7 @@ import { ColumnSort, Row, RowData } from '@tanstack/react-table';
 import { FilterItemSchema } from './parsers';
 
 declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
     label?: string;
     placeholder?: string;

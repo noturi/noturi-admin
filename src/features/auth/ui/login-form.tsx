@@ -1,7 +1,6 @@
 'use client';
 
 import { useActionState, useEffect } from 'react';
-import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';

@@ -71,14 +71,3 @@ export const dataTableConfig = {
 };
 
 export type DataTableConfig = typeof dataTableConfig;
-
-export type FilterOperator = (typeof dataTableConfig.operators)[number];
-export type FilterVariant = (typeof dataTableConfig.filterVariants)[number];
-export type JoinOperator = (typeof dataTableConfig.joinOperators)[number];
-
-export interface ExtendedColumnFilter<TData = unknown> {
-  id: string;
-  value: string | number | boolean | Date | (string | number)[] | null;
-  operator: FilterOperator;
-  joinOperator?: JoinOperator;
-}

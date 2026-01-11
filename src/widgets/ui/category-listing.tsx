@@ -16,7 +16,6 @@ export default async function CategoryListingPage({}: CategoryListingPage) {
   // Get category-specific search params
   const { cache } = getSearchParams(PageType.CATEGORY);
 
-  const page = cache.get('page');
   const name = cache.get('name');
   const limit = cache.get('perPage');
   const createdAt = cache.get('createdAt');

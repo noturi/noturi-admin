@@ -5,7 +5,6 @@ import { DataTableToolbar } from '@/shared/ui/table/data-table-toolbar';
 
 import { useDataTable } from '@/shared/ui/table/use-data-table';
 
-import { ColumnDef } from '@tanstack/react-table';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { getCategoryColumns } from './category-tables/columns';
 import { Category } from '../model/types';
