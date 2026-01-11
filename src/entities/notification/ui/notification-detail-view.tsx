@@ -59,7 +59,9 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
             {notification.lastSentAt && (
               <div className="flex items-center gap-2">
                 <Send className="text-muted-foreground h-4 w-4" />
-                <span className="text-sm">마지막 발송: {new Date(notification.lastSentAt).toLocaleString('ko-KR')}</span>
+                <span className="text-sm">
+                  마지막 발송: {new Date(notification.lastSentAt).toLocaleString('ko-KR')}
+                </span>
               </div>
             )}
           </div>

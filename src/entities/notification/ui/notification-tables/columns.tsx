@@ -22,7 +22,10 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
         return (
           <div className="flex items-center gap-2">
             <Bell className="text-muted-foreground h-4 w-4" />
-            <Link href={`/dashboard/notification/${id}`} className="text-primary w-[200px] truncate font-medium hover:underline">
+            <Link
+              href={`/dashboard/notification/${id}`}
+              className="text-primary w-[200px] truncate font-medium hover:underline"
+            >
               {title}
             </Link>
           </div>
