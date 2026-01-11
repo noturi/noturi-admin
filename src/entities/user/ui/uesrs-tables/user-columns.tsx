@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 
 import { Column, ColumnDef } from '@tanstack/react-table';
@@ -32,10 +33,18 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
       header: ({ column }: { column: Column<User, unknown> }) => (
         <DataTableColumnHeader column={column} title="이메일" />
       ),
-      cell: ({ cell }) => {
+      cell: ({ cell, row }) => {
         const email = cell.getValue<string>();
+        const userId = row.original.id;
 
-        return <div className="w-[150px] truncate font-medium">{email}</div>;
+        return (
+          <Link
+            href={`/dashboard/user/${userId}`}
+            className="text-primary hover:underline w-[150px] truncate font-medium block"
+          >
+            {email}
+          </Link>
+        );
       },
       enableSorting: true,
       enableHiding: false,

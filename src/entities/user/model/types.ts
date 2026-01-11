@@ -23,6 +23,84 @@ export const UserSchema = z.object({
 export type User = z.infer<typeof UserSchema>;
 
 // =================================================================================
+// User Detail (with related data)
+// =================================================================================
+
+export const UserSettingsSchema = z.object({
+  theme: z.string(),
+  language: z.string(),
+  notification: z.boolean(),
+});
+
+export const CategoryFieldSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  createdAt: z.string(),
+});
+
+export const UserCategorySchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  color: z.string(),
+  sortOrder: z.number(),
+  fields: z.array(CategoryFieldSchema),
+  createdAt: z.string(),
+});
+
+export const MemoCustomFieldSchema = z.object({
+  fieldName: z.string(),
+  value: z.string(),
+});
+
+export const UserMemoSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  content: z.string().optional(),
+  rating: z.number().optional(),
+  experienceDate: z.string().optional(),
+  categoryName: z.string(),
+  customFields: z.array(MemoCustomFieldSchema).optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const CalendarMemoSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  isAllDay: z.boolean(),
+  hasNotification: z.boolean(),
+  notifyBefore: z.string().optional(),
+  notificationSent: z.boolean(),
+  createdAt: z.string(),
+});
+
+export const DeviceSchema = z.object({
+  id: z.string().uuid(),
+  expoPushToken: z.string(),
+  platform: z.string(),
+  isActive: z.boolean(),
+  createdAt: z.string(),
+  lastActiveAt: z.string(),
+});
+
+export const UserDetailSchema = UserSchema.omit({ memoCount: true, categoryCount: true }).extend({
+  settings: UserSettingsSchema.optional(),
+  categories: z.array(UserCategorySchema),
+  memos: z.array(UserMemoSchema),
+  calendarMemos: z.array(CalendarMemoSchema),
+  devices: z.array(DeviceSchema),
+});
+
+export type UserSettings = z.infer<typeof UserSettingsSchema>;
+export type UserCategory = z.infer<typeof UserCategorySchema>;
+export type UserMemo = z.infer<typeof UserMemoSchema>;
+export type CalendarMemo = z.infer<typeof CalendarMemoSchema>;
+export type Device = z.infer<typeof DeviceSchema>;
+export type UserDetail = z.infer<typeof UserDetailSchema>;
+
+// =================================================================================
 // API Payloads & Responses
 // =================================================================================
 
