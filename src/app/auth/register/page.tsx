@@ -1,10 +1,11 @@
 'use client';
 
+import { Suspense } from 'react';
 import { EmailStep, RoleStep, PasswordStep, type FunnelState, registerAction } from '@/features/auth';
 import { useFunnel } from '@/shared/lib';
 import { toast } from 'sonner';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [Funnel, funnelState, updateFunnelState, clearFunnelState] = useFunnel(['email', 'role', 'password'] as const, {
     initialStep: 'email',
     history: 'replace',
@@ -51,5 +52,13 @@ export default function RegisterPage() {
         />
       </Funnel.Step>
     </Funnel>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
+      <RegisterForm />
+    </Suspense>
   );
 }
