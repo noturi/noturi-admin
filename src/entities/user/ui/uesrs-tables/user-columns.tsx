@@ -40,7 +40,7 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
         return (
           <Link
             href={`/dashboard/user/${userId}`}
-            className="text-primary hover:underline w-[150px] truncate font-medium block"
+            className="text-primary block w-[150px] truncate font-medium hover:underline"
           >
             {email}
           </Link>

@@ -34,7 +34,13 @@ export function UserDetailView({ user }: UserDetailViewProps) {
         <CardHeader>
           <div className="flex items-center gap-4">
             {user.avatarUrl ? (
-              <Image src={user.avatarUrl} alt={user.name} width={64} height={64} className="h-16 w-16 rounded-full object-cover" />
+              <Image
+                src={user.avatarUrl}
+                alt={user.name}
+                width={64}
+                height={64}
+                className="h-16 w-16 rounded-full object-cover"
+              />
             ) : (
               <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-full">
                 <User className="text-muted-foreground h-8 w-8" />
@@ -126,7 +132,9 @@ export function UserDetailView({ user }: UserDetailViewProps) {
                     <Globe className="text-muted-foreground h-5 w-5" />
                     <div>
                       <p className="text-muted-foreground text-sm">언어</p>
-                      <p className="font-medium">{user.settings.language === 'ko' ? '한국어' : user.settings.language}</p>
+                      <p className="font-medium">
+                        {user.settings.language === 'ko' ? '한국어' : user.settings.language}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 rounded-lg border p-4">
