@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  useSidebar,
 } from '@/shared/ui/sidebar';
 import { useAuthStore, ROUTES } from '@/shared/lib';
 import { logoutAction } from '@/features/auth';
@@ -19,6 +20,13 @@ import Link from 'next/link';
 
 export function AppSidebar() {
   const { user } = useAuthStore();
+  const { setOpenMobile, isMobile } = useSidebar();
+
+  const handleMenuClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const items = [
     {
@@ -73,7 +81,7 @@ export function AppSidebar() {
                 .map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <Link href={item.url}>
+                      <Link href={item.url} onClick={handleMenuClick}>
                         <item.icon />
                         <span>{item.title}</span>
                       </Link>
