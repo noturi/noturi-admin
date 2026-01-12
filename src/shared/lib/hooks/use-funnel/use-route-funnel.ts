@@ -34,15 +34,17 @@ export function useRouteFunnel<T extends FunnelSteps>(
   };
 
   const FunnelContainer = useMemo(() => {
-    const Container = ({ children }: FunnelProps) => {
-      return React.createElement(React.Fragment, null, children);
-    };
-
     const Step = ({ name, children }: FunnelStepProps) => {
       return currentStep === name ? React.createElement(React.Fragment, null, children) : null;
     };
 
-    (Container as FunnelComponent).Step = Step;
+    const Container = Object.assign(
+      ({ children }: FunnelProps) => {
+        return React.createElement(React.Fragment, null, children);
+      },
+      { Step }
+    );
+
     return Container as FunnelComponent;
   }, [currentStep]);
 
