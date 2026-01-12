@@ -28,7 +28,7 @@ export function DataTableToolbar<TData>({ table, children, className, ...props }
     <div
       role="toolbar"
       aria-orientation="horizontal"
-      className={cn('flex w-full items-start justify-between gap-2 p-1', className)}
+      className={cn('flex w-full flex-col gap-3 p-1 sm:flex-row sm:items-start sm:justify-between sm:gap-2', className)}
       {...props}
     >
       <div className="flex flex-1 flex-wrap items-center gap-2">
@@ -41,7 +41,7 @@ export function DataTableToolbar<TData>({ table, children, className, ...props }
           </Button>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
         {children}
         <DataTableViewOptions table={table} />
       </div>

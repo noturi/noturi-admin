@@ -15,9 +15,7 @@ export default function PageContainer({
           <div className="flex flex-1 flex-col p-4 md:px-6">{children}</div>
         </ScrollArea>
       ) : (
-        <div className="flex h-[calc(100dvh-56px)] flex-1 flex-col overflow-auto p-4 md:h-auto md:px-6">
-          {children}
-        </div>
+        <div className="flex h-[calc(100dvh-56px)] flex-1 flex-col overflow-auto p-4 md:h-auto md:px-6">{children}</div>
       )}
     </>
   );

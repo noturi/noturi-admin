@@ -45,7 +45,7 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[]
       cell: ({ cell }) => {
         const email = cell.getValue<string>();
 
-        return <div className="w-[150px] truncate font-medium">{email}</div>;
+        return <div className="min-w-[150px] truncate font-medium">{email}</div>;
       },
       enableSorting: true,
       enableHiding: false,
@@ -62,7 +62,7 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[]
       cell: ({ cell }) => {
         const name = cell.getValue<string>();
 
-        return <div className="w-[100px] truncate">{name}</div>;
+        return <div className="min-w-[80px] truncate">{name}</div>;
       },
       enableSorting: true,
       meta: {
@@ -78,7 +78,7 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[]
       cell: ({ cell }) => {
         const nickname = cell.getValue<string>();
 
-        return <div className="w-[100px] truncate">{nickname}</div>;
+        return <div className="min-w-[80px] truncate">{nickname}</div>;
       },
       enableSorting: true,
       meta: {
@@ -121,7 +121,7 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[]
         const date = cell.getValue<string>();
         const formatted = new Date(date).toLocaleDateString('ko-KR');
 
-        return <div className="w-[100px]">{formatted}</div>;
+        return <div className="min-w-[100px]">{formatted}</div>;
       },
       enableSorting: true,
       meta: {

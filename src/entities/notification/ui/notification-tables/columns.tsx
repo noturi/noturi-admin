@@ -158,7 +158,14 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
       cell: ({ cell }) => {
         const date = cell.getValue<string | undefined>();
         if (!date) return <span className="text-muted-foreground">-</span>;
-        return <div className="w-[120px] text-sm">{new Date(date).toLocaleString('ko-KR')}</div>;
+        return (
+          <div className="min-w-[140px] text-sm">
+            {new Date(date).toLocaleDateString('ko-KR')}
+            <span className="text-muted-foreground ml-1 text-xs">
+              {new Date(date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          </div>
+        );
       },
       enableSorting: true,
       meta: {
@@ -173,7 +180,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
       ),
       cell: ({ cell }) => {
         const date = cell.getValue<string>();
-        return <div className="w-[100px]">{new Date(date).toLocaleDateString('ko-KR')}</div>;
+        return <div className="min-w-[100px]">{new Date(date).toLocaleDateString('ko-KR')}</div>;
       },
       enableSorting: true,
       meta: {

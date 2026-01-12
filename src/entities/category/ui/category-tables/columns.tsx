@@ -17,7 +17,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
       ),
       cell: ({ cell }) => {
         const name = cell.getValue<string>();
-        return <div className="w-[150px] truncate font-medium">{name}</div>;
+        return <div className="min-w-[120px] truncate font-medium">{name}</div>;
       },
       enableSorting: true,
       enableHiding: false,
@@ -106,7 +106,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
       cell: ({ cell }) => {
         const date = cell.getValue<string>();
         const formatted = new Date(date).toLocaleDateString('ko-KR');
-        return <div className="w-[100px]">{formatted}</div>;
+        return <div className="min-w-[100px]">{formatted}</div>;
       },
       enableSorting: true,
       meta: {

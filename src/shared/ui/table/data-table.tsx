@@ -14,8 +14,8 @@ export function DataTable<TData>({ table, actionBar, children }: DataTableProps<
   return (
     <div className="w-full space-y-4">
       {children}
-      <div className="rounded-lg border">
-        <Table>
+      <div className="overflow-x-auto rounded-lg border">
+        <Table className="min-w-[640px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
