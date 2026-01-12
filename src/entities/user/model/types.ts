@@ -122,6 +122,7 @@ export const UserQueryParamsSchema = z.object({
   limit: z.number().min(1).max(100).optional(),
   createdAt: z.string().optional(),
   sort: z.array(z.string()).optional(),
+  notification: z.boolean().optional(),
 });
 
 export type UserQueryParams = z.infer<typeof UserQueryParamsSchema>;
