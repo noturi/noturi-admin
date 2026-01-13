@@ -197,9 +197,7 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                     <FormControl>
                       <Input placeholder="https://apps.apple.com/app/id6752212896" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      알림 클릭 시 이동할 URL을 입력하세요. (예: 앱스토어 링크)
-                    </FormDescription>
+                    <FormDescription>알림 클릭 시 이동할 URL을 입력하세요. (예: 앱스토어 링크)</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
