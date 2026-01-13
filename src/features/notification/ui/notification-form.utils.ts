@@ -9,6 +9,7 @@ export const SCREEN_OPTIONS = [
   { value: 'Calendar', label: '캘린더' },
   { value: 'Category', label: '카테고리' },
   { value: 'Settings', label: '설정' },
+  { value: 'Custom', label: '커스텀 링크' },
 ] as const;
 
 /**
@@ -49,15 +50,16 @@ export function buildNotificationData(values: {
   repeatEndAt?: Date;
   targetUserIds: string[];
 }): CreateNotificationRequest {
+  const isCustomLink = values.screen === 'Custom';
   const parsedParams = parseJsonParams(values.params);
 
   return {
     title: values.title,
     body: values.body,
     data: {
-      screen: values.screen,
-      ...(parsedParams && { params: parsedParams }),
-      ...(values.linkUrl && { linkUrl: values.linkUrl }),
+      screen: isCustomLink ? '' : values.screen,
+      ...(!isCustomLink && parsedParams && { params: parsedParams }),
+      ...(isCustomLink && values.linkUrl && { linkUrl: values.linkUrl }),
     },
     targetUserIds: values.targetUserIds,
     scheduledAt: values.sendType === 'scheduled' ? values.scheduledAt?.toISOString() : undefined,
@@ -72,10 +74,11 @@ export function buildNotificationData(values: {
  * Notification에서 폼 defaultValues 생성
  */
 export function getFormDefaultValues(notification?: Notification) {
+  const hasLinkUrl = !!notification?.data.linkUrl;
   return {
     title: notification?.title || '',
     body: notification?.body || '',
-    screen: notification?.data.screen || '',
+    screen: hasLinkUrl ? 'Custom' : notification?.data.screen || '',
     params: notification?.data.params ? JSON.stringify(notification.data.params) : '',
     linkUrl: notification?.data.linkUrl || '',
     sendType: getSendType(notification),

@@ -52,7 +52,9 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
   });
 
   const sendType = form.watch('sendType');
+  const screen = form.watch('screen');
   const repeatDays = form.watch('repeatDays') || [];
+  const isCustomLink = screen === 'Custom';
 
   const toggleRepeatDay = (day: number) => {
     const current = form.getValues('repeatDays') || [];
@@ -169,36 +171,40 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="params"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>파라미터 (JSON)</FormLabel>
-                  <FormControl>
-                    <Input placeholder='{"id": "123"}' {...field} />
-                  </FormControl>
-                  <FormDescription>선택 사항. JSON 형식으로 입력하세요.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="linkUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>링크 URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="/memo/123" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    알림 클릭 시 이동할 직접 경로를 입력하세요. 앱에서 data.linkUrl로 접근 가능합니다.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {!isCustomLink && (
+              <FormField
+                control={form.control}
+                name="params"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>파라미터 (JSON)</FormLabel>
+                    <FormControl>
+                      <Input placeholder='{"id": "123"}' {...field} />
+                    </FormControl>
+                    <FormDescription>선택 사항. JSON 형식으로 입력하세요.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {isCustomLink && (
+              <FormField
+                control={form.control}
+                name="linkUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>링크 URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://apps.apple.com/app/id6752212896" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      알림 클릭 시 이동할 URL을 입력하세요. (예: 앱스토어 링크)
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </CardContent>
         </Card>
 
