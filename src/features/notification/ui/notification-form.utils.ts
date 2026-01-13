@@ -41,6 +41,7 @@ export function buildNotificationData(values: {
   body: string;
   screen: string;
   params?: string;
+  linkUrl?: string;
   sendType: SendType;
   scheduledAt?: Date;
   scheduledTime?: string;
@@ -56,6 +57,7 @@ export function buildNotificationData(values: {
     data: {
       screen: values.screen,
       ...(parsedParams && { params: parsedParams }),
+      ...(values.linkUrl && { linkUrl: values.linkUrl }),
     },
     targetUserIds: values.targetUserIds,
     scheduledAt: values.sendType === 'scheduled' ? values.scheduledAt?.toISOString() : undefined,
@@ -75,6 +77,7 @@ export function getFormDefaultValues(notification?: Notification) {
     body: notification?.body || '',
     screen: notification?.data.screen || '',
     params: notification?.data.params ? JSON.stringify(notification.data.params) : '',
+    linkUrl: notification?.data.linkUrl || '',
     sendType: getSendType(notification),
     scheduledAt: notification?.scheduledAt ? new Date(notification.scheduledAt) : undefined,
     scheduledTime: notification?.scheduledTime || '',

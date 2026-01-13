@@ -26,6 +26,7 @@ export type NotificationLog = z.infer<typeof NotificationLogSchema>;
 export const NotificationDataSchema = z.object({
   screen: z.string(),
   params: z.record(z.string(), z.unknown()).optional(),
+  linkUrl: z.string().optional(),
 });
 
 export type NotificationData = z.infer<typeof NotificationDataSchema>;

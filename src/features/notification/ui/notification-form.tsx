@@ -25,6 +25,7 @@ const formSchema = z.object({
   body: z.string().min(1, '내용을 입력하세요'),
   screen: z.string().min(1, '화면을 선택하세요'),
   params: z.string().optional(),
+  linkUrl: z.string().optional(),
   sendType: z.enum(['immediate', 'scheduled', 'repeat']),
   scheduledAt: z.date().optional(),
   scheduledTime: z.string().optional(),
@@ -178,6 +179,22 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                     <Input placeholder='{"id": "123"}' {...field} />
                   </FormControl>
                   <FormDescription>선택 사항. JSON 형식으로 입력하세요.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="linkUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>링크 URL</FormLabel>
+                  <FormControl>
+                    <Input placeholder="/memo/123" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    알림 클릭 시 이동할 직접 경로를 입력하세요. 앱에서 data.linkUrl로 접근 가능합니다.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
