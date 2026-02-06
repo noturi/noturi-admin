@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AuthUser } from '@/features/auth';
+import { AuthUser } from '@/shared/lib/model/auth';
 
 interface AuthState {
   token: string | null;

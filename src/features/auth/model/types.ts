@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { authUserSchema } from '@/shared/lib/model/auth';
+
+export { type AuthUser } from '@/shared/lib/model/auth';
 
 export const loginSchema = z.object({
   email: z.string().email({ message: '유효한 이메일을 입력해주세요' }),
@@ -38,15 +41,7 @@ export const registerSchema = z.object({
 
 export const authResponseSchema = z.object({
   accessToken: z.string(),
-  user: z.object({
-    id: z.string(),
-    email: z.string(),
-    roles: z.array(z.enum(['ADMIN', 'SUPER_ADMIN', 'USER'])),
-    name: z.string().optional(),
-    nickname: z.string().optional(),
-    avatarUrl: z.string().optional(),
-    isStatsPublic: z.boolean().optional(),
-  }),
+  user: authUserSchema,
 });
 
 export type RegisterEmailForm = z.infer<typeof registerEmailSchema>;
@@ -55,9 +50,6 @@ export type RegisterPasswordForm = z.infer<typeof registerPasswordSchema>;
 export type RegisterForm = z.infer<typeof registerSchema>;
 export type LoginForm = z.infer<typeof loginSchema>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
-
-// 인증된 사용자 타입
-export type AuthUser = AuthResponse['user'];
 
 // 퍼널 상태 타입
 export interface FunnelState {

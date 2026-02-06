@@ -1,12 +1,8 @@
 import { User } from '@/entities/user/model/types';
 import { Operator } from '@/entities/operator/model/types';
+import { type AuthUser, type UserRole } from './model/auth';
 
-export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'USER';
-
-export type AuthUser = {
-  id: string;
-  roles: UserRole[];
-};
+export type { AuthUser, UserRole };
 
 export interface Permissions {
   // User 관련 권한

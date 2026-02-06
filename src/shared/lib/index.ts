@@ -3,6 +3,7 @@ export { cn } from './utils/utils';
 export * from './hooks/use-mobile';
 export * from './hooks/use-funnel/use-funnel';
 
+export * from './model';
 export * from './routes';
 export * from './colors';
 export * from './messages';

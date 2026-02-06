@@ -1,7 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { AuthUser } from '@/features/auth';
+import { AuthUser } from '@/shared/lib/model/auth';
 
 export async function getAuthData() {
   const cookieStore = await cookies();
