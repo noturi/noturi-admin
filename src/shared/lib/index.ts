@@ -20,3 +20,4 @@ export * from './utils/utils';
 export * from './utils/analytics';
 export * from './permissions';
 export * from './utils/logger';
+export * from './utils/execute-action';

@@ -58,11 +58,30 @@ export class EnhancedFetch {
     }
 
     if (searchParams) {
-      const params =
-        searchParams instanceof URLSearchParams
-          ? searchParams
-          : new URLSearchParams(searchParams as Record<string, string>);
-      url += `?${params.toString()}`;
+      let params: URLSearchParams;
+
+      if (searchParams instanceof URLSearchParams) {
+        params = searchParams;
+      } else {
+        params = new URLSearchParams();
+        for (const [key, value] of Object.entries(searchParams)) {
+          if (value === undefined || value === null) continue;
+          if (Array.isArray(value)) {
+            for (const item of value) {
+              if (item !== undefined && item !== null) {
+                params.append(key, String(item));
+              }
+            }
+          } else {
+            params.append(key, String(value));
+          }
+        }
+      }
+
+      const paramString = params.toString();
+      if (paramString) {
+        url += `?${paramString}`;
+      }
     }
 
     return url;
