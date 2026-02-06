@@ -24,13 +24,13 @@ pnpm dlx shadcn@latest add [name]  # shadcn/ui 컴포넌트 추가
 
 의존성: `app → widgets → features → entities → shared` (역방향 금지)
 
-| 레이어 | 역할 | 핵심 규칙 |
-|--------|------|-----------|
-| `app/` | 순수 라우팅만 | 비즈니스 로직 금지, pages에서 컴포넌트 import |
-| `widgets/` | 복합 UI 블록 | features + entities 조합 |
-| `features/` | CUD 작업 | `api/actions.ts`에 Server Actions, types 정의 금지(entities에서 import) |
-| `entities/` | 읽기 전용 (GET) | `api/` + `model/types.ts` + `ui/`, 타입 중앙 관리 |
-| `shared/` | 공통 모듈 | `api/`, `ui/`, `lib/` (utils, hooks, model, config) |
+| 레이어      | 역할            | 핵심 규칙                                                               |
+| ----------- | --------------- | ----------------------------------------------------------------------- |
+| `app/`      | 순수 라우팅만   | 비즈니스 로직 금지, pages에서 컴포넌트 import                           |
+| `widgets/`  | 복합 UI 블록    | features + entities 조합                                                |
+| `features/` | CUD 작업        | `api/actions.ts`에 Server Actions, types 정의 금지(entities에서 import) |
+| `entities/` | 읽기 전용 (GET) | `api/` + `model/types.ts` + `ui/`, 타입 중앙 관리                       |
+| `shared/`   | 공통 모듈       | `api/`, `ui/`, `lib/` (utils, hooks, model, config)                     |
 
 ## 필수 규칙
 
@@ -50,6 +50,7 @@ Client Component → features/api/actions.ts (CUD) → revalidatePath → 자동
 ## 상세 규칙
 
 아키텍처, API, React/Next.js 패턴 상세는 `.claude/rules/` 참조:
+
 - @.claude/rules/fsd-architecture.md
 - @.claude/rules/api-patterns.md
 - @.claude/rules/react-nextjs-patterns.md
