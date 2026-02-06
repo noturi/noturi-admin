@@ -95,19 +95,19 @@ export function UserDetailView({ user }: UserDetailViewProps) {
           </TabsTrigger>
           <TabsTrigger value="categories" className="flex items-center gap-1">
             <FolderOpen className="h-4 w-4" />
-            카테고리 ({user.categories.length})
+            카테고리 ({user.categories?.length ?? 0})
           </TabsTrigger>
           <TabsTrigger value="memos" className="flex items-center gap-1">
             <FileText className="h-4 w-4" />
-            메모 ({user.memos.length})
+            메모 ({user.memos?.length ?? 0})
           </TabsTrigger>
           <TabsTrigger value="calendar" className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
-            캘린더 ({user.calendarMemos.length})
+            캘린더 ({user.calendarMemos?.length ?? 0})
           </TabsTrigger>
           <TabsTrigger value="devices" className="flex items-center gap-1">
             <Smartphone className="h-4 w-4" />
-            디바이스 ({user.devices.length})
+            디바이스 ({user.devices?.length ?? 0})
           </TabsTrigger>
         </TabsList>
 
@@ -162,7 +162,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
               <CardDescription>사용자가 생성한 카테고리 목록</CardDescription>
             </CardHeader>
             <CardContent>
-              {user.categories.length > 0 ? (
+              {user.categories && user.categories.length > 0 ? (
                 <ScrollArea className="h-[400px]">
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {user.categories.map((category) => (
@@ -205,7 +205,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
               <CardDescription>사용자가 작성한 메모 목록</CardDescription>
             </CardHeader>
             <CardContent>
-              {user.memos.length > 0 ? (
+              {user.memos && user.memos.length > 0 ? (
                 <ScrollArea className="h-[400px]">
                   <Table>
                     <TableHeader>
@@ -256,7 +256,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
               <CardDescription>일정 및 알림 설정</CardDescription>
             </CardHeader>
             <CardContent>
-              {user.calendarMemos.length > 0 ? (
+              {user.calendarMemos && user.calendarMemos.length > 0 ? (
                 <ScrollArea className="h-[400px]">
                   <Table>
                     <TableHeader>
@@ -309,7 +309,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
               <CardDescription>등록된 기기 및 푸시 알림 설정</CardDescription>
             </CardHeader>
             <CardContent>
-              {user.devices.length > 0 ? (
+              {user.devices && user.devices.length > 0 ? (
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {user.devices.map((device) => (
                     <div key={device.id} className="rounded-lg border p-4">

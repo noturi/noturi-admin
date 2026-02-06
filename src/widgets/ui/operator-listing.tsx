@@ -32,7 +32,6 @@ export default async function OperatorListingPage({}: OperatorListingPage) {
   };
 
   const response = await getOperatorList(filters);
-  console.log(response);
 
   const operators = response.data ?? [];
   const pageCount = response.totalPages ?? 1;

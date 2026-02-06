@@ -87,10 +87,10 @@ export const DeviceSchema = z.object({
 
 export const UserDetailSchema = UserSchema.omit({ memoCount: true, categoryCount: true }).extend({
   settings: UserSettingsSchema.optional(),
-  categories: z.array(UserCategorySchema),
-  memos: z.array(UserMemoSchema),
-  calendarMemos: z.array(CalendarMemoSchema),
-  devices: z.array(DeviceSchema),
+  categories: z.array(UserCategorySchema).optional(),
+  memos: z.array(UserMemoSchema).optional(),
+  calendarMemos: z.array(CalendarMemoSchema).optional(),
+  devices: z.array(DeviceSchema).optional(),
 });
 
 export type UserSettings = z.infer<typeof UserSettingsSchema>;

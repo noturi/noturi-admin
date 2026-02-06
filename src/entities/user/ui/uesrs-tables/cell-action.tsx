@@ -16,7 +16,7 @@ import {
 import { User } from '@/entities/user/model/types';
 import { MoreHorizontal, Trash, Edit } from 'lucide-react';
 import { deleteUser } from '@/features/user/api';
-import { toast } from 'sonner';
+import { executeAction } from '@/shared/lib';
 
 interface CellActionProps {
   data: User;
@@ -26,12 +26,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleDelete = async () => {
-    try {
-      await deleteUser(data.id);
-      toast.success('사용자가 삭제되었습니다.');
+    const result = await executeAction(() => deleteUser(data.id), {
+      successMessage: '사용자가 삭제되었습니다.',
+      errorMessage: '삭제에 실패했습니다.',
+    });
+    if (result !== undefined) {
       setDeleteDialogOpen(false);
-    } catch {
-      toast.error('삭제에 실패했습니다.');
     }
   };
 
