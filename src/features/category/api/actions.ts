@@ -27,3 +27,19 @@ export async function deleteCategory(id: string) {
   await serverApi.delete(`/categories/${id}`);
   revalidatePath('/dashboard/categories');
 }
+
+/**
+ * 카테고리 활성/비활성 토글
+ */
+export async function toggleCategoryActive(id: string) {
+  await serverApi.patch(`/categories/${id}/toggle-active`);
+  revalidatePath('/dashboard/categories');
+}
+
+/**
+ * 카테고리 정렬 순서 변경
+ */
+export async function reorderCategories(categories: { id: string; sortOrder: number }[]) {
+  await serverApi.patch('/categories/reorder', { json: { categories } });
+  revalidatePath('/dashboard/categories');
+}
