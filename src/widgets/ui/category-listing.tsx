@@ -1,5 +1,5 @@
 import { getCategoryList } from '@/entities/category/api/category-api';
-import { CategoryTable } from '@/entities/category/ui/category-listing';
+import { CategoryTable } from '@/widgets/ui/category-tables/category-table';
 import { auth } from '@/shared/lib/utils/auth.server';
 
 type CategoryListingPage = Record<string, never>;

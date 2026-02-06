@@ -6,7 +6,7 @@ import { Column, ColumnDef } from '@tanstack/react-table';
 
 import { User } from '@/entities/user/model/types';
 import { CellAction } from './cell-action';
-import { can, AuthUser } from '@/shared/lib/permissions';
+import { can, type AuthUser } from '@/shared/lib/permissions';
 
 const normalizeUser = (user: Record<string, unknown>): User =>
   ({

@@ -4,8 +4,8 @@ import { DataTable } from '@/shared/ui/table/data-table';
 import { DataTableToolbar } from '@/shared/ui/table/data-table-toolbar';
 import { useDataTable } from '@/shared/ui/table/use-data-table';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { getNotificationColumns } from './notification-tables/columns';
-import { Notification } from '../model/types';
+import { getNotificationColumns } from './columns';
+import { Notification } from '@/entities/notification/model/types';
 
 interface NotificationTableParams {
   data: Notification[];

@@ -1,5 +1,5 @@
 import { getNotificationList } from '@/entities/notification/api/notification-api';
-import { NotificationTable } from '@/entities/notification/ui/notification-listing';
+import { NotificationTable } from '@/widgets/ui/notification-tables/notification-table';
 import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 import { auth } from '@/shared/lib/utils/auth.server';
 

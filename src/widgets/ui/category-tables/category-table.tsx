@@ -9,8 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Sortable, SortableHandle, arrayMove } from '@/shared/ui/sortable';
 import { reorderCategories } from '@/features/category/api';
 import { executeAction } from '@/shared/lib';
-import { Category } from '../model/types';
-import { CellAction } from './category-tables/cell-action';
+import { Category } from '@/entities/category/model/types';
+import { CellAction } from './cell-action';
 
 interface CategoryTableParams {
   data: Category[];
@@ -94,21 +94,21 @@ export function CategoryTable({ data }: CategoryTableParams) {
 
   return (
     <div className="w-full space-y-4">
-      <div className="overflow-x-auto rounded-lg border">
-        <Table className="min-w-[640px]">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-10" />
-              <TableHead>카테고리명</TableHead>
-              <TableHead>색상</TableHead>
-              <TableHead>설명</TableHead>
-              <TableHead>정렬 순서</TableHead>
-              <TableHead>상태</TableHead>
-              <TableHead>등록일</TableHead>
-              <TableHead />
-            </TableRow>
-          </TableHeader>
-          <Sortable items={itemIds} onDragEnd={handleDragEnd}>
+      <Sortable items={itemIds} onDragEnd={handleDragEnd}>
+        <div className="overflow-x-auto rounded-lg border">
+          <Table className="min-w-[640px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-10" />
+                <TableHead>카테고리명</TableHead>
+                <TableHead>색상</TableHead>
+                <TableHead>설명</TableHead>
+                <TableHead>정렬 순서</TableHead>
+                <TableHead>상태</TableHead>
+                <TableHead>등록일</TableHead>
+                <TableHead />
+              </TableRow>
+            </TableHeader>
             <TableBody>
               {categories.length ? (
                 categories.map((category) => <SortableRow key={category.id} category={category} />)
@@ -120,9 +120,9 @@ export function CategoryTable({ data }: CategoryTableParams) {
                 </TableRow>
               )}
             </TableBody>
-          </Sortable>
-        </Table>
-      </div>
+          </Table>
+        </div>
+      </Sortable>
     </div>
   );
 }

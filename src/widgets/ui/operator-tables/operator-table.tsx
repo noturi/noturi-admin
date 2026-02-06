@@ -6,19 +6,20 @@ import { DataTableToolbar } from '@/shared/ui/table/data-table-toolbar';
 import { useDataTable } from '@/shared/ui/table/use-data-table';
 
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { getUserColumns } from '@/entities/user/ui/uesrs-tables/user-columns';
-import { AuthUser } from '@/shared/lib/permissions';
-import { User } from '../model/types';
+import { getOperatorColumns } from './columns';
+import { type AuthUser } from '@/shared/lib/permissions';
+import { Operator } from '@/entities/operator/model/types';
 
-interface UserTableParams {
-  data: User[];
+interface OperatorTableParams {
+  data: Operator[];
   pageCount: number;
   currentUser: AuthUser;
 }
-export function UserTable({ data, pageCount, currentUser }: UserTableParams) {
+
+export function OperatorTable({ data, pageCount, currentUser }: OperatorTableParams) {
   useQueryState('perPage', parseAsInteger.withDefault(10));
 
-  const columns = getUserColumns(currentUser);
+  const columns = getOperatorColumns(currentUser);
 
   const { table } = useDataTable({
     data,

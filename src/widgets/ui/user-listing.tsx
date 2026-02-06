@@ -1,5 +1,5 @@
 import { getUserList } from '@/entities/user/api/user-api';
-import { UserTable } from '@/entities/user/ui/user-listing';
+import { UserTable } from '@/widgets/ui/user-tables/user-table';
 import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 import { auth } from '@/shared/lib/utils/auth.server';
 
