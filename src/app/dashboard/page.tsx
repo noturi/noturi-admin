@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Users, FolderOpen, Activity } from 'lucide-react';
+import { Users, FileText, Activity } from 'lucide-react';
 import { getDashboardStatistics, getDashboardActivities } from '@/entities/dashboard';
 
 export default async function DashboardPage() {
@@ -13,10 +13,10 @@ export default async function DashboardPage() {
       icon: Users,
     },
     {
-      title: '총 카테고리',
-      value: statistics.totalCategories.toLocaleString(),
-      description: '활성 카테고리',
-      icon: FolderOpen,
+      title: '총 메모',
+      value: statistics.totalMemos.toLocaleString(),
+      description: '전체 메모 수',
+      icon: FileText,
     },
     {
       title: '활성 사용자',

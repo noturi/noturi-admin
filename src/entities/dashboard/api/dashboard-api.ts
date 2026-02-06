@@ -2,7 +2,7 @@ import { serverApi } from '@/shared/api/server-api';
 
 export interface DashboardStatistics {
   totalUsers: number;
-  totalCategories: number;
+  totalMemos: number;
   activeUsers: number;
   userGrowthRate: number;
 }
