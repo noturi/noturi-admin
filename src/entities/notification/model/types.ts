@@ -43,6 +43,7 @@ export const NotificationSchema = z.object({
   isRepeat: z.boolean(),
   repeatDays: z.array(z.number()).optional(), // [1,2,3,4,5] = 월~금
   repeatEndAt: z.string().optional(),
+  skipHolidays: z.boolean().optional(),
   isActive: z.boolean(),
   lastSentAt: z.string().optional(),
   createdBy: z.string(),
@@ -76,6 +77,7 @@ export type CreateNotificationRequest = {
   isRepeat: boolean;
   repeatDays?: number[];
   repeatEndAt?: string;
+  skipHolidays?: boolean;
 };
 
 export type UpdateNotificationRequest = Partial<CreateNotificationRequest> & {

@@ -124,6 +124,16 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
                   </div>
                 )}
 
+                {/* 공휴일 제외 */}
+                {notification.isRepeat && (
+                  <div className="rounded-lg border p-4">
+                    <p className="text-muted-foreground text-sm">공휴일 제외</p>
+                    <p className="mt-1 font-medium">
+                      {notification.skipHolidays ? '예 (공휴일에는 발송하지 않음)' : '아니오'}
+                    </p>
+                  </div>
+                )}
+
                 {/* 반복 종료일 */}
                 {notification.repeatEndAt && (
                   <div className="rounded-lg border p-4">

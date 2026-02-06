@@ -17,7 +17,9 @@ import { DatePickerField } from './date-picker-field';
 import { getFormDefaultValues, buildNotificationData, SCREEN_OPTIONS, type SendType } from './notification-form.utils';
 import type { Notification } from '@/entities/notification/model/types';
 import { REPEAT_DAYS_MAP } from '@/entities/notification/model/types';
+import { Checkbox } from '@/shared/ui/checkbox';
 import { Loader2 } from 'lucide-react';
+import { executeAction } from '@/shared/lib';
 import { toast } from 'sonner';
 
 const formSchema = z.object({
@@ -31,6 +33,7 @@ const formSchema = z.object({
   scheduledTime: z.string().optional(),
   repeatDays: z.array(z.number()).optional(),
   repeatEndAt: z.date().optional(),
+  skipHolidays: z.boolean().optional(),
   isActive: z.boolean(),
   targetUserIds: z.array(z.string()).min(1, '최소 1명 이상의 사용자를 선택해야 합니다'),
 });
@@ -70,35 +73,38 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    try {
-      // JSON 파라미터 검증
-      if (values.params) {
-        try {
-          JSON.parse(values.params);
-        } catch {
-          toast.error('파라미터 JSON 형식이 올바르지 않습니다.');
-          setIsSubmitting(false);
-          return;
-        }
+
+    // JSON 파라미터 검증
+    if (values.params) {
+      try {
+        JSON.parse(values.params);
+      } catch {
+        toast.error('파라미터 JSON 형식이 올바르지 않습니다.');
+        setIsSubmitting(false);
+        return;
       }
-
-      const data = buildNotificationData(values);
-
-      if (mode === 'create') {
-        await createNotification(data);
-        toast.success('알림이 생성되었습니다.');
-      } else if (notification) {
-        await updateNotification(notification.id, { ...data, isActive: values.isActive });
-        toast.success('알림이 수정되었습니다.');
-      }
-
-      router.push('/dashboard/notification');
-    } catch (error) {
-      console.error('Failed to save notification:', error);
-      toast.error('저장에 실패했습니다.');
-    } finally {
-      setIsSubmitting(false);
     }
+
+    const data = buildNotificationData(values);
+
+    const action =
+      mode === 'create'
+        ? () => createNotification(data)
+        : notification
+          ? () => updateNotification(notification.id, { ...data, isActive: values.isActive })
+          : null;
+
+    if (!action) return;
+
+    const result = await executeAction(action, {
+      successMessage: mode === 'create' ? '알림이 생성되었습니다.' : '알림이 수정되었습니다.',
+      errorMessage: '저장에 실패했습니다.',
+    });
+
+    if (result !== undefined) {
+      router.push('/dashboard/notification');
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -326,6 +332,21 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                         />
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="skipHolidays"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-2 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>공휴일 제외</FormLabel>
+                        <FormDescription>선택한 요일이 한국 공휴일인 경우 발송하지 않습니다.</FormDescription>
+                      </div>
                     </FormItem>
                   )}
                 />

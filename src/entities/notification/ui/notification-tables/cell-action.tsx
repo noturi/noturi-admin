@@ -23,6 +23,7 @@ import {
 import { Notification } from '@/entities/notification/model/types';
 import { MoreHorizontal, Eye, Edit, Power, PowerOff, Send, Trash } from 'lucide-react';
 import { updateNotification, deleteNotification, sendNotification } from '@/features/notification/api';
+import { executeAction } from '@/shared/lib';
 import { toast } from 'sonner';
 
 interface CellActionProps {
@@ -35,26 +36,32 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
 
   const handleToggleActive = async () => {
-    await updateNotification(data.id, { isActive: !data.isActive });
-    toast.success(data.isActive ? '알림이 비활성화되었습니다.' : '알림이 활성화되었습니다.');
+    await executeAction(() => updateNotification(data.id, { isActive: !data.isActive }), {
+      successMessage: data.isActive ? '알림이 비활성화되었습니다.' : '알림이 활성화되었습니다.',
+      errorMessage: '상태 변경에 실패했습니다.',
+    });
   };
 
   const handleDelete = async () => {
-    await deleteNotification(data.id);
-    toast.success('알림이 삭제되었습니다.');
-    setDeleteDialogOpen(false);
+    const result = await executeAction(() => deleteNotification(data.id), {
+      successMessage: '알림이 삭제되었습니다.',
+      errorMessage: '삭제에 실패했습니다.',
+    });
+    if (result !== undefined) {
+      setDeleteDialogOpen(false);
+    }
   };
 
   const handleSend = async () => {
-    try {
-      const result = await sendNotification(data.id);
+    const result = await executeAction(() => sendNotification(data.id), {
+      errorMessage: '발송에 실패했습니다.',
+    });
+    if (result) {
       if (result.success) {
         toast.success(`${result.message} (성공: ${result.successCount}, 실패: ${result.failCount})`);
       } else {
         toast.error(result.message);
       }
-    } catch {
-      toast.error('발송에 실패했습니다.');
     }
     setSendDialogOpen(false);
   };

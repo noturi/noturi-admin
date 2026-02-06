@@ -48,6 +48,7 @@ export function buildNotificationData(values: {
   scheduledTime?: string;
   repeatDays?: number[];
   repeatEndAt?: Date;
+  skipHolidays?: boolean;
   targetUserIds: string[];
 }): CreateNotificationRequest {
   const isCustomLink = values.screen === 'Custom';
@@ -67,6 +68,7 @@ export function buildNotificationData(values: {
     isRepeat: values.sendType === 'repeat',
     repeatDays: values.sendType === 'repeat' ? values.repeatDays : undefined,
     repeatEndAt: values.sendType === 'repeat' ? values.repeatEndAt?.toISOString() : undefined,
+    skipHolidays: values.sendType === 'repeat' ? values.skipHolidays : undefined,
   };
 }
 
@@ -86,6 +88,7 @@ export function getFormDefaultValues(notification?: Notification) {
     scheduledTime: notification?.scheduledTime || '',
     repeatDays: notification?.repeatDays || [],
     repeatEndAt: notification?.repeatEndAt ? new Date(notification.repeatEndAt) : undefined,
+    skipHolidays: notification?.skipHolidays ?? false,
     isActive: notification?.isActive ?? true,
     targetUserIds: notification?.targetUserIds || [],
   };
