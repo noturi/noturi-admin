@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Users, FileText, Activity } from 'lucide-react';
+import { Users, FileText, Activity, CalendarCheck } from 'lucide-react';
 import { getDashboardStatistics, getDashboardActivities } from '@/entities/dashboard';
 
 export default async function DashboardPage() {
@@ -13,16 +13,22 @@ export default async function DashboardPage() {
       icon: Users,
     },
     {
-      title: '총 메모',
-      value: statistics.totalMemos.toLocaleString(),
-      description: '전체 메모 수',
-      icon: FileText,
-    },
-    {
       title: '활성 사용자',
       value: statistics.activeUsers.toLocaleString(),
       description: '이번 달',
       icon: Activity,
+    },
+    {
+      title: '주간 메모 사용자',
+      value: statistics.weeklyMemoUsers.toLocaleString(),
+      description: '이번 주 메모 작성',
+      icon: FileText,
+    },
+    {
+      title: '주간 투두 사용자',
+      value: statistics.weeklyTodoUsers.toLocaleString(),
+      description: '이번 주 투두 작성',
+      icon: CalendarCheck,
     },
   ];
   return (
@@ -31,7 +37,7 @@ export default async function DashboardPage() {
         <h1 className="text-3xl font-bold tracking-tight">대시보드</h1>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
