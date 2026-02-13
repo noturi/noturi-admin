@@ -56,19 +56,19 @@ export function UserDetailView({ user }: UserDetailViewProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="flex items-center gap-2">
-              <Mail className="text-muted-foreground h-4 w-4" />
-              <span className="text-sm">{user.email}</span>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <Mail className="text-muted-foreground h-4 w-4 shrink-0" />
+              <span className="truncate text-sm">{user.email}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Calendar className="text-muted-foreground h-4 w-4" />
+              <Calendar className="text-muted-foreground h-4 w-4 shrink-0" />
               <span className="text-sm">가입일: {new Date(user.createdAt).toLocaleDateString('ko-KR')}</span>
             </div>
             {user.providers && user.providers.length > 0 && (
               <div className="flex items-center gap-2">
-                <Globe className="text-muted-foreground h-4 w-4" />
-                <div className="flex gap-1">
+                <Globe className="text-muted-foreground h-4 w-4 shrink-0" />
+                <div className="flex flex-wrap gap-1">
                   {user.providers.map((provider) => (
                     <Badge key={provider} variant="outline" className="text-xs">
                       {provider}
@@ -88,26 +88,30 @@ export function UserDetailView({ user }: UserDetailViewProps) {
 
       {/* Tabs for detailed info */}
       <Tabs defaultValue="settings" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="settings" className="flex items-center gap-1">
+        <TabsList className="flex h-auto w-full flex-wrap gap-1 md:grid md:grid-cols-5">
+          <TabsTrigger value="settings" className="flex items-center gap-1 text-xs sm:text-sm">
             <Settings className="h-4 w-4" />
-            설정
+            <span className="hidden sm:inline">설정</span>
           </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-1">
+          <TabsTrigger value="categories" className="flex items-center gap-1 text-xs sm:text-sm">
             <FolderOpen className="h-4 w-4" />
-            카테고리 ({user.categories?.length ?? 0})
+            <span className="hidden sm:inline">카테고리</span>
+            <span className="tabular-nums">({user.categories?.length ?? 0})</span>
           </TabsTrigger>
-          <TabsTrigger value="memos" className="flex items-center gap-1">
+          <TabsTrigger value="memos" className="flex items-center gap-1 text-xs sm:text-sm">
             <FileText className="h-4 w-4" />
-            메모 ({user.memos?.length ?? 0})
+            <span className="hidden sm:inline">메모</span>
+            <span className="tabular-nums">({user.memos?.length ?? 0})</span>
           </TabsTrigger>
-          <TabsTrigger value="calendar" className="flex items-center gap-1">
+          <TabsTrigger value="calendar" className="flex items-center gap-1 text-xs sm:text-sm">
             <Calendar className="h-4 w-4" />
-            캘린더 ({user.calendarMemos?.length ?? 0})
+            <span className="hidden sm:inline">캘린더</span>
+            <span className="tabular-nums">({user.calendarMemos?.length ?? 0})</span>
           </TabsTrigger>
-          <TabsTrigger value="devices" className="flex items-center gap-1">
+          <TabsTrigger value="devices" className="flex items-center gap-1 text-xs sm:text-sm">
             <Smartphone className="h-4 w-4" />
-            디바이스 ({user.devices?.length ?? 0})
+            <span className="hidden sm:inline">디바이스</span>
+            <span className="tabular-nums">({user.devices?.length ?? 0})</span>
           </TabsTrigger>
         </TabsList>
 
@@ -207,39 +211,43 @@ export function UserDetailView({ user }: UserDetailViewProps) {
             <CardContent>
               {user.memos && user.memos.length > 0 ? (
                 <ScrollArea className="h-[400px]">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>제목</TableHead>
-                        <TableHead>카테고리</TableHead>
-                        <TableHead>평점</TableHead>
-                        <TableHead>경험일</TableHead>
-                        <TableHead>작성일</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {user.memos.map((memo) => (
-                        <TableRow key={memo.id}>
-                          <TableCell className="font-medium">{memo.title}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline">{memo.categoryName}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            {memo.rating !== undefined && (
-                              <div className="flex items-center gap-1">
-                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                <span>{memo.rating}</span>
-                              </div>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {memo.experienceDate && new Date(memo.experienceDate).toLocaleDateString('ko-KR')}
-                          </TableCell>
-                          <TableCell>{new Date(memo.createdAt).toLocaleDateString('ko-KR')}</TableCell>
+                  <div className="min-w-[600px]">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>제목</TableHead>
+                          <TableHead>카테고리</TableHead>
+                          <TableHead>평점</TableHead>
+                          <TableHead>경험일</TableHead>
+                          <TableHead>작성일</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {user.memos.map((memo) => (
+                          <TableRow key={memo.id}>
+                            <TableCell className="font-medium">{memo.title}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">{memo.categoryName}</Badge>
+                            </TableCell>
+                            <TableCell>
+                              {memo.rating !== undefined && (
+                                <div className="flex items-center gap-1">
+                                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                  <span>{memo.rating}</span>
+                                </div>
+                              )}
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap">
+                              {memo.experienceDate && new Date(memo.experienceDate).toLocaleDateString('ko-KR')}
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap">
+                              {new Date(memo.createdAt).toLocaleDateString('ko-KR')}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </ScrollArea>
               ) : (
                 <p className="text-muted-foreground">메모가 없습니다.</p>
@@ -258,41 +266,47 @@ export function UserDetailView({ user }: UserDetailViewProps) {
             <CardContent>
               {user.calendarMemos && user.calendarMemos.length > 0 ? (
                 <ScrollArea className="h-[400px]">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>제목</TableHead>
-                        <TableHead>시작일</TableHead>
-                        <TableHead>종료일</TableHead>
-                        <TableHead>종일</TableHead>
-                        <TableHead>알림</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {user.calendarMemos.map((memo) => (
-                        <TableRow key={memo.id}>
-                          <TableCell className="font-medium">{memo.title}</TableCell>
-                          <TableCell>{new Date(memo.startDate).toLocaleString('ko-KR')}</TableCell>
-                          <TableCell>{new Date(memo.endDate).toLocaleString('ko-KR')}</TableCell>
-                          <TableCell>
-                            <Badge variant={memo.isAllDay ? 'default' : 'outline'}>
-                              {memo.isAllDay ? '종일' : '시간 지정'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {memo.hasNotification ? (
-                              <div className="flex items-center gap-1">
-                                <Bell className="h-4 w-4 text-blue-500" />
-                                <span className="text-xs">{formatNotifyBefore(memo.notifyBefore)}</span>
-                              </div>
-                            ) : (
-                              <span className="text-muted-foreground">-</span>
-                            )}
-                          </TableCell>
+                  <div className="min-w-[600px]">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>제목</TableHead>
+                          <TableHead>시작일</TableHead>
+                          <TableHead>종료일</TableHead>
+                          <TableHead>종일</TableHead>
+                          <TableHead>알림</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {user.calendarMemos.map((memo) => (
+                          <TableRow key={memo.id}>
+                            <TableCell className="font-medium">{memo.title}</TableCell>
+                            <TableCell className="whitespace-nowrap">
+                              {new Date(memo.startDate).toLocaleString('ko-KR')}
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap">
+                              {new Date(memo.endDate).toLocaleString('ko-KR')}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={memo.isAllDay ? 'default' : 'outline'}>
+                                {memo.isAllDay ? '종일' : '시간 지정'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {memo.hasNotification ? (
+                                <div className="flex items-center gap-1">
+                                  <Bell className="h-4 w-4 text-blue-500" />
+                                  <span className="text-xs">{formatNotifyBefore(memo.notifyBefore)}</span>
+                                </div>
+                              ) : (
+                                <span className="text-muted-foreground">-</span>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </ScrollArea>
               ) : (
                 <p className="text-muted-foreground">캘린더 메모가 없습니다.</p>
@@ -324,9 +338,9 @@ export function UserDetailView({ user }: UserDetailViewProps) {
                       </div>
                       <Separator className="my-3" />
                       <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">푸시 토큰</span>
-                          <span className="max-w-[200px] truncate font-mono text-xs">{device.expoPushToken}</span>
+                        <div className="flex justify-between gap-2">
+                          <span className="text-muted-foreground shrink-0">푸시 토큰</span>
+                          <span className="min-w-0 truncate font-mono text-xs">{device.expoPushToken}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">등록일</span>
