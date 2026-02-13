@@ -88,29 +88,29 @@ export function UserDetailView({ user }: UserDetailViewProps) {
 
       {/* Tabs for detailed info */}
       <Tabs defaultValue="settings" className="w-full">
-        <TabsList className="flex h-auto w-full flex-wrap gap-1 md:grid md:grid-cols-5">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="settings" className="flex items-center gap-1 text-xs sm:text-sm">
-            <Settings className="h-4 w-4" />
+            <Settings className="h-4 w-4 shrink-0" />
             <span className="hidden sm:inline">설정</span>
           </TabsTrigger>
           <TabsTrigger value="categories" className="flex items-center gap-1 text-xs sm:text-sm">
-            <FolderOpen className="h-4 w-4" />
-            <span className="hidden sm:inline">카테고리</span>
+            <FolderOpen className="h-4 w-4 shrink-0" />
+            <span className="hidden truncate sm:inline">카테고리</span>
             <span className="tabular-nums">({user.categories?.length ?? 0})</span>
           </TabsTrigger>
           <TabsTrigger value="memos" className="flex items-center gap-1 text-xs sm:text-sm">
-            <FileText className="h-4 w-4" />
+            <FileText className="h-4 w-4 shrink-0" />
             <span className="hidden sm:inline">메모</span>
             <span className="tabular-nums">({user.memos?.length ?? 0})</span>
           </TabsTrigger>
           <TabsTrigger value="calendar" className="flex items-center gap-1 text-xs sm:text-sm">
-            <Calendar className="h-4 w-4" />
-            <span className="hidden sm:inline">캘린더</span>
+            <Calendar className="h-4 w-4 shrink-0" />
+            <span className="hidden truncate sm:inline">캘린더</span>
             <span className="tabular-nums">({user.calendarMemos?.length ?? 0})</span>
           </TabsTrigger>
           <TabsTrigger value="devices" className="flex items-center gap-1 text-xs sm:text-sm">
-            <Smartphone className="h-4 w-4" />
-            <span className="hidden sm:inline">디바이스</span>
+            <Smartphone className="h-4 w-4 shrink-0" />
+            <span className="hidden truncate sm:inline">디바이스</span>
             <span className="tabular-nums">({user.devices?.length ?? 0})</span>
           </TabsTrigger>
         </TabsList>
