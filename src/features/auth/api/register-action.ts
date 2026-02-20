@@ -21,7 +21,6 @@ export async function registerAction(data: RegisterData) {
   }
 
   try {
-    console.log(validation.data);
     await register(validation.data);
   } catch (error) {
     return { error: HttpError.getErrorMessage(error) };
