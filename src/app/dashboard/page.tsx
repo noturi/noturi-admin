@@ -72,6 +72,7 @@ export default async function DashboardPage() {
                       day: 'numeric',
                       hour: '2-digit',
                       minute: '2-digit',
+                      hour12: false,
                     })}
                   </div>
                 </div>
