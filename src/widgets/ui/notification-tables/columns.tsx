@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Badge } from '@/shared/ui/badge';
 import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 import { Column, ColumnDef } from '@tanstack/react-table';
-import { Notification, formatRepeatDays } from '@/entities/notification/model/types';
+import { Notification, formatRepeatSchedule } from '@/entities/notification/model/types';
 import { CellAction } from './cell-action';
 import { Bell, Clock, Repeat } from 'lucide-react';
 
@@ -110,7 +110,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
       ),
       cell: ({ row }) => {
         const isRepeat = row.original.isRepeat;
-        const repeatDays = row.original.repeatDays;
+        const { repeatType, repeatDays, sendOnLastDay } = row.original;
 
         if (!isRepeat) {
           return <Badge variant="outline">1회</Badge>;
@@ -119,7 +119,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
         return (
           <div className="flex items-center gap-1">
             <Repeat className="h-3 w-3 text-blue-500" />
-            <Badge variant="secondary">{formatRepeatDays(repeatDays)}</Badge>
+            <Badge variant="secondary">{formatRepeatSchedule(repeatType, repeatDays, sendOnLastDay)}</Badge>
           </div>
         );
       },

@@ -11,32 +11,51 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/sha
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Badge } from '@/shared/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/tabs';
 import { createNotification, updateNotification } from '@/features/notification/api';
 import { UserSelectField } from './user-select-field';
 import { DatePickerField } from './date-picker-field';
+import { MonthDaysGrid } from './month-days-grid';
 import { getFormDefaultValues, buildNotificationData, SCREEN_OPTIONS, type SendType } from './notification-form.utils';
-import type { Notification } from '@/entities/notification/model/types';
+import type { Notification, RepeatType } from '@/entities/notification/model/types';
 import { REPEAT_DAYS_MAP } from '@/entities/notification/model/types';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Loader2 } from 'lucide-react';
 import { executeAction } from '@/shared/lib';
 import { toast } from 'sonner';
 
-const formSchema = z.object({
-  title: z.string().min(1, '제목을 입력하세요'),
-  body: z.string().min(1, '내용을 입력하세요'),
-  screen: z.string().min(1, '화면을 선택하세요'),
-  params: z.string().optional(),
-  linkUrl: z.string().optional(),
-  sendType: z.enum(['immediate', 'scheduled', 'repeat']),
-  scheduledAt: z.date().optional(),
-  scheduledTime: z.string().optional(),
-  repeatDays: z.array(z.number()).optional(),
-  repeatEndAt: z.date().optional(),
-  skipHolidays: z.boolean().optional(),
-  isActive: z.boolean(),
-  targetUserIds: z.array(z.string()).min(1, '최소 1명 이상의 사용자를 선택해야 합니다'),
-});
+const formSchema = z
+  .object({
+    title: z.string().min(1, '제목을 입력하세요'),
+    body: z.string().min(1, '내용을 입력하세요'),
+    screen: z.string().min(1, '화면을 선택하세요'),
+    params: z.string().optional(),
+    linkUrl: z.string().optional(),
+    sendType: z.enum(['immediate', 'scheduled', 'repeat']),
+    scheduledAt: z.date().optional(),
+    scheduledTime: z.string().optional(),
+    repeatType: z.enum(['WEEKLY', 'MONTHLY']).optional(),
+    repeatDays: z.array(z.number()).optional(),
+    repeatMonthDays: z.array(z.number()).optional(),
+    sendOnLastDay: z.boolean().optional(),
+    repeatEndAt: z.date().optional(),
+    skipHolidays: z.boolean().optional(),
+    isActive: z.boolean(),
+    targetUserIds: z.array(z.string()).min(1, '최소 1명 이상의 사용자를 선택해야 합니다'),
+  })
+  .superRefine((values, ctx) => {
+    if (values.sendType !== 'repeat') return;
+    if (!values.scheduledTime) {
+      ctx.addIssue({ code: 'custom', path: ['scheduledTime'], message: '발송 시간을 입력하세요' });
+    }
+    if (values.repeatType === 'MONTHLY') {
+      if (!values.repeatMonthDays || values.repeatMonthDays.length === 0) {
+        ctx.addIssue({ code: 'custom', path: ['repeatMonthDays'], message: '반복할 날짜를 1개 이상 선택하세요' });
+      }
+    } else if (!values.repeatDays || values.repeatDays.length === 0) {
+      ctx.addIssue({ code: 'custom', path: ['repeatDays'], message: '반복할 요일을 1개 이상 선택하세요' });
+    }
+  });
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -56,8 +75,12 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
 
   const sendType = form.watch('sendType');
   const screen = form.watch('screen');
+  const repeatType = form.watch('repeatType') || 'WEEKLY';
   const repeatDays = form.watch('repeatDays') || [];
+  const repeatMonthDays = form.watch('repeatMonthDays') || [];
+  const scheduledTime = form.watch('scheduledTime');
   const isCustomLink = screen === 'Custom';
+  const hasLastDayCandidate = repeatMonthDays.some((day) => day >= 29);
 
   const toggleRepeatDay = (day: number) => {
     const current = form.getValues('repeatDays') || [];
@@ -70,6 +93,16 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
       form.setValue('repeatDays', [...current, day].sort());
     }
   };
+
+  const repeatSummary = (() => {
+    if (sendType !== 'repeat' || !scheduledTime) return null;
+    if (repeatType === 'MONTHLY') {
+      if (repeatMonthDays.length === 0) return null;
+      return `매월 ${repeatMonthDays.map((d) => `${d}일`).join(', ')} ${scheduledTime}에 발송됩니다.`;
+    }
+    if (repeatDays.length === 0) return null;
+    return `매주 ${repeatDays.map((d) => REPEAT_DAYS_MAP[d]).join(', ')} ${scheduledTime}에 발송됩니다.`;
+  })();
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
@@ -304,20 +337,75 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                   )}
                 />
                 <FormItem>
-                  <FormLabel>반복 요일</FormLabel>
-                  <div className="flex gap-2">
-                    {[0, 1, 2, 3, 4, 5, 6].map((day) => (
-                      <Badge
-                        key={day}
-                        variant={repeatDays.includes(day) ? 'default' : 'outline'}
-                        className="cursor-pointer"
-                        onClick={() => toggleRepeatDay(day)}
-                      >
-                        {REPEAT_DAYS_MAP[day]}
-                      </Badge>
-                    ))}
-                  </div>
+                  <FormLabel>반복 주기</FormLabel>
+                  <Tabs value={repeatType} onValueChange={(value) => form.setValue('repeatType', value as RepeatType)}>
+                    <TabsList>
+                      <TabsTrigger value="WEEKLY">매주 (요일)</TabsTrigger>
+                      <TabsTrigger value="MONTHLY">매월 (날짜)</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
                 </FormItem>
+                {repeatType === 'WEEKLY' && (
+                  <FormField
+                    control={form.control}
+                    name="repeatDays"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>반복 요일</FormLabel>
+                        <div className="flex gap-2">
+                          {[0, 1, 2, 3, 4, 5, 6].map((day) => (
+                            <Badge
+                              key={day}
+                              variant={repeatDays.includes(day) ? 'default' : 'outline'}
+                              className="cursor-pointer"
+                              onClick={() => toggleRepeatDay(day)}
+                            >
+                              {REPEAT_DAYS_MAP[day]}
+                            </Badge>
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                {repeatType === 'MONTHLY' && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="repeatMonthDays"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>반복 날짜</FormLabel>
+                          <FormControl>
+                            <MonthDaysGrid value={field.value || []} onChange={field.onChange} />
+                          </FormControl>
+                          <FormDescription>매월 선택한 날짜에 알림이 발송됩니다.</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {hasLastDayCandidate && (
+                      <FormField
+                        control={form.control}
+                        name="sendOnLastDay"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center gap-2 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>해당 날짜가 없는 달은 말일에 발송</FormLabel>
+                              <FormDescription>
+                                예: 31일 선택 시 4월에는 30일에 발송됩니다. 체크하지 않으면 해당 달은 발송되지 않습니다.
+                              </FormDescription>
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </>
+                )}
                 <FormField
                   control={form.control}
                   name="repeatEndAt"
@@ -345,11 +433,14 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <FormLabel>공휴일 제외</FormLabel>
-                        <FormDescription>선택한 요일이 한국 공휴일인 경우 발송하지 않습니다.</FormDescription>
+                        <FormDescription>발송일이 한국 공휴일인 경우 발송하지 않습니다.</FormDescription>
                       </div>
                     </FormItem>
                   )}
                 />
+                {repeatSummary && (
+                  <p className="bg-muted text-muted-foreground rounded-md p-3 text-sm">{repeatSummary}</p>
+                )}
               </>
             )}
           </CardContent>

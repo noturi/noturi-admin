@@ -1,5 +1,5 @@
 import type { Notification } from '@/entities/notification/model/types';
-import type { CreateNotificationRequest } from '@/entities/notification/model/types';
+import type { CreateNotificationRequest, RepeatType } from '@/entities/notification/model/types';
 
 export type SendType = 'immediate' | 'scheduled' | 'repeat';
 
@@ -46,13 +46,21 @@ export function buildNotificationData(values: {
   sendType: SendType;
   scheduledAt?: Date;
   scheduledTime?: string;
+  repeatType?: RepeatType;
   repeatDays?: number[];
+  repeatMonthDays?: number[];
+  sendOnLastDay?: boolean;
   repeatEndAt?: Date;
   skipHolidays?: boolean;
   targetUserIds: string[];
 }): CreateNotificationRequest {
   const isCustomLink = values.screen === 'Custom';
   const parsedParams = parseJsonParams(values.params);
+
+  const isRepeat = values.sendType === 'repeat';
+  const repeatType: RepeatType = values.repeatType ?? 'WEEKLY';
+  const isMonthly = isRepeat && repeatType === 'MONTHLY';
+  const monthDays = values.repeatMonthDays ?? [];
 
   return {
     title: values.title,
@@ -64,11 +72,14 @@ export function buildNotificationData(values: {
     },
     targetUserIds: values.targetUserIds,
     scheduledAt: values.sendType === 'scheduled' ? values.scheduledAt?.toISOString() : undefined,
-    scheduledTime: values.sendType === 'repeat' ? values.scheduledTime : undefined,
-    isRepeat: values.sendType === 'repeat',
-    repeatDays: values.sendType === 'repeat' ? values.repeatDays : undefined,
-    repeatEndAt: values.sendType === 'repeat' ? values.repeatEndAt?.toISOString() : undefined,
-    skipHolidays: values.sendType === 'repeat' ? values.skipHolidays : undefined,
+    scheduledTime: isRepeat ? values.scheduledTime : undefined,
+    isRepeat,
+    repeatType: isRepeat ? repeatType : undefined,
+    repeatDays: isRepeat ? (isMonthly ? monthDays : values.repeatDays) : undefined,
+    // 말일 대체는 29~31일이 선택된 경우에만 의미 있음
+    sendOnLastDay: isMonthly ? monthDays.some((d) => d >= 29) && (values.sendOnLastDay ?? false) : undefined,
+    repeatEndAt: isRepeat ? values.repeatEndAt?.toISOString() : undefined,
+    skipHolidays: isRepeat ? values.skipHolidays : undefined,
   };
 }
 
@@ -77,6 +88,8 @@ export function buildNotificationData(values: {
  */
 export function getFormDefaultValues(notification?: Notification) {
   const hasLinkUrl = !!notification?.data.linkUrl;
+  const repeatType: RepeatType = notification?.repeatType ?? 'WEEKLY';
+  const isMonthly = repeatType === 'MONTHLY';
   return {
     title: notification?.title || '',
     body: notification?.body || '',
@@ -86,7 +99,10 @@ export function getFormDefaultValues(notification?: Notification) {
     sendType: getSendType(notification),
     scheduledAt: notification?.scheduledAt ? new Date(notification.scheduledAt) : undefined,
     scheduledTime: notification?.scheduledTime || '',
-    repeatDays: notification?.repeatDays || [],
+    repeatType,
+    repeatDays: isMonthly ? [] : notification?.repeatDays || [],
+    repeatMonthDays: isMonthly ? notification?.repeatDays || [] : [],
+    sendOnLastDay: notification?.sendOnLastDay ?? false,
     repeatEndAt: notification?.repeatEndAt ? new Date(notification.repeatEndAt) : undefined,
     skipHolidays: notification?.skipHolidays ?? false,
     isActive: notification?.isActive ?? true,

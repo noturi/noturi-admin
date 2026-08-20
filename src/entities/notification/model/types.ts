@@ -31,6 +31,10 @@ export const NotificationDataSchema = z.object({
 
 export type NotificationData = z.infer<typeof NotificationDataSchema>;
 
+export const RepeatTypeSchema = z.enum(['WEEKLY', 'MONTHLY']);
+
+export type RepeatType = z.infer<typeof RepeatTypeSchema>;
+
 export const NotificationSchema = z.object({
   id: z.string().uuid(),
   title: z.string(),
@@ -41,7 +45,9 @@ export const NotificationSchema = z.object({
   scheduledAt: z.string().optional(),
   scheduledTime: z.string().optional(), // "09:00" 형식
   isRepeat: z.boolean(),
-  repeatDays: z.array(z.number()).optional(), // [1,2,3,4,5] = 월~금
+  repeatType: RepeatTypeSchema.optional(), // 서버 미배포 응답 호환을 위해 optional, 없으면 WEEKLY로 간주
+  repeatDays: z.array(z.number()).optional(), // WEEKLY: 요일(0~6), MONTHLY: 날짜(1~31)
+  sendOnLastDay: z.boolean().optional(), // MONTHLY: 해당 날짜가 없는 달은 말일에 발송
   repeatEndAt: z.string().optional(),
   skipHolidays: z.boolean().optional(),
   isActive: z.boolean(),
@@ -75,7 +81,9 @@ export type CreateNotificationRequest = {
   scheduledAt?: string;
   scheduledTime?: string;
   isRepeat: boolean;
+  repeatType?: RepeatType;
   repeatDays?: number[];
+  sendOnLastDay?: boolean;
   repeatEndAt?: string;
   skipHolidays?: boolean;
 };
@@ -131,4 +139,19 @@ export function formatRepeatDays(days?: number[]): string {
   if (JSON.stringify(sortedDays) === JSON.stringify([0, 6])) return '주말';
 
   return days.map((d) => REPEAT_DAYS_MAP[d]).join(', ');
+}
+
+/**
+ * 반복 스케줄 표시 (WEEKLY: 요일, MONTHLY: 날짜)
+ */
+export function formatRepeatSchedule(repeatType?: RepeatType, days?: number[], sendOnLastDay?: boolean): string {
+  if (repeatType === 'MONTHLY') {
+    if (!days || days.length === 0) return '-';
+    const label = `매월 ${[...days]
+      .sort((a, b) => a - b)
+      .map((d) => `${d}일`)
+      .join(', ')}`;
+    return sendOnLastDay ? `${label} (없는 달은 말일)` : label;
+  }
+  return formatRepeatDays(days);
 }

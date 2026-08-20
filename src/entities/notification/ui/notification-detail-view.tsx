@@ -110,19 +110,39 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
                   </div>
                 )}
 
-                {/* 반복 요일 */}
-                {notification.isRepeat && notification.repeatDays && (
-                  <div className="rounded-lg border p-4">
-                    <p className="text-muted-foreground text-sm">반복 요일</p>
-                    <div className="mt-2 flex gap-1">
-                      {[0, 1, 2, 3, 4, 5, 6].map((day) => (
-                        <Badge key={day} variant={notification.repeatDays?.includes(day) ? 'default' : 'outline'}>
-                          {REPEAT_DAYS_MAP[day]}
-                        </Badge>
-                      ))}
+                {/* 반복 요일/날짜 */}
+                {notification.isRepeat &&
+                  notification.repeatDays &&
+                  (notification.repeatType === 'MONTHLY' ? (
+                    <div className="rounded-lg border p-4">
+                      <p className="text-muted-foreground text-sm">반복 날짜</p>
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {[...notification.repeatDays]
+                          .sort((a, b) => a - b)
+                          .map((day) => (
+                            <Badge key={day} variant="default">
+                              {day}일
+                            </Badge>
+                          ))}
+                      </div>
+                      {notification.repeatDays.some((day) => day >= 29) && (
+                        <p className="text-muted-foreground mt-2 text-sm">
+                          해당 날짜가 없는 달: {notification.sendOnLastDay ? '말일에 발송' : '발송하지 않음'}
+                        </p>
+                      )}
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <div className="rounded-lg border p-4">
+                      <p className="text-muted-foreground text-sm">반복 요일</p>
+                      <div className="mt-2 flex gap-1">
+                        {[0, 1, 2, 3, 4, 5, 6].map((day) => (
+                          <Badge key={day} variant={notification.repeatDays?.includes(day) ? 'default' : 'outline'}>
+                            {REPEAT_DAYS_MAP[day]}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
 
                 {/* 공휴일 제외 */}
                 {notification.isRepeat && (
