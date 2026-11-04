@@ -7,7 +7,8 @@
 - **Next.js 16** (App Router, Turbopack) + **React 19.2** + **TypeScript 5**
 - **Tailwind CSS 4** + **shadcn/ui** (`@/shared/ui/`에서 import, `cn()` 사용)
 - **Zod 4** (스키마 → `z.infer` 타입 추론) + **React Hook Form 7**
-- **Zustand 5** (인증 상태) + **TanStack Table** + **sonner** (toast)
+- **TanStack Table** + **sonner** (toast) + **nuqs** (URL 상태)
+- 인증: httpOnly 쿠키(`auth-token`, `user-info`) — 서버에서 `auth()`로 읽음. 쿠키 수명은 토큰 만료에 맞춤, API 401이면 `/auth/logout`으로 보내 쿠키 삭제 후 로그인 화면
 - **pnpm** 패키지 매니저
 
 ## 명령어

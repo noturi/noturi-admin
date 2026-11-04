@@ -1,6 +1,3 @@
-// import { HttpError } from '@/shared/lib';
-// import { HTTPError } from 'ky';
-
 export interface EnhancedFetchOptions extends RequestInit {
   json?: unknown;
   searchParams?: URLSearchParams | Record<string, unknown>;

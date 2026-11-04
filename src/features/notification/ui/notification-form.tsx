@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/shared/ui/button';
@@ -73,12 +73,14 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
     defaultValues: getFormDefaultValues(notification),
   });
 
-  const sendType = form.watch('sendType');
-  const screen = form.watch('screen');
-  const repeatType = form.watch('repeatType') || 'WEEKLY';
-  const repeatDays = form.watch('repeatDays') || [];
-  const repeatMonthDays = form.watch('repeatMonthDays') || [];
-  const scheduledTime = form.watch('scheduledTime');
+  // form.watch()는 React Compiler가 메모이즈할 수 없어 컴포넌트 최적화가 꺼짐 → useWatch 사용
+  const { control } = form;
+  const sendType = useWatch({ control, name: 'sendType' });
+  const screen = useWatch({ control, name: 'screen' });
+  const repeatType = useWatch({ control, name: 'repeatType' }) || 'WEEKLY';
+  const repeatDays = useWatch({ control, name: 'repeatDays' }) || [];
+  const repeatMonthDays = useWatch({ control, name: 'repeatMonthDays' }) || [];
+  const scheduledTime = useWatch({ control, name: 'scheduledTime' });
   const isCustomLink = screen === 'Custom';
   const hasLastDayCandidate = repeatMonthDays.some((day) => day >= 29);
 

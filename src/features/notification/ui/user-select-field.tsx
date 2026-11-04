@@ -9,6 +9,7 @@ import { cn } from '@/shared/lib';
 import { searchUsers } from '@/features/notification/api/user-search-action';
 import type { User } from '@/entities/user/model/types';
 import { CheckIcon, X, Users } from 'lucide-react';
+import logger from '@/shared/lib/utils/logger';
 
 interface UserSelectFieldProps {
   value: string[];
@@ -28,7 +29,7 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
         const userList = await searchUsers();
         setUsers(userList);
       } catch (error) {
-        console.error('Failed to load users:', error);
+        logger.error('Failed to load users:', error);
       }
     };
     loadUsers();

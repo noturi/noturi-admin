@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
+import logger from '@/shared/lib/utils/logger';
 
 declare global {
   interface WindowEventMap {
@@ -48,7 +49,7 @@ export function useSessionStorage<T>(
       try {
         parsed = JSON.parse(value);
       } catch (error) {
-        console.error('Error parsing JSON:', error);
+        logger.error('Error parsing JSON:', error);
         return defaultValue; // Return initialValue if parsing fails
       }
 
@@ -70,7 +71,7 @@ export function useSessionStorage<T>(
       const raw = window.sessionStorage.getItem(key);
       return raw ? deserializer(raw) : initialValueToUse;
     } catch (error) {
-      console.warn(`Error reading sessionStorage key "${key}":`, error);
+      logger.warn(`Error reading sessionStorage key "${key}":`, error);
       return initialValueToUse;
     }
   }, [initialValue, key, deserializer]);
@@ -87,7 +88,7 @@ export function useSessionStorage<T>(
     (value) => {
       // Prevent build error "window is undefined" but keeps working
       if (IS_SERVER) {
-        console.warn(`Tried setting sessionStorage key "${key}" even though environment is not a client`);
+        logger.warn(`Tried setting sessionStorage key "${key}" even though environment is not a client`);
         return;
       }
 
@@ -104,7 +105,7 @@ export function useSessionStorage<T>(
         // We dispatch a custom event so every similar useSessionStorage hook is notified
         window.dispatchEvent(new CustomEvent('session-storage', { detail: { key } }));
       } catch (error) {
-        console.warn(`Error setting sessionStorage key "${key}":`, error);
+        logger.warn(`Error setting sessionStorage key "${key}":`, error);
       }
     },
     [key, serializer, readValue]
@@ -113,7 +114,7 @@ export function useSessionStorage<T>(
   const removeValue = useCallback(() => {
     // Prevent build error "window is undefined" but keeps working
     if (IS_SERVER) {
-      console.warn(`Tried removing sessionStorage key "${key}" even though environment is not a client`);
+      logger.warn(`Tried removing sessionStorage key "${key}" even though environment is not a client`);
       return;
     }
 

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/sha
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { registerPasswordSchema, type FunnelState } from '../model/types';
+import logger from '@/shared/lib/utils/logger';
 
 interface PasswordStepProps {
   defaultValues: FunnelState;
@@ -42,7 +43,7 @@ export function PasswordStep({ defaultValues, next }: PasswordStepProps) {
     try {
       await next({ password, confirmPassword });
     } catch (error) {
-      console.error('Registration failed:', error);
+      logger.error('Registration failed:', error);
     } finally {
       setIsLoading(false);
     }
