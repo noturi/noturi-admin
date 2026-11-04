@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Badge } from '@/shared/ui/badge';
 import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 import { Column, ColumnDef } from '@tanstack/react-table';
-import { Notification, formatRepeatSchedule } from '@/entities/notification/model/types';
+import { Notification, formatRepeatSchedule } from '@/entities/notification';
 import { CellAction } from './cell-action';
 import { Bell, Clock, Repeat } from 'lucide-react';
 

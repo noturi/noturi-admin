@@ -20,9 +20,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
-import { Notification } from '@/entities/notification/model/types';
+import { Notification } from '@/entities/notification';
 import { MoreHorizontal, Eye, Edit, Power, PowerOff, Send, Trash } from 'lucide-react';
-import { updateNotification, deleteNotification, sendNotification } from '@/features/notification/api';
+import { updateNotification, deleteNotification, sendNotification } from '@/features/notification';
 import { executeAction } from '@/shared/lib';
 import { toast } from 'sonner';
 

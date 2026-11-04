@@ -1,5 +1,3 @@
-'use server';
-
 import { http } from '#http';
 import type { NotificationListResponse, NotificationQueryParams, NotificationDetail } from '../model/types';
 

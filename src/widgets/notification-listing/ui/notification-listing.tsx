@@ -1,11 +1,11 @@
-import { getNotificationList } from '@/entities/notification/api/notification-api';
-import { NotificationTable } from '@/widgets/ui/notification-tables/notification-table';
+import { getNotificationList } from '@/entities/notification';
+import { NotificationTable } from './notification-table';
 import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 import { auth } from '@/shared/lib/utils/auth.server';
 
 type NotificationListingPage = Record<string, never>;
 
-export default async function NotificationListingPage({}: NotificationListingPage) {
+export async function NotificationListing({}: NotificationListingPage) {
   const authData = await auth();
 
   if (!authData.user) {

@@ -26,13 +26,14 @@ pnpm dlx shadcn@latest add [name]  # shadcn/ui 컴포넌트 추가
 ## 아키텍처: FSD
 
 의존성: `app → widgets → features → entities → shared` (역방향·같은 레이어 간 import 금지). pages 레이어는 없고 `app/`의 page가 widgets를 조합한다.
+다른 슬라이스는 **public API(`@/entities/user`)로만** import — 내부 파일(`@/entities/user/api/user-api`) 직접 import 금지.
 
 | 레이어      | 역할                 | 핵심                                                              |
 | ----------- | -------------------- | ----------------------------------------------------------------- |
 | `app/`      | 라우팅 + 페이지 조합 | 비즈니스 로직 금지. `api/proxy`는 브라우저용 GET 프록시           |
-| `widgets/`  | 복합 UI 블록         | features + entities 조합                                          |
-| `features/` | CUD                  | `api/actions.ts`('use server') + `serverApi`, 타입은 entities에서 |
-| `entities/` | 읽기 (GET)           | `api/`는 `#http`, `model/types.ts`에 Zod 스키마                   |
+| `widgets/`  | 복합 UI 블록         | 슬라이스별 폴더(`widgets/{name}/ui`), features + entities 조합    |
+| `features/` | CUD                  | `api/actions.ts`('use server') + `serverApi`, 폼 스키마는 `model/` |
+| `entities/` | 읽기 (GET)           | `api/`는 `#http`('use server' 금지), 도메인 타입은 `model/types.ts` |
 | `shared/`   | 공통                 | `api/`(EnhancedFetch·serverApi·http), `ui/`, `lib/`               |
 
 ## 데이터 흐름과 인증

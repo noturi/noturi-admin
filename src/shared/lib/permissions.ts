@@ -1,8 +1,10 @@
-import { User } from '@/entities/user/model/types';
-import { Operator } from '@/entities/operator/model/types';
 import { type AuthUser, type UserRole } from './model/auth';
 
 export type { AuthUser, UserRole };
+
+/** 권한 판단에 필요한 최소 정보 — shared는 entities를 import할 수 없어 구조 타입으로 받음 (User·Operator 모두 해당) */
+type User = { id: string; role?: UserRole };
+type Operator = { id: string };
 
 export interface Permissions {
   // User 관련 권한

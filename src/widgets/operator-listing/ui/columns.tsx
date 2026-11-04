@@ -4,7 +4,7 @@ import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-heade
 
 import { Column, ColumnDef } from '@tanstack/react-table';
 
-import { Operator } from '@/entities/operator/model/types';
+import { Operator } from '@/entities/operator';
 import { CellAction } from './cell-action';
 import { can, type AuthUser } from '@/shared/lib/permissions';
 

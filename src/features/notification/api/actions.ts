@@ -6,7 +6,7 @@ import type {
   CreateNotificationRequest,
   UpdateNotificationRequest,
   SendNotificationResponse,
-} from '@/entities/notification/model/types';
+} from '@/entities/notification';
 
 /**
  * 알림 생성 (즉시/예약/반복 발송)

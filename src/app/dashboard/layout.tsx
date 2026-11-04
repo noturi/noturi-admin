@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/shared/lib';
-import { AppSidebar } from '@/widgets/ui/app-sidebar';
+import { AppSidebar } from '@/widgets/app-sidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/shared/ui/sidebar';
 import { Separator } from '@/shared/ui/separator';
 

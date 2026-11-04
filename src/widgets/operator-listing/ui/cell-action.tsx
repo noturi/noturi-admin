@@ -13,9 +13,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
-import { Operator } from '@/entities/operator/model/types';
+import { Operator } from '@/entities/operator';
 import { MoreHorizontal, Trash, Edit } from 'lucide-react';
-import { deleteOperator } from '@/features/operator/api';
+import { deleteOperator } from '@/features/operator';
 import { executeAction } from '@/shared/lib';
 
 interface CellActionProps {

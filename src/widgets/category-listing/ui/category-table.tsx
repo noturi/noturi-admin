@@ -7,9 +7,9 @@ import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '@/shared/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { Sortable, SortableHandle, arrayMove } from '@/shared/ui/sortable';
-import { reorderCategories } from '@/features/category/api';
+import { reorderCategories } from '@/features/category';
 import { executeAction } from '@/shared/lib';
-import { Category } from '@/entities/category/model/types';
+import { Category } from '@/entities/category';
 import { CellAction } from './cell-action';
 
 interface CategoryTableParams {
@@ -64,9 +64,13 @@ function SortableRow({ category }: { category: Category }) {
 export function CategoryTable({ data }: CategoryTableParams) {
   const [categories, setCategories] = React.useState(data);
 
-  React.useEffect(() => {
+  // 서버 데이터가 바뀌면(revalidatePath) 그 값으로 맞춤 — effect로 복사하면 한 번 더 렌더링되므로 렌더 중 상태 조정
+  // (https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes)
+  const [prevData, setPrevData] = React.useState(data);
+  if (data !== prevData) {
+    setPrevData(data);
     setCategories(data);
-  }, [data]);
+  }
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;

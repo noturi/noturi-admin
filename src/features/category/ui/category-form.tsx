@@ -13,7 +13,7 @@ import { Checkbox } from '@/shared/ui/checkbox';
 import { ColorPicker } from '@/shared/ui/color-picker';
 import { createCategory, updateCategory } from '@/features/category/api';
 import { getFormDefaultValues, buildCategoryData } from './category-form.utils';
-import type { Category } from '@/entities/category/model/types';
+import type { Category } from '@/entities/category';
 import { Loader2 } from 'lucide-react';
 import { executeAction } from '@/shared/lib';
 

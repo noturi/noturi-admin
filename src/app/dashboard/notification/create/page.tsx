@@ -3,7 +3,7 @@ import PageContainer from '@/shared/ui/page-container';
 import { Heading } from '@/shared/ui/heading';
 import { Separator } from '@/shared/ui/separator';
 import { Button } from '@/shared/ui/button';
-import { NotificationForm } from '@/features/notification/ui/notification-form';
+import { NotificationForm } from '@/features/notification';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {

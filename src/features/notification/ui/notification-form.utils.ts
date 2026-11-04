@@ -1,5 +1,5 @@
-import type { Notification } from '@/entities/notification/model/types';
-import type { CreateNotificationRequest, RepeatType } from '@/entities/notification/model/types';
+import type { Notification } from '@/entities/notification';
+import type { CreateNotificationRequest, RepeatType } from '@/entities/notification';
 
 export type SendType = 'immediate' | 'scheduled' | 'repeat';
 

@@ -20,9 +20,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
-import { Category } from '@/entities/category/model/types';
+import { Category } from '@/entities/category';
 import { MoreHorizontal, Trash, Edit, Power } from 'lucide-react';
-import { deleteCategory, toggleCategoryActive } from '@/features/category/api';
+import { deleteCategory, toggleCategoryActive } from '@/features/category';
 import { executeAction } from '@/shared/lib';
 
 interface CellActionProps {

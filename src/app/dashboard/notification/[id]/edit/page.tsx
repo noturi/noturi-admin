@@ -4,8 +4,8 @@ import PageContainer from '@/shared/ui/page-container';
 import { Heading } from '@/shared/ui/heading';
 import { Separator } from '@/shared/ui/separator';
 import { Button } from '@/shared/ui/button';
-import { getNotificationById } from '@/entities/notification/api/notification-api';
-import { NotificationForm } from '@/features/notification/ui/notification-form';
+import { getNotificationById } from '@/entities/notification';
+import { NotificationForm } from '@/features/notification';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {

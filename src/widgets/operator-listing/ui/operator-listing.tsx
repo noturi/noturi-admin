@@ -1,12 +1,12 @@
-import { getOperatorList } from '@/entities/operator/api/operator-api';
-import { OperatorTable } from '@/widgets/ui/operator-tables/operator-table';
-import { OperatorQueryParams } from '@/entities/operator/model/types';
+import { getOperatorList } from '@/entities/operator';
+import { OperatorTable } from './operator-table';
+import { OperatorQueryParams } from '@/entities/operator';
 import { auth } from '@/shared/lib/utils/auth.server';
 import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 
 type OperatorListingPage = Record<string, never>;
 
-export default async function OperatorListingPage({}: OperatorListingPage) {
+export async function OperatorListing({}: OperatorListingPage) {
   // Get current user from server
   const authData = await auth();
 

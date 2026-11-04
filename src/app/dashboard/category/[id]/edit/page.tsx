@@ -4,8 +4,8 @@ import PageContainer from '@/shared/ui/page-container';
 import { Heading } from '@/shared/ui/heading';
 import { Separator } from '@/shared/ui/separator';
 import { Button } from '@/shared/ui/button';
-import { getCategoryById } from '@/entities/category/api/category-api';
-import { CategoryForm } from '@/features/category/ui/category-form';
+import { getCategoryById } from '@/entities/category';
+import { CategoryForm } from '@/features/category';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {

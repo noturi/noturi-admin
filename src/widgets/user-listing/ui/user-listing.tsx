@@ -1,11 +1,11 @@
-import { getUserList } from '@/entities/user/api/user-api';
-import { UserTable } from '@/widgets/ui/user-tables/user-table';
+import { getUserList } from '@/entities/user';
+import { UserTable } from './user-table';
 import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 import { auth } from '@/shared/lib/utils/auth.server';
 
 type UserListingPage = Record<string, never>;
 
-export default async function UserListingPage({}: UserListingPage) {
+export async function UserListing({}: UserListingPage) {
   // Get current user from server
   const authData = await auth();
 

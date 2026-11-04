@@ -2,7 +2,7 @@
 
 import { serverApi } from '@/shared/api/server-api';
 import { revalidatePath } from 'next/cache';
-import type { CreateCategoryRequest, UpdateCategoryRequest } from '@/entities/category/model/types';
+import type { CreateCategoryRequest, UpdateCategoryRequest } from '@/entities/category';
 
 /**
  * 카테고리 생성

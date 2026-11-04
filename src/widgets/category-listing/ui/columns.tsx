@@ -4,7 +4,7 @@ import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-heade
 
 import { Column, ColumnDef } from '@tanstack/react-table';
 
-import { Category } from '@/entities/category/model/types';
+import { Category } from '@/entities/category';
 import { CellAction } from './cell-action';
 
 export function getCategoryColumns(): ColumnDef<Category>[] {

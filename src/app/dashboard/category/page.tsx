@@ -6,7 +6,7 @@ import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
-import CategoryListingPage from '@/widgets/ui/category-listing';
+import { CategoryListing } from '@/widgets/category-listing';
 import Link from 'next/link';
 
 export const metadata = {
@@ -33,7 +33,7 @@ export default async function Page(props: Props) {
         </div>
         <Separator />
         <Suspense fallback={<DataTableSkeleton columnCount={6} rowCount={8} filterCount={2} />}>
-          <CategoryListingPage />
+          <CategoryListing />
         </Suspense>
       </div>
     </PageContainer>

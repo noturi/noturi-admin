@@ -5,7 +5,7 @@ import { DataTableToolbar } from '@/shared/ui/table/data-table-toolbar';
 import { useDataTable } from '@/shared/ui/table/use-data-table';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { getNotificationColumns } from './columns';
-import { Notification } from '@/entities/notification/model/types';
+import { Notification } from '@/entities/notification';
 
 interface NotificationTableParams {
   data: Notification[];

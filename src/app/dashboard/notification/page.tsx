@@ -6,7 +6,7 @@ import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
-import NotificationListingPage from '@/widgets/ui/notification-listing';
+import { NotificationListing } from '@/widgets/notification-listing';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
@@ -37,7 +37,7 @@ export default async function Page(props: Props) {
         </div>
         <Separator />
         <Suspense fallback={<DataTableSkeleton columnCount={8} rowCount={8} filterCount={2} />}>
-          <NotificationListingPage />
+          <NotificationListing />
         </Suspense>
       </div>
     </PageContainer>

@@ -4,8 +4,8 @@ import PageContainer from '@/shared/ui/page-container';
 import { Heading } from '@/shared/ui/heading';
 import { Separator } from '@/shared/ui/separator';
 import { Button } from '@/shared/ui/button';
-import { getUserById } from '@/entities/user/api/user-api';
-import { UserDetailView } from '@/entities/user/ui/user-detail-view';
+import { getUserById } from '@/entities/user';
+import { UserDetailView } from '@/entities/user';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
