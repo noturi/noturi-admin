@@ -12,8 +12,12 @@ import type {
  * 알림 생성 (즉시/예약/반복 발송)
  */
 export async function createNotification(data: CreateNotificationRequest) {
-  await serverApi.post('/notifications', { json: data });
+  // 즉시 발송이면 서버가 sendResult(성공·실패 건수)를 돌려줌 — 화면에서 결과를 보여주기 위해 반환
+  const result = await serverApi.post<{ id: string | null; sendResult?: SendNotificationResponse }>('/notifications', {
+    json: data,
+  });
   revalidatePath('/dashboard/notification');
+  return result;
 }
 
 /**

@@ -7,7 +7,7 @@ import { NotificationForm } from '@/features/notification';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Dashboard: Create Notification',
+  title: '알림 만들기 | Noturi Admin',
 };
 
 export default function CreateNotificationPage() {
@@ -15,12 +15,16 @@ export default function CreateNotificationPage() {
     <PageContainer scrollable>
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard/notification">
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Heading title="알림 생성" description="새로운 푸시 알림을 생성합니다" />
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="알림 목록으로"
+            nativeButton={false}
+            render={<Link href="/dashboard/notification" />}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <Heading title="알림 만들기" description="앱 사용자 휴대폰으로 보낼 푸시 알림" />
         </div>
         <Separator />
         <NotificationForm mode="create" />

@@ -9,7 +9,7 @@ import { NotificationForm } from '@/features/notification';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Dashboard: Edit Notification',
+  title: '알림 수정 | Noturi Admin',
 };
 
 type Props = {
@@ -37,11 +37,15 @@ export default async function EditNotificationPage(props: Props) {
     <PageContainer scrollable>
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-center gap-4">
-          <Link href={`/dashboard/notification/${id}`}>
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="알림 상세로"
+            nativeButton={false}
+            render={<Link href={`/dashboard/notification/${id}`} />}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
           <Heading title="알림 수정" description={notification.title} />
         </div>
         <Separator />

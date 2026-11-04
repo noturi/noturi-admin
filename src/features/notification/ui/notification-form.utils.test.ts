@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildNotificationData, parseJsonParams } from './notification-form.utils';
+import { buildNotificationData, describeSchedule, getSendType, parseJsonParams } from './notification-form.utils';
 
 const base = { title: '제목', body: '본문', screen: 'Home', targetUserIds: ['u1'] };
 
@@ -57,5 +57,38 @@ describe('parseJsonParams', () => {
     expect(parseJsonParams('{"id":1}')).toEqual({ id: 1 });
     expect(parseJsonParams('{oops')).toBeUndefined();
     expect(parseJsonParams('')).toBeUndefined();
+  });
+});
+
+describe('예약 시각 합치기·요약', () => {
+  it('예약 발송은 날짜(0시)와 시간을 합쳐 보낸다', () => {
+    const data = buildNotificationData({
+      ...base,
+      sendType: 'scheduled',
+      scheduledAt: new Date(2026, 10, 5),
+      scheduledTime: '09:30',
+    });
+    expect(data.scheduledAt).toBe(new Date(2026, 10, 5, 9, 30).toISOString());
+  });
+
+  it('발송 시점을 사람의 말로 요약한다', () => {
+    expect(describeSchedule({ sendType: 'immediate' })).toBe('확인하면 바로 발송');
+    expect(
+      describeSchedule({ sendType: 'scheduled', scheduledAt: new Date(2026, 10, 5), scheduledTime: '09:30' })
+    ).toBe('2026년 11월 5일 (목) 09:30');
+    expect(
+      describeSchedule({
+        sendType: 'repeat',
+        scheduledTime: '08:00',
+        repeatType: 'WEEKLY',
+        repeatDays: [3, 1],
+        skipHolidays: true,
+      })
+    ).toBe('매주 월, 수 08:00 · 공휴일 제외');
+    expect(describeSchedule({ sendType: '' })).toBeNull();
+  });
+
+  it('새 알림은 발송 방식을 비워 둔다', () => {
+    expect(getSendType()).toBe('');
   });
 });

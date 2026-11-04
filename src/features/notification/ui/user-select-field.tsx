@@ -21,7 +21,11 @@ interface UserSelectFieldProps {
 const SEARCH_LIMIT = 100;
 const SEARCH_DEBOUNCE_MS = 300;
 
-export function UserSelectField({ value, onChange, placeholder = '유저 검색 및 선택' }: UserSelectFieldProps) {
+export function UserSelectField({
+  value,
+  onChange,
+  placeholder = '이름·이메일·닉네임으로 찾기',
+}: UserSelectFieldProps) {
   const [users, setUsers] = useState<User[]>([]);
   // 선택된 유저 배지를 그리려면 검색 결과가 바뀌어도 이전에 본 유저 정보를 기억해야 함
   const [knownUsers, setKnownUsers] = useState<Map<string, User>>(new Map());
@@ -51,7 +55,7 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
       .then((list) => {
         if (requestId === latestRequestRef.current) applyUsers(list); // 늦게 도착한 이전 검색 결과는 버림
       })
-      .catch((error) => logger.error('Failed to search users:', error));
+      .catch((error) => logger.error('사용자 검색 실패:', error));
   }, SEARCH_DEBOUNCE_MS);
 
   // 처음 목록 (#http 브라우저 구현 → /api/proxy) — 수정 화면에서 이미 선택된 유저 배지도 이걸로 표시
@@ -61,7 +65,7 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
       .then((list) => {
         if (!ignore) applyUsers(list);
       })
-      .catch((error) => logger.error('Failed to load users:', error));
+      .catch((error) => logger.error('사용자 목록을 불러오지 못함:', error));
     return () => {
       ignore = true;
     };
@@ -88,14 +92,15 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
 
   return (
     <div className="space-y-2">
-      {/* 선택된 유저 표시 */}
-      {selectedUsers.length > 0 && (
+      {/* 선택된 사용자 */}
+      {value.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {selectedUsers.map((user) => (
             <Badge key={user.id} variant="secondary" className="gap-1 px-2 py-1">
               {user.name || user.nickname}
               <button
                 type="button"
+                aria-label={`${user.name || user.nickname} 빼기`}
                 onClick={() => handleRemoveUser(user.id)}
                 className="ml-1 rounded-full hover:bg-secondary-foreground/20"
               >
@@ -103,10 +108,19 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
               </button>
             </Badge>
           ))}
+          {/* 수정 화면에서 아직 불러오지 않은 대상 — 수가 어긋나 보이지 않게 따로 표시 */}
+          {value.length > selectedUsers.length && (
+            <Badge variant="outline" className="px-2 py-1">
+              외 {(value.length - selectedUsers.length).toLocaleString()}명
+            </Badge>
+          )}
+          <span className="self-center text-sm text-muted-foreground tabular-nums">
+            총 {value.length.toLocaleString()}명
+          </span>
         </div>
       )}
 
-      {/* 유저 검색 및 선택 */}
+      {/* 사용자 검색 및 선택 */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger render={<Button variant="outline" role="combobox" className="w-full justify-between" />}>
           {placeholder}
