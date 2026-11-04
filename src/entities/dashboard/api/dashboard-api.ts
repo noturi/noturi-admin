@@ -1,23 +1,5 @@
 import { http } from '#http';
-
-export interface DashboardStatistics {
-  totalUsers: number;
-  activeUsers: number;
-  userGrowthRate: number;
-  weeklyMemoUsers: number;
-  weeklyTodoUsers: number;
-}
-
-export interface DashboardActivity {
-  type: string;
-  title: string;
-  description: string;
-  createdAt: string;
-}
-
-export interface DashboardActivitiesResponse {
-  activities: DashboardActivity[];
-}
+import type { DashboardActivitiesResponse, DashboardStatistics } from '../model/types';
 
 export const getDashboardStatistics = async () => {
   return http.get<DashboardStatistics>('dashboard/statistics');

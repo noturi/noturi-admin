@@ -7,7 +7,6 @@ export * from './model';
 export * from './routes';
 export * from './colors';
 export * from './messages';
-export * from './api';
 export * from './end-point';
 
 export * from './utils/auth.server';

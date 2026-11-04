@@ -24,16 +24,6 @@ export type CategoryResponse = Category;
 
 export type CategoriesListResponse = Category[];
 
-// API 에러 타입
-export const ApiErrorSchema = z.object({
-  statusCode: z.number(),
-  code: z.number(),
-  message: z.string(),
-  details: z.record(z.string(), z.any()).optional(),
-});
-
-export type ApiError = z.infer<typeof ApiErrorSchema>;
-
 // Query Parameters
 export type CategoryQueryParams = {
   isActive?: boolean;

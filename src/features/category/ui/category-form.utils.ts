@@ -1,5 +1,5 @@
-import type { Category, CreateCategoryRequest } from '@/entities/category/model/types';
-import { CategoryService } from '@/features/category/model/category-service';
+import type { Category, CreateCategoryRequest } from '@/entities/category';
+import { prepareCategoryData } from '../model/category-service';
 
 /**
  * 폼 값에서 카테고리 생성 요청 데이터로 변환
@@ -11,7 +11,7 @@ export function buildCategoryData(values: {
   sortOrder: number;
   isActive: boolean;
 }): CreateCategoryRequest {
-  return CategoryService.prepareCreateData({
+  return prepareCategoryData({
     name: values.name,
     color: values.color,
     description: values.description || null,

@@ -60,8 +60,8 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-8">
-              {activities.activities.map((activity, index) => (
-                <div key={index} className="flex items-center">
+              {activities.activities.map((activity) => (
+                <div key={`${activity.type}-${activity.createdAt}-${activity.title}`} className="flex items-center">
                   <div className="space-y-1">
                     <p className="text-sm leading-none font-medium">{activity.title}</p>
                     <p className="text-muted-foreground text-sm">{activity.description}</p>
