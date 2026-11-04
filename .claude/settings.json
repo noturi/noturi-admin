@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "IMPECCABLE_LIVE_COPY_AGENT": "chat"
+  }
+}
