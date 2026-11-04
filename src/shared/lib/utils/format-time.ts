@@ -95,3 +95,19 @@ export const formatRelativeTime = (date: string | Date) => {
 
   return formatDateShort(date);
 };
+
+/**
+ * 최근 접속일 — 서버가 하루 한 번만 기록하므로 시각 없이 "오늘 / 어제 / N일 전 / 날짜"
+ * 날짜 차이는 KST 달력 기준
+ */
+export const formatLastActive = (date: string | Date | number, now: number = Date.now()) => {
+  const day = (d: string | Date | number) => {
+    const p = kstParts(d);
+    return Date.UTC(Number(p.year), Number(p.month) - 1, Number(p.day));
+  };
+  const diffDays = Math.round((day(now) - day(date)) / 86_400_000);
+  if (diffDays <= 0) return '오늘';
+  if (diffDays === 1) return '어제';
+  if (diffDays < 30) return `${diffDays}일 전`;
+  return formatKstDate(date);
+};

@@ -5,7 +5,7 @@ import { Column, ColumnDef } from '@tanstack/react-table';
 
 import { User } from '@/entities/user';
 import { can, type AuthUser } from '@/shared/lib/permissions';
-import { formatKstDate } from '@/shared/lib';
+import { formatKstDate, formatLastActive } from '@/shared/lib';
 import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
@@ -16,6 +16,13 @@ type UserColumn = Column<DataTableFeatures, User, unknown>;
 /** 값이 없으면 "-" — 빈 칸은 "0"인지 "모름"인지 구분이 안 됨 */
 const CountCell = ({ value }: { value: number | undefined }) => (
   <div className="text-right tabular-nums">{value == null ? '-' : value.toLocaleString()}</div>
+);
+
+/** 하루 단위로 기록되므로 날짜만 — 기록이 없으면(오래 안 들어왔거나 기록 이전 사용자) "-" */
+const LastActiveCell = ({ value }: { value: string | null | undefined }) => (
+  <div className="min-w-24 tabular-nums">
+    {value ? formatLastActive(value) : <span className="text-muted-foreground">-</span>}
+  </div>
 );
 
 export function getUserColumns(currentUser: AuthUser): ColumnDef<DataTableFeatures, User>[] {
@@ -77,6 +84,13 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<DataTableFeatur
       cell: ({ cell }) => <div className="min-w-24 tabular-nums">{formatKstDate(cell.getValue<string>())}</div>,
       enableColumnFilter: true,
       meta: { label: '가입일', variant: 'dateRange' },
+    },
+    {
+      id: 'lastActiveAt',
+      accessorKey: 'lastActiveAt',
+      header: ({ column }: { column: UserColumn }) => <DataTableColumnHeader column={column} title="최근 접속" />,
+      cell: ({ cell }) => <LastActiveCell value={cell.getValue<string | null | undefined>()} />,
+      meta: { label: '최근 접속' },
     },
     {
       id: 'actions',

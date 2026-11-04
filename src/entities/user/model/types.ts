@@ -18,6 +18,8 @@ export const UserSchema = z.object({
   categoryCount: z.number().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  /** 최근 접속일 — 서버가 하루 한 번 기록(날짜 단위 정밀도), 기록이 없으면 null */
+  lastActiveAt: z.string().nullable().optional(),
 });
 
 export type User = z.infer<typeof UserSchema>;

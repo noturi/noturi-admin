@@ -5,7 +5,7 @@ import { auth } from '@/shared/lib/utils/auth.server';
 import { UserTable } from './user-table';
 
 /** 서버(/users)가 정렬할 수 있는 열 — 메모 수·카테고리 수는 집계 값이라 정렬 불가 */
-export const USER_SORTABLE_COLUMNS = ['email', 'name', 'nickname', 'createdAt'] as const;
+export const USER_SORTABLE_COLUMNS = ['email', 'name', 'nickname', 'createdAt', 'lastActiveAt'] as const;
 
 export async function UserListing() {
   const { user: currentUser } = await auth();

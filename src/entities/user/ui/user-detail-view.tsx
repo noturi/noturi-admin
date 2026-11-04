@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
 import { Bell, Star, User } from 'lucide-react';
 
-import { formatKstDate, formatKstDateTime } from '@/shared/lib/utils/format-time';
+import { formatKstDate, formatKstDateTime, formatLastActive } from '@/shared/lib/utils/format-time';
 import { Badge } from '@/shared/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { RoleBadge } from '@/shared/ui/role-badge';
@@ -48,6 +48,7 @@ export function UserDetailView({ user }: { user: UserDetail }) {
     },
     { label: '역할', value: <RoleBadge role={user.role} /> },
     { label: '가입일', value: formatKstDate(user.createdAt) },
+    { label: '최근 접속', value: user.lastActiveAt ? formatLastActive(user.lastActiveAt) : '기록 없음' },
     { label: '통계 공개', value: user.isStatsPublic ? '공개' : '비공개' },
     ...(user.settings
       ? [
