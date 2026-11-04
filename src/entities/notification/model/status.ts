@@ -81,3 +81,23 @@ export function describeNotificationDestination(data: NotificationData | undefin
   if (data.screen === 'Custom') return data.linkUrl ? `링크 · ${data.linkUrl}` : '링크 없음';
   return `앱 · ${NOTIFICATION_SCREEN_LABELS[data.screen] ?? data.screen} 화면`;
 }
+
+/**
+ * 발송 결과 한 줄 — 서버의 성공·실패는 기기(푸시 토큰) 수, 건너뜀은 사람 수
+ * 아무도 못 받았거나 실패가 있으면 warning
+ */
+export function describeSendResult(result: {
+  successCount: number;
+  failCount: number;
+  skippedNotificationOff?: number;
+  skippedNoDevice?: number;
+}): { tone: 'success' | 'warning'; message: string } {
+  const skipped = (result.skippedNotificationOff ?? 0) + (result.skippedNoDevice ?? 0);
+  const parts = [`기기 ${result.successCount.toLocaleString()}대에 보냈어요`];
+  if (result.failCount > 0) parts.push(`실패 ${result.failCount.toLocaleString()}건`);
+  if (skipped > 0) parts.push(`알림 끔·기기 없음으로 ${skipped.toLocaleString()}명 건너뜀`);
+  return {
+    tone: result.failCount > 0 || result.successCount === 0 ? 'warning' : 'success',
+    message: parts.join(' · '),
+  };
+}

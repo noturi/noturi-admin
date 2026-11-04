@@ -19,10 +19,14 @@ export interface Permissions {
   updateOperator: (operator?: Operator) => boolean;
   deleteOperator: (operator?: Operator) => boolean;
 
-  // Notification 관련 권한
+  // Notification 관련 권한 (서버: MANAGE_NOTIFICATIONS — 조회도 포함)
   viewNotification: (notification?: unknown) => boolean;
   createNotification: (notification?: unknown) => boolean;
   updateNotification: (notification?: unknown) => boolean;
+
+  // 시스템 (서버: MANAGE_SYSTEM)
+  manageAppVersion: () => boolean;
+  viewAuditLog: () => boolean;
 }
 
 const permissionsFactoryMap: Partial<Record<UserRole, (currentUser: AuthUser) => Permissions>> = {
@@ -43,13 +47,20 @@ const permissionsFactoryMap: Partial<Record<UserRole, (currentUser: AuthUser) =>
     viewNotification: () => true,
     createNotification: () => true,
     updateNotification: () => true,
+
+    manageAppVersion: () => true,
+    viewAuditLog: () => true,
   }),
+  /**
+   * 서버 ROLE_PERMISSIONS(noturi-server src/common/enums/permissions.enum.ts)와 맞춤 — 서버가 실제 권한을 정함
+   * ADMIN: 사용자 조회·기본 카테고리 관리·대시보드만. 알림(조회 포함)·사용자 삭제·시스템 설정은 403
+   */
   ADMIN: (currentUser: AuthUser) => ({
     // User 권한
     viewUser: () => true,
     createUser: () => true,
     updateUser: (targetUser?: User) => !targetUser || targetUser.role === 'USER' || targetUser.id === currentUser.id,
-    deleteUser: (targetUser?: User) => !targetUser || targetUser.role === 'USER',
+    deleteUser: () => false,
 
     // Operator 권한 (ADMIN은 다른 Operator 관리 불가)
     viewOperator: () => true,
@@ -58,9 +69,12 @@ const permissionsFactoryMap: Partial<Record<UserRole, (currentUser: AuthUser) =>
     deleteOperator: () => false,
 
     // Notification 권한
-    viewNotification: () => true,
-    createNotification: () => true,
-    updateNotification: () => true,
+    viewNotification: () => false,
+    createNotification: () => false,
+    updateNotification: () => false,
+
+    manageAppVersion: () => false,
+    viewAuditLog: () => false,
   }),
 };
 

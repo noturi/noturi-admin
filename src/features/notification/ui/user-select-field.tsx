@@ -6,9 +6,12 @@ import { Badge } from '@/shared/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/shared/ui/command';
 import { cn } from '@/shared/lib';
-import { getUserList } from '@/entities/user';
+import { getUserList, USER_SEGMENTS, type UserSegment } from '@/entities/user';
 import type { User } from '@/entities/user';
-import { CheckIcon, X, Users } from 'lucide-react';
+import { CheckIcon, Loader2, X, Users } from 'lucide-react';
+import { toast } from 'sonner';
+import { executeAction } from '@/shared/lib';
+import { getSegmentRecipientIds } from '../api/actions';
 import logger from '@/shared/lib/utils/logger';
 import { useDebouncedCallback } from '@/shared/lib/hooks/use-debounced-callback';
 
@@ -19,6 +22,8 @@ interface UserSelectFieldProps {
 }
 
 const SEARCH_LIMIT = 100;
+/** 선택 배지는 이만큼만 그리고 나머지는 "외 N명" — 묶음으로 수천 명을 고르면 화면이 배지로 덮임 */
+const MAX_BADGES = 12;
 const SEARCH_DEBOUNCE_MS = 300;
 
 export function UserSelectField({
@@ -32,6 +37,19 @@ export function UserSelectField({
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const latestRequestRef = useRef(0);
+  const [loadingSegment, setLoadingSegment] = useState<UserSegment | null>(null);
+
+  /** 조건 묶음으로 한 번에 고르기 — 지금 고른 사람은 이 묶음으로 바뀜 */
+  const pickSegment = async (segment: UserSegment, label: string) => {
+    setLoadingSegment(segment);
+    const result = await executeAction(() => getSegmentRecipientIds(segment), {
+      errorMessage: '사용자를 불러오지 못했어요.',
+    });
+    setLoadingSegment(null);
+    if (!result.ok) return;
+    onChange(result.data.ids);
+    toast.success(`${label} ${result.data.count.toLocaleString()}명을 골랐어요.`);
+  };
 
   // 검색 결과 반영 — 이전에 본 유저는 선택 배지용으로 계속 기억
   const applyUsers = (list: User[]) => {
@@ -45,7 +63,7 @@ export function UserSelectField({
 
   // 서버에서 검색 — 처음 100명만 받아 브라우저에서 거르면 101번째 이후 유저는 찾을 수 없음
   const fetchUsers = (keyword: string) =>
-    getUserList({ limit: SEARCH_LIMIT, notification: true, ...(keyword && { keyword }) }).then(
+    getUserList({ limit: SEARCH_LIMIT, notificationEnabled: true, ...(keyword && { keyword }) }).then(
       (response) => response.data ?? []
     );
 
@@ -76,7 +94,10 @@ export function UserSelectField({
     searchUsers(query.trim());
   };
 
-  const selectedUsers = value.map((id) => knownUsers.get(id)).filter((user): user is User => !!user);
+  const selectedUsers = value
+    .map((id) => knownUsers.get(id))
+    .filter((user): user is User => !!user)
+    .slice(0, MAX_BADGES);
 
   const handleToggleUser = (userId: string) => {
     if (value.includes(userId)) {
@@ -108,7 +129,7 @@ export function UserSelectField({
               </button>
             </Badge>
           ))}
-          {/* 수정 화면에서 아직 불러오지 않은 대상 — 수가 어긋나 보이지 않게 따로 표시 */}
+          {/* 배지로 안 그린 사람(아직 안 불러왔거나 너무 많음) — 수가 어긋나 보이지 않게 따로 표시 */}
           {value.length > selectedUsers.length && (
             <Badge variant="outline" className="px-2 py-1">
               외 {(value.length - selectedUsers.length).toLocaleString()}명
@@ -117,8 +138,30 @@ export function UserSelectField({
           <span className="self-center text-sm text-muted-foreground tabular-nums">
             총 {value.length.toLocaleString()}명
           </span>
+          <Button type="button" variant="ghost" size="sm" onClick={() => onChange([])}>
+            모두 빼기
+          </Button>
         </div>
       )}
+
+      {/* 조건으로 한 번에 고르기 (서버가 조건에 맞는 앱 사용자 id를 돌려줌, 고른 시점 기준) */}
+      <div className="flex flex-wrap items-center gap-2" role="group" aria-label="묶음으로 고르기">
+        <span className="text-xs text-muted-foreground">묶음으로 고르기</span>
+        {USER_SEGMENTS.map((segment) => (
+          <Button
+            key={segment.value}
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={loadingSegment !== null}
+            title={'hint' in segment ? segment.hint : undefined}
+            onClick={() => pickSegment(segment.value, segment.label)}
+          >
+            {loadingSegment === segment.value && <Loader2 className="animate-spin" aria-hidden />}
+            {segment.label}
+          </Button>
+        ))}
+      </div>
 
       {/* 사용자 검색 및 선택 */}
       <Popover open={open} onOpenChange={setOpen}>

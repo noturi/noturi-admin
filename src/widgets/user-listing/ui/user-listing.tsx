@@ -12,14 +12,14 @@ export async function UserListing() {
   if (!currentUser) return null; // layout에서 이미 로그인 화면으로 보냄
 
   const { cache } = getSearchParams(PageType.USER);
-  const email = cache.get('email');
+  const keyword = cache.get('keyword');
   const createdAt = cache.get('createdAt');
   const sort = toServerSort(cache.get('sort') as string | null, USER_SORTABLE_COLUMNS);
 
   const response = await getUserList({
     page: cache.get('page') as number,
     limit: cache.get('perPage') as number,
-    ...(email && { email: email as string }),
+    ...(keyword && { keyword: keyword as string }),
     ...(createdAt && { createdAt: createdAt as string }),
     ...(sort && { sort }),
   });

@@ -22,7 +22,9 @@ import { UserSelectField } from './user-select-field';
 import { DatePickerField } from './date-picker-field';
 import { MonthDaysGrid } from './month-days-grid';
 import { WeekdayPicker } from './weekday-picker';
+import { describeSendResult } from '@/entities/notification';
 import { NotificationPreview } from './notification-preview';
+import { useRecipientReach } from './use-recipient-reach';
 import {
   getFormDefaultValues,
   buildNotificationData,
@@ -87,6 +89,7 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
   const isCustomLink = screen === 'Custom';
   const hasLastDayCandidate = repeatMonthDays.some((day) => day >= 29);
   const targetCount = targetUserIds.length;
+  const reach = useRecipientReach(targetUserIds);
 
   // 저장된 알림은 예약·반복만 있음(즉시 발송은 기록되지 않음) — 수정 화면에서 즉시 발송으로 바꾸면 보내지지 않으므로 숨김
   const sendTypeOptions =
@@ -128,13 +131,8 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
         const sent = result.data.sendResult;
         if (sent) {
           // 즉시 발송 결과를 그대로 보여줌 — "생성되었습니다"만으로는 실제로 나갔는지 알 수 없음
-          if (sent.failCount > 0) {
-            toast.warning(
-              `${sent.successCount.toLocaleString()}명에게 발송, ${sent.failCount.toLocaleString()}건 실패`
-            );
-          } else {
-            toast.success(`${sent.successCount.toLocaleString()}명에게 발송했어요`);
-          }
+          const { tone, message } = describeSendResult(sent);
+          toast[tone](message);
         } else {
           toast.success(values.sendType === 'repeat' ? '반복 발송을 저장했어요' : '예약했어요');
         }
@@ -361,7 +359,10 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                     <FormControl>
                       <UserSelectField value={field.value || []} onChange={field.onChange} />
                     </FormControl>
-                    <FormDescription>알림 수신을 켠 사용자만 검색돼요.</FormDescription>
+                    <FormDescription>
+                      검색에는 알림을 켠 사용자만 나와요. 묶음에는 알림을 끈 사용자도 들어가며, 실제로 받을 수 있는
+                      인원은 미리보기에 보여요.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -483,6 +484,7 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
             title={title}
             body={body}
             targetCount={targetCount}
+            reach={reach}
             schedule={schedule}
             destination={destination}
           />
@@ -521,6 +523,12 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
         <ConfirmSummary
           items={[
             { label: '제목', value: pendingImmediate?.title },
+            {
+              label: '받는 사람',
+              value: reach
+                ? `${targetCount.toLocaleString()}명 중 ${reach.reachable.toLocaleString()}명이 받을 수 있어요`
+                : `${targetCount.toLocaleString()}명`,
+            },
             { label: '내용', value: pendingImmediate?.body },
             { label: '누르면', value: destination },
           ]}

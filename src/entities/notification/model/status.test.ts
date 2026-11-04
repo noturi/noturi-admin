@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  describeSendResult,
   describeNotificationDestination,
   describeNotificationSchedule,
   getNotificationCapabilities,
@@ -79,5 +80,24 @@ describe('describeNotificationDestination', () => {
     expect(describeNotificationDestination({ screen: 'Custom', linkUrl: 'https://example.com' })).toBe(
       '링크 · https://example.com'
     );
+  });
+});
+
+describe('describeSendResult', () => {
+  it('기기 수·실패·건너뛴 사람을 구분', () => {
+    expect(
+      describeSendResult({ successCount: 11, failCount: 1, skippedNotificationOff: 2, skippedNoDevice: 1 })
+    ).toEqual({
+      tone: 'warning',
+      message: '기기 11대에 보냈어요 · 실패 1건 · 알림 끔·기기 없음으로 3명 건너뜀',
+    });
+    expect(describeSendResult({ successCount: 5, failCount: 0 })).toEqual({
+      tone: 'success',
+      message: '기기 5대에 보냈어요',
+    });
+  });
+
+  it('아무도 못 받으면 warning', () => {
+    expect(describeSendResult({ successCount: 0, failCount: 0, skippedNoDevice: 3 }).tone).toBe('warning');
   });
 });

@@ -9,11 +9,17 @@ export const NotificationLogSchema = z.object({
   id: z.string().uuid(),
   sentAt: z.string(),
   successCount: z.number(),
-  failureCount: z.number(),
+  /** 서버 컬럼 이름은 failCount (예전 화면은 failureCount를 읽어 실패가 항상 0으로 보였음) */
+  failCount: z.number(),
   details: z
     .object({
-      failedTokens: z.array(z.string()).optional(),
+      failedDetails: z.array(z.string()).optional(),
+      /** 알림을 꺼 둬서 건너뛴 사용자 수 (이 기록이 생긴 뒤 발송분부터) */
+      skippedNotificationOff: z.number().optional(),
+      /** 받을 기기가 없어 건너뛴 사용자 수 */
+      skippedNoDevice: z.number().optional(),
     })
+    .nullable()
     .optional(),
 });
 
@@ -52,6 +58,8 @@ export const NotificationSchema = z.object({
   skipHolidays: z.boolean().optional(),
   isActive: z.boolean(),
   lastSentAt: z.string().optional(),
+  /** 다음 발송 시각 — 서버가 크론과 같은 규칙(요일·말일·공휴일·종료일)으로 계산, 나갈 일정이 없으면 null */
+  nextSendAt: z.string().nullable().optional(),
   createdBy: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -100,6 +108,8 @@ export type SendNotificationResponse = {
   success: boolean;
   successCount: number;
   failCount: number;
+  skippedNotificationOff?: number;
+  skippedNoDevice?: number;
   message: string;
 };
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { DataTable } from '@/shared/ui/table/data-table';
+import { DataTableSearch } from '@/shared/ui/table/data-table-search';
 import { DataTableToolbar } from '@/shared/ui/table/data-table-toolbar';
 import { useDataTable } from '@/shared/ui/table/use-data-table';
 import { type AuthUser } from '@/shared/lib/permissions';
@@ -31,10 +32,14 @@ export function UserTable({ data, pageCount, totalCount, currentUser }: UserTabl
     <DataTable
       table={table}
       totalCount={totalCount}
-      emptyMessage="아직 가입한 사용자가 없어요."
-      filteredEmptyMessage="조건에 맞는 사용자가 없어요. 이메일이나 가입일 조건을 바꿔 보세요."
+      filteredEmptyMessage="조건에 맞는 사용자가 없어요. 가입일 조건을 바꿔 보세요."
+      // 검색어는 열 필터가 아니라 따로 판단하지 않음 — 사용자가 0명인 경우는 사실상 검색 결과
+      emptyMessage="찾는 사용자가 없어요. 검색어를 바꿔 보세요."
     >
-      <DataTableToolbar table={table} />
+      <DataTableToolbar
+        table={table}
+        leading={<DataTableSearch param="keyword" label="사용자 찾기" placeholder="이름·이메일·닉네임으로 찾기" />}
+      />
     </DataTable>
   );
 }

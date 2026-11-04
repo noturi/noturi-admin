@@ -14,7 +14,9 @@ function statusMessage(n: NotificationDetail, status: ReturnType<typeof getNotif
     case 'scheduled':
       return `${people}에게 ${describeNotificationSchedule(n)}에 나가요.`;
     case 'repeating':
-      return `반복 일정대로 ${people}에게 나가고 있어요.`;
+      return n.nextSendAt
+        ? `반복 일정대로 ${people}에게 나가고 있어요. 다음은 ${formatKstLong(n.nextSendAt)}이에요.`
+        : `반복 일정대로 ${people}에게 나가고 있어요.`;
     case 'paused':
       return '꺼져 있어서 발송되지 않아요. 켜면 다시 일정대로 나가요.';
     case 'sent':
@@ -24,13 +26,20 @@ function statusMessage(n: NotificationDetail, status: ReturnType<typeof getNotif
   }
 }
 
-export function NotificationDetailView({ notification: n }: { notification: NotificationDetail }) {
+interface NotificationDetailViewProps {
+  notification: NotificationDetail;
+  /** 받는 사람 카드 — 사용자 정보가 필요해 위젯에서 만들어 넣음 (entities끼리 import 금지) */
+  recipients?: React.ReactNode;
+}
+
+export function NotificationDetailView({ notification: n, recipients }: NotificationDetailViewProps) {
   const status = getNotificationStatus(n);
   const logs = n.logs ?? [];
 
   const rows: { label: string; value: React.ReactNode }[] = [
     { label: '상태', value: <NotificationStatusBadge status={status} /> },
     { label: n.isRepeat ? '반복' : '예약', value: describeNotificationSchedule(n) },
+    ...(n.isRepeat && n.nextSendAt ? [{ label: '다음 발송', value: formatKstLong(n.nextSendAt) }] : []),
     { label: '받는 사람', value: `${n.targetUserCount.toLocaleString()}명` },
     { label: '누르면', value: describeNotificationDestination(n.data) },
     ...(n.data.params && Object.keys(n.data.params).length
@@ -67,11 +76,15 @@ export function NotificationDetailView({ notification: n }: { notification: Noti
           </CardContent>
         </Card>
 
+        {recipients}
+
         <Card>
           <CardHeader>
             <CardTitle>발송 기록</CardTitle>
             <CardDescription>
-              {logs.length ? `${logs.length.toLocaleString()}번 보냈어요.` : '아직 보낸 적이 없어요.'}
+              {logs.length
+                ? `${logs.length.toLocaleString()}번 보냈어요. 성공·실패는 기기 수, 건너뜀은 사람 수예요.`
+                : '아직 보낸 적이 없어요.'}
             </CardDescription>
           </CardHeader>
           {logs.length > 0 && (
@@ -83,13 +96,19 @@ export function NotificationDetailView({ notification: n }: { notification: Noti
                       <TableHead>보낸 시각</TableHead>
                       <TableHead className="text-right">성공</TableHead>
                       <TableHead className="text-right">실패</TableHead>
+                      <TableHead className="text-right">건너뜀</TableHead>
                       <TableHead className="text-right">성공률</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {logs.map((log) => {
                       const success = log.successCount ?? 0;
-                      const failure = log.failureCount ?? 0;
+                      const failure = log.failCount ?? 0;
+                      // 건너뜀 = 알림을 꺼 뒀거나 받을 기기가 없는 사용자 (기록이 생기기 전 발송분은 값 없음)
+                      const offCount = log.details?.skippedNotificationOff;
+                      const noDeviceCount = log.details?.skippedNoDevice;
+                      const skipped =
+                        offCount == null && noDeviceCount == null ? null : (offCount ?? 0) + (noDeviceCount ?? 0);
                       const total = success + failure;
                       return (
                         <TableRow key={log.id}>
@@ -98,6 +117,14 @@ export function NotificationDetailView({ notification: n }: { notification: Noti
                           {/* 빨강은 실패가 있을 때만 */}
                           <TableCell className={`text-right tabular-nums ${failure > 0 ? 'text-destructive' : ''}`}>
                             {failure.toLocaleString()}
+                          </TableCell>
+                          <TableCell
+                            className="text-right text-muted-foreground tabular-nums"
+                            title={
+                              skipped ? `알림 끔 ${offCount ?? 0}명 · 기기 없음 ${noDeviceCount ?? 0}명` : undefined
+                            }
+                          >
+                            {skipped == null ? '-' : `${skipped.toLocaleString()}명`}
                           </TableCell>
                           <TableCell className="text-right tabular-nums">
                             {total > 0 ? `${Math.round((success / total) * 100)}%` : '-'}

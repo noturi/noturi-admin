@@ -42,8 +42,8 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<DataTableFeatur
         </Link>
       ),
       enableHiding: false,
-      enableColumnFilter: true,
-      meta: { label: '이메일', variant: 'text', placeholder: '이메일로 찾기' },
+      // 검색은 이메일·이름·닉네임을 한 번에 (도구 줄의 DataTableSearch → keyword)
+      meta: { label: '이메일' },
     },
     {
       id: 'name',

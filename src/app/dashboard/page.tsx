@@ -10,7 +10,7 @@ import {
   NotificationStatusBadge,
   type Notification,
 } from '@/entities/notification';
-import { formatKstDateTime, formatKstLong, ROUTES } from '@/shared/lib';
+import { auth, can, formatKstDateTime, formatKstLong, ROUTES } from '@/shared/lib';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { PageHeader } from '@/shared/ui/heading';
 import PageContainer from '@/shared/ui/page-container';
@@ -41,14 +41,14 @@ async function getAttentionNotifications(): Promise<{ upcoming: Notification[]; 
     const { data } = await getNotificationList({ page: 1, limit: 100 });
     const now = Date.now();
     const list = data ?? [];
-    const scheduled = list
-      .filter((n) => getNotificationStatus(n, now) === 'scheduled')
-      .sort((a, b) => new Date(a.scheduledAt!).getTime() - new Date(b.scheduledAt!).getTime());
-    const repeating = list.filter((n) => getNotificationStatus(n, now) === 'repeating');
+    // 실제로 다음에 나갈 시각순 — 반복 알림도 서버가 계산한 nextSendAt으로 같이 정렬
+    const upcoming = list
+      .filter((n) => ['scheduled', 'repeating'].includes(getNotificationStatus(n, now)) && n.nextSendAt)
+      .sort((a, b) => new Date(a.nextSendAt!).getTime() - new Date(b.nextSendAt!).getTime());
     const missed = list.filter(
       (n) => getNotificationStatus(n, now) === 'missed' && now - new Date(n.scheduledAt!).getTime() < MISSED_WINDOW_MS
     );
-    return { upcoming: [...scheduled, ...repeating].slice(0, 5), missed: missed.slice(0, 3) };
+    return { upcoming: upcoming.slice(0, 5), missed: missed.slice(0, 3) };
   } catch (error) {
     // 세션 만료는 그대로 진행, 그 밖의 실패는 이 카드만 오류 표시 (대시보드 전체를 막지 않음)
     unstable_rethrow(error);
@@ -66,7 +66,8 @@ function NotificationRow({ n }: { n: Notification }) {
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">{n.title}</p>
           <p className="truncate text-xs text-muted-foreground tabular-nums">
-            {describeNotificationSchedule(n)} · {n.targetUserCount.toLocaleString()}명
+            {n.nextSendAt ? formatKstLong(n.nextSendAt) : describeNotificationSchedule(n)} ·{' '}
+            {n.targetUserCount.toLocaleString()}명
           </p>
         </div>
         <NotificationStatusBadge status={getNotificationStatus(n)} />
@@ -76,10 +77,13 @@ function NotificationRow({ n }: { n: Notification }) {
 }
 
 export default async function DashboardPage() {
+  const { user } = await auth();
+  // 관리자(ADMIN)는 서버에서 알림 조회가 막혀 있어 카드도 요청도 하지 않음
+  const showNotifications = !!user && can(user).viewNotification();
   const [statistics, { activities }, attention] = await Promise.all([
     getDashboardStatistics(),
     getDashboardActivities(),
-    getAttentionNotifications(),
+    showNotifications ? getAttentionNotifications() : Promise.resolve(undefined),
   ]);
 
   const growth = statistics.userGrowthRate;
@@ -125,47 +129,52 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      <div className="grid items-start gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
-            <div className="space-y-1.5">
-              <CardTitle>나갈 알림</CardTitle>
-              <CardDescription>곧 나갈 예약(가까운 순)·반복 알림</CardDescription>
-            </div>
-            <Link href={ROUTES.DASHBOARD.NOTIFICATION} className="shrink-0 text-sm underline-offset-4 hover:underline">
-              전체 보기
-            </Link>
-          </CardHeader>
-          <CardContent>
-            {attention === null ? (
-              <p role="alert" className="py-6 text-center text-sm text-destructive">
-                알림을 불러오지 못했어요. 알림 관리에서 확인해 주세요.
-              </p>
-            ) : attention.upcoming.length === 0 && attention.missed.length === 0 ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">예정된 알림이 없어요.</p>
-            ) : (
-              <div className="space-y-4">
-                {attention.upcoming.length > 0 && (
-                  <ul className="divide-y">
-                    {attention.upcoming.map((n) => (
-                      <NotificationRow key={n.id} n={n} />
-                    ))}
-                  </ul>
-                )}
-                {attention.missed.length > 0 && (
-                  <section aria-label="최근 발송되지 못한 알림">
-                    <p className="text-xs font-medium text-destructive">최근 7일 발송되지 못함</p>
+      <div className={showNotifications ? 'grid items-start gap-6 lg:grid-cols-2' : 'grid items-start gap-6'}>
+        {attention !== undefined && (
+          <Card>
+            <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+              <div className="space-y-1.5">
+                <CardTitle>나갈 알림</CardTitle>
+                <CardDescription>다음 발송이 가까운 순 (반복 알림 포함)</CardDescription>
+              </div>
+              <Link
+                href={ROUTES.DASHBOARD.NOTIFICATION}
+                className="shrink-0 text-sm underline-offset-4 hover:underline"
+              >
+                전체 보기
+              </Link>
+            </CardHeader>
+            <CardContent>
+              {attention === null ? (
+                <p role="alert" className="py-6 text-center text-sm text-destructive">
+                  알림을 불러오지 못했어요. 알림 관리에서 확인해 주세요.
+                </p>
+              ) : attention.upcoming.length === 0 && attention.missed.length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">예정된 알림이 없어요.</p>
+              ) : (
+                <div className="space-y-4">
+                  {attention.upcoming.length > 0 && (
                     <ul className="divide-y">
-                      {attention.missed.map((n) => (
+                      {attention.upcoming.map((n) => (
                         <NotificationRow key={n.id} n={n} />
                       ))}
                     </ul>
-                  </section>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                  )}
+                  {attention.missed.length > 0 && (
+                    <section aria-label="최근 발송되지 못한 알림">
+                      <p className="text-xs font-medium text-destructive">최근 7일 발송되지 못함</p>
+                      <ul className="divide-y">
+                        {attention.missed.map((n) => (
+                          <NotificationRow key={n.id} n={n} />
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>

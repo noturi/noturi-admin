@@ -11,5 +11,7 @@ export const ROUTES = {
     OPERATOR: '/dashboard/operator',
     CATEGORY: '/dashboard/category',
     NOTIFICATION: '/dashboard/notification',
+    APP_VERSION: '/dashboard/app-version',
+    AUDIT_LOG: '/dashboard/audit-log',
   },
 } as const;

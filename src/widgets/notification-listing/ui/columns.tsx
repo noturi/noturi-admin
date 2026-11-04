@@ -11,7 +11,7 @@ import {
   NotificationStatusBadge,
 } from '@/entities/notification';
 import { NotificationActions } from '@/features/notification';
-import { formatKstDateTime } from '@/shared/lib';
+import { formatKstDateTime, formatKstLong } from '@/shared/lib';
 import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
 /**
@@ -50,9 +50,15 @@ export function getNotificationColumns(): ColumnDef<DataTableFeatures, Notificat
       id: 'schedule',
       header: '발송 일정',
       cell: ({ row }) => (
-        <div className="flex min-w-40 items-center gap-1.5 text-sm tabular-nums">
-          {row.original.isRepeat && <Repeat className="size-3.5 shrink-0 text-muted-foreground" aria-label="반복" />}
-          <span className="break-keep">{describeNotificationSchedule(row.original)}</span>
+        <div className="min-w-40 text-sm tabular-nums">
+          <div className="flex items-center gap-1.5">
+            {row.original.isRepeat && <Repeat className="size-3.5 shrink-0 text-muted-foreground" aria-label="반복" />}
+            <span className="break-keep">{describeNotificationSchedule(row.original)}</span>
+          </div>
+          {/* 반복은 규칙만으로는 다음이 언제인지 알기 어려움 — 서버가 공휴일·말일까지 계산한 값 */}
+          {row.original.isRepeat && row.original.nextSendAt && (
+            <p className="text-xs text-muted-foreground">다음 {formatKstLong(row.original.nextSendAt)}</p>
+          )}
         </div>
       ),
       enableSorting: false,

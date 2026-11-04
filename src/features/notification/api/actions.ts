@@ -3,6 +3,7 @@
 import { serverApi } from '@/shared/api/server-api';
 import { revalidatePath } from 'next/cache';
 import { ROUTES } from '@/shared/lib/routes';
+import { getSegmentUserIds, lookupUsers, type UserSegment } from '@/entities/user';
 import type {
   CreateNotificationRequest,
   UpdateNotificationRequest,
@@ -46,4 +47,18 @@ export async function sendNotification(id: string): Promise<SendNotificationResp
   revalidatePath(ROUTES.DASHBOARD.NOTIFICATION);
   revalidatePath(`${ROUTES.DASHBOARD.NOTIFICATION}/${id}`);
   return response;
+}
+
+/**
+ * 받을 수 있는 인원 요약 — 작성 폼 미리보기용
+ * 서버 조회가 POST(id 수천 개)라 브라우저 프록시(GET 전용)로는 못 불러 Server Action으로 감쌈
+ */
+export async function getRecipientReach(ids: string[]) {
+  if (ids.length === 0) return null;
+  return (await lookupUsers(ids)).summary;
+}
+
+/** 대상 묶음(전체·30일 미접속 …) → 사용자 id */
+export async function getSegmentRecipientIds(segment: UserSegment) {
+  return getSegmentUserIds(segment);
 }

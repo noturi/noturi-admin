@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, BarChart3, FolderOpen, LogOut, UserCog, Bell } from 'lucide-react';
+import { Users, BarChart3, FolderOpen, LogOut, UserCog, Bell, Smartphone, History } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -14,7 +14,7 @@ import {
   SidebarFooter,
   useSidebar,
 } from '@/shared/ui/sidebar';
-import { ROUTES, type AuthUser } from '@/shared/lib';
+import { can, ROUTES, type AuthUser } from '@/shared/lib';
 import { logoutAction } from '@/features/auth';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -63,6 +63,20 @@ export function AppSidebar({ user }: AppSidebarProps) {
       title: '알림 관리',
       url: ROUTES.DASHBOARD.NOTIFICATION,
       icon: Bell,
+      // 서버 권한이 없으면 메뉴도 숨김 (관리자는 알림 조회도 403)
+      visible: !!user && can(user).viewNotification(),
+    },
+    {
+      title: '앱 버전',
+      url: ROUTES.DASHBOARD.APP_VERSION,
+      icon: Smartphone,
+      visible: !!user && can(user).manageAppVersion(),
+    },
+    {
+      title: '작업 기록',
+      url: ROUTES.DASHBOARD.AUDIT_LOG,
+      icon: History,
+      visible: !!user && can(user).viewAuditLog(),
     },
   ];
 
@@ -82,7 +96,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               {items
-                .filter((item) => item.url)
+                .filter((item) => item.url && item.visible !== false)
                 .map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton

@@ -14,10 +14,13 @@ import type { DataTableFeatures, DataTableInstance } from './table-features';
 
 interface DataTableToolbarProps<TData extends RowData> extends React.ComponentProps<'div'> {
   table: DataTableInstance<TData>;
+  /** 필터 앞에 둘 요소 (예: 여러 열을 한 번에 찾는 검색) */
+  leading?: React.ReactNode;
 }
 
 export function DataTableToolbar<TData extends RowData>({
   table,
+  leading,
   children,
   className,
   ...props
@@ -38,6 +41,7 @@ export function DataTableToolbar<TData extends RowData>({
       {...props}
     >
       <div className="flex flex-1 flex-wrap items-center gap-2">
+        {leading}
         {columns.map((column) => (
           <DataTableToolbarFilter key={column.id} column={column} />
         ))}

@@ -2,6 +2,7 @@ import { notFound, unstable_rethrow } from 'next/navigation';
 
 import { getNotificationById, NotificationDetailView, type NotificationDetail } from '@/entities/notification';
 import { NotificationActions } from '@/features/notification';
+import { NotificationRecipients } from '@/widgets/notification-recipients';
 import { ROUTES } from '@/shared/lib';
 import { PageHeader } from '@/shared/ui/heading';
 import PageContainer from '@/shared/ui/page-container';
@@ -29,7 +30,10 @@ export default async function NotificationDetailPage(props: { params: Promise<{ 
         back={{ href: ROUTES.DASHBOARD.NOTIFICATION, label: '알림 목록으로' }}
         actions={<NotificationActions notification={notification} variant="buttons" />}
       />
-      <NotificationDetailView notification={notification} />
+      <NotificationDetailView
+        notification={notification}
+        recipients={<NotificationRecipients userIds={notification.targetUserIds} />}
+      />
     </PageContainer>
   );
 }

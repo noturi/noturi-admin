@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Edit, Eye, MoreHorizontal, Power, PowerOff, Send, Trash } from 'lucide-react';
 
 import {
+  describeSendResult,
   describeNotificationDestination,
   describeNotificationSchedule,
   getNotificationCapabilities,
@@ -103,14 +104,8 @@ export function NotificationActions({ notification: n, variant }: NotificationAc
             errorMessage: '보내지 못했어요. 잠시 후 다시 시도해 주세요.',
           });
           if (!result.ok) return false;
-          const { successCount, failCount } = result.data;
-          if (failCount > 0) {
-            toast.warning(
-              `${successCount.toLocaleString()}명에게 보냈고 ${failCount.toLocaleString()}건은 실패했어요.`
-            );
-          } else {
-            toast.success(`${successCount.toLocaleString()}명에게 보냈어요.`);
-          }
+          const { tone, message } = describeSendResult(result.data);
+          toast[tone](message);
           return true;
         }}
       >

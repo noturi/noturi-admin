@@ -5,11 +5,12 @@ export enum PageType {
   OPERATOR = 'operator',
   CATEGORY = 'category',
   NOTIFICATION = 'notification',
+  AUDIT_LOG = 'audit-log',
 }
 
 const pageConfigs = {
   [PageType.USER]: {
-    email: true,
+    keyword: true,
     createdAt: true,
     sort: true,
   },
@@ -27,6 +28,9 @@ const pageConfigs = {
     isActive: true,
     isRepeat: true,
     createdAt: true,
+  },
+  [PageType.AUDIT_LOG]: {
+    action: true,
   },
 };
 

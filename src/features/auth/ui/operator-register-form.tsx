@@ -144,7 +144,8 @@ export function OperatorRegisterForm() {
             ]}
           />
           <p className="text-sm break-keep text-muted-foreground">
-            {ROLE_LABELS.ADMIN}는 사용자·카테고리·알림을 관리할 수 있고, 다른 운영자는 등록·삭제할 수 없어요.
+            {ROLE_LABELS.ADMIN}는 사용자 조회·기본 카테고리 관리·대시보드를 쓸 수 있어요. 알림·사용자 삭제·운영자
+            관리·앱 버전은 {ROLE_LABELS.SUPER_ADMIN}만 할 수 있어요.
           </p>
           {formError && (
             <p role="alert" className="rounded-md border border-destructive/50 px-3 py-2 text-sm text-destructive">
