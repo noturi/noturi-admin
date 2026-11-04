@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, Settings, BarChart3, FolderOpen, LogOut, UserCog, Bell } from 'lucide-react';
+import { Users, BarChart3, FolderOpen, LogOut, UserCog, Bell } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -14,12 +14,16 @@ import {
   SidebarFooter,
   useSidebar,
 } from '@/shared/ui/sidebar';
-import { useAuthStore, ROUTES } from '@/shared/lib';
+import { ROUTES, type AuthUser } from '@/shared/lib';
 import { logoutAction } from '@/features/auth';
 import Link from 'next/link';
 
-export function AppSidebar() {
-  const { user } = useAuthStore();
+interface AppSidebarProps {
+  /** 로그인한 관리자 — 서버(dashboard/layout)에서 쿠키로 읽어 전달 */
+  user: AuthUser | null;
+}
+
+export function AppSidebar({ user }: AppSidebarProps) {
   const { setOpenMobile, isMobile } = useSidebar();
 
   const handleMenuClick = () => {
@@ -53,11 +57,6 @@ export function AppSidebar() {
       title: '알림 관리',
       url: ROUTES.DASHBOARD.NOTIFICATION,
       icon: Bell,
-    },
-    {
-      title: '설정',
-      url: ROUTES.DASHBOARD.SETTINGS,
-      icon: Settings,
     },
   ];
 

@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/shared/ui/sideb
 import { Separator } from '@/shared/ui/separator';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { userId } = await auth();
+  const { userId, user } = await auth();
 
   if (!userId) {
     redirect('/auth/login');
@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user} />
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 md:hidden">
           <SidebarTrigger className="-ml-1" />

@@ -8,8 +8,17 @@ import { Label } from '@/shared/ui/label';
 import { toast } from 'sonner';
 import { loginAction } from '../api';
 
-export function LoginForm() {
+interface LoginFormProps {
+  /** 토큰 만료로 로그아웃되어 온 경우 안내 */
+  sessionExpired?: boolean;
+}
+
+export function LoginForm({ sessionExpired = false }: LoginFormProps) {
   const [state, formAction, isPending] = useActionState(loginAction, null);
+
+  useEffect(() => {
+    if (sessionExpired) toast.info('로그인이 만료되었어요. 다시 로그인해 주세요.');
+  }, [sessionExpired]);
 
   useEffect(() => {
     if (state?.error) {

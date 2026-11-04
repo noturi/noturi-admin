@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 import Link from 'next/link';
 import PageContainer from '@/shared/ui/page-container';
 import { Heading } from '@/shared/ui/heading';
@@ -23,7 +23,9 @@ export default async function EditNotificationPage(props: Props) {
   let notification;
   try {
     notification = await getNotificationById(id);
-  } catch {
+  } catch (error) {
+    // 세션 만료 리다이렉트(401)는 404로 바꾸지 않고 그대로 진행
+    unstable_rethrow(error);
     notFound();
   }
 

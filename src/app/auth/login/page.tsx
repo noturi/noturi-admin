@@ -1,5 +1,10 @@
 import { LoginFormComponent } from '@/features/auth';
 
-export default function LoginPage() {
-  return <LoginFormComponent />;
+type Props = {
+  searchParams: Promise<{ reason?: string }>;
+};
+
+export default async function LoginPage(props: Props) {
+  const { reason } = await props.searchParams;
+  return <LoginFormComponent sessionExpired={reason === 'expired'} />;
 }

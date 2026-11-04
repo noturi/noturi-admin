@@ -1,6 +1,6 @@
 'use server';
 
-import { redirect } from 'next/navigation';
+import { redirect, unstable_rethrow } from 'next/navigation';
 import { registerSchema } from '../model/types';
 import { register } from './api';
 import { HttpError } from '@/shared/lib/utils/http-error';
@@ -23,6 +23,8 @@ export async function registerAction(data: RegisterData) {
   try {
     await register(validation.data);
   } catch (error) {
+    // 세션 만료 리다이렉트(401)는 에러 메시지로 바꾸지 않고 그대로 진행
+    unstable_rethrow(error);
     return { error: HttpError.getErrorMessage(error) };
   }
 

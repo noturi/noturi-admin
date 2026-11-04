@@ -1,7 +1,11 @@
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { END_POINT } from '@/shared/lib';
 import { EnhancedFetch } from './enhanced-fetch';
 import { HttpError } from '@/shared/lib/utils/http-error';
+
+/** 쿠키를 지우고 로그인 화면으로 보내는 경로 (app/auth/logout/route.ts) */
+export const SESSION_EXPIRED_PATH = '/auth/logout?reason=expired';
 
 async function getTokenFromCookies() {
   const cookieStore = await cookies();
@@ -26,6 +30,15 @@ export const serverApi = new EnhancedFetch(
     };
   },
   async (error) => {
+    // 토큰이 만료·무효 → 쿠키를 지우고 로그인 화면으로 (에러 화면에 멈추지 않게)
+    if (error.response?.status === 401) redirect(SESSION_EXPIRED_PATH);
     await HttpError.backend(error);
   }
 );
+
+/** 로그인·가입처럼 토큰 없이 부르는 API — 401은 "비밀번호 틀림"이라 세션 만료로 처리하지 않음 */
+export const publicApi = new EnhancedFetch(END_POINT.BASE_URL + '/admin', {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
