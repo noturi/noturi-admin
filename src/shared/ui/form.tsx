@@ -104,7 +104,8 @@ function FormControl({ children, ...props }: { children: React.ReactElement } & 
     render: children,
     props: mergeProps(
       {
-        'data-slot': 'form-control',
+        // data-slot은 넣지 않음 — 자식(Input·SelectTrigger 등)의 data-slot을 덮어쓰면 그 값에 건 스타일이 깨짐
+        // (Radix Slot도 자식 속성이 우선이라 실제로는 자식 값이 남았음)
         id: formItemId,
         'aria-describedby': !error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`,
         'aria-invalid': !!error,
