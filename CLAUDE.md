@@ -21,7 +21,7 @@ pnpm format                        # Oxfmt (설정: .oxfmtrc.json, Tailwind 클�
 pnpm dlx shadcn@latest add [name]  # shadcn/ui 컴포넌트 추가
 ```
 
-- pre-commit 훅(husky)이 `oxlint --fix` + `oxfmt`를 실행 (ESLint·Prettier는 쓰지 않음)
+- 커밋 훅은 lefthook(`lefthook.yml`): 스테이징된 파일만 `oxlint --fix` + `oxfmt`, 고친 내용은 같은 커밋에 포함. push 전 `tsc --noEmit` (ESLint·Prettier·husky는 쓰지 않음)
 - 의존성: `pnpm-workspace.yaml`의 `minimumReleaseAge`로 공개 7일 안 된 버전은 설치되지 않음
 - `.env.local`의 `NEXT_PUBLIC_API_URL`은 **운영 서버**를 가리킨다 — 테스트용 빌드·실행은 `NEXT_PUBLIC_API_URL=http://localhost:...`로 덮어쓸 것
 
@@ -60,6 +60,7 @@ Client Component → features/api/actions.ts(Server Action) → serverApi → re
 
 - `.claude/rules/` — 해당 파일을 다룰 때만 자동 로드 (`paths` 지정): `fsd-architecture.md`, `api-patterns.md`, `react-nextjs-patterns.md`
 - `.claude/skills/` — `/fsd-entity [name]` 엔티티 스캐폴딩, `/commit` 논리 단위 커밋
+- `/hallmark` — 새 페이지 디자인 (AI 티 나는 패턴 금지 규칙 16개 + sloplint). 이 저장소에만 설치
 - `/impeccable` — 기존 화면 디자인 리뷰·개선 (`critique`, `audit`, `polish`, `harden` …). 4.8.0 고정, 처음 쓰기 전 `/impeccable init`으로 `PRODUCT.md` 생성
   - UI 파일을 고칠 때마다 탐지기 훅이 돈다 (`settings.local.json`, 팀원은 `npx impeccable@4.8.0 install --providers=claude --scope=project`)
   - Live 모드의 Apply는 채팅 세션으로만 (`settings.json`의 `IMPECCABLE_LIVE_COPY_AGENT=chat` — 권한 확인 없이 에이전트를 띄우는 경로 차단)

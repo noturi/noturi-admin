@@ -1,0 +1,24 @@
+# 커밋 훅 — 스테이징된 파일만 검사하고, 자동으로 고친 내용은 같은 커밋에 포함(stage_fixed)
+# (husky 시절엔 전체 파일을 커밋 뒤에 포맷해서 매번 수정된 파일이 남았음)
+pre-commit:
+  parallel: false
+  commands:
+    lint:
+      glob: '*.{js,jsx,mjs,cjs,ts,tsx}'
+      exclude: &vendored
+        - '.claude/skills/hallmark/**'
+        - '.claude/skills/impeccable/**'
+        - '.claude/agents/**'
+      run: pnpm exec oxlint --fix --no-error-on-unmatched-pattern {staged_files}
+      stage_fixed: true
+    format:
+      glob: '*.{js,jsx,mjs,cjs,ts,tsx,json,jsonc,md,css,yml,yaml}'
+      exclude: *vendored
+      run: pnpm exec oxfmt --no-error-on-unmatched-pattern {staged_files}
+      stage_fixed: true
+
+# push 전 타입 검사 (TypeScript 7이라 1초 안팎)
+pre-push:
+  commands:
+    typecheck:
+      run: pnpm exec tsc --noEmit

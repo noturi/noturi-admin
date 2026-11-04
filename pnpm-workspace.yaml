@@ -1,4 +1,6 @@
 allowBuilds:
+  # 바이너리는 플랫폼별 optionalDependencies로 받음 — postinstall 불필요 (훅 설치는 prepare의 lefthook install)
+  lefthook: false
   '@tailwindcss/oxide': true
   sharp: true
   unrs-resolver: true

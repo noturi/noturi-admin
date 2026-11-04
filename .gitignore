@@ -65,3 +65,6 @@ next-env.d.ts
 **/.impeccable/live/deferred-svelte-component-accepts.json
 **/.impeccable/live/*.png
 # impeccable-ignore-end
+
+# Hallmark 빌드 로그·사전 점검 결과
+.hallmark/

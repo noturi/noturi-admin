@@ -17,7 +17,9 @@
     "node_modules/**",
     ".claude/skills/impeccable/**",
     ".claude/agents/**",
-    ".impeccable/**"
+    ".impeccable/**",
+    ".claude/skills/hallmark/**",
+    ".hallmark/**"
   ],
   "rules": {
     "import/no-anonymous-default-export": "warn",

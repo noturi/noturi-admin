@@ -29,6 +29,8 @@
     "next-env.d.ts",
     ".claude/skills/impeccable/**",
     ".claude/agents/**",
-    ".impeccable/**"
+    ".impeccable/**",
+    ".claude/skills/hallmark/**",
+    ".hallmark/**"
   ]
 }
