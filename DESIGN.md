@@ -12,31 +12,32 @@ colors:
   ring: 'oklch(0.707 0.022 261.325)'
   destructive: 'oklch(0.577 0.245 27.325)'
   sidebar-paper: 'oklch(0.985 0.002 247.839)'
+  rating: 'oklch(0.795 0.184 86.047)'
 typography:
   display:
-    fontFamily: 'Geist, system-ui, sans-serif'
+    fontFamily: 'Pretendard Variable, Pretendard, system-ui, sans-serif'
     fontSize: '1.875rem'
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: '-0.025em'
   headline:
-    fontFamily: 'Geist, system-ui, sans-serif'
+    fontFamily: 'Pretendard Variable, Pretendard, system-ui, sans-serif'
     fontSize: '1.5rem'
     fontWeight: 700
     lineHeight: 1.33
     letterSpacing: '-0.025em'
   title:
-    fontFamily: 'Geist, system-ui, sans-serif'
+    fontFamily: 'Pretendard Variable, Pretendard, system-ui, sans-serif'
     fontSize: '0.875rem'
     fontWeight: 600
     lineHeight: 1
   body:
-    fontFamily: 'Geist, system-ui, sans-serif'
+    fontFamily: 'Pretendard Variable, Pretendard, system-ui, sans-serif'
     fontSize: '0.875rem'
     fontWeight: 400
     lineHeight: 1.43
   label:
-    fontFamily: 'Geist, system-ui, sans-serif'
+    fontFamily: 'Pretendard Variable, Pretendard, system-ui, sans-serif'
     fontSize: '0.75rem'
     fontWeight: 500
     lineHeight: 1.33
@@ -107,7 +108,7 @@ shadcn/ui의 `new-york` 스타일 + `gray` 기본 색을 거의 그대로 쓰는
 - 무채색 슬레이트 단일 톤, 강조색 없음 — 파괴적 작업만 빨강
 - 테이블 중심 정보 밀도 (본문 14px, 행 높이 촘촘)
 - 얇은 테두리와 아주 옅은 그림자(`shadow-xs`/`shadow-sm`)로 층을 구분
-- 라이트 모드만 실제 동작 (다크 토큰은 정의만 되어 있고 켜는 장치가 없음)
+- 라이트·다크 모드 모두 동작 (next-themes, `.dark` 클래스 — 사이드바 하단 토글, 기본은 시스템 설정)
 
 ## Colors
 
@@ -127,19 +128,20 @@ shadcn/ui의 `new-york` 스타일 + `gray` 기본 색을 거의 그대로 쓰는
 ### Status
 
 - **Signal Red** (`oklch(0.577 0.245 27.325)`): 삭제·오류·`aria-invalid` 테두리. 위험 작업에만.
+- **Star Amber** (`--rating`, `oklch(0.795 0.184 86.047)`): 별점 표시 전용 (`text-rating`). 앱의 별점 메모 데이터를 보여줄 때만.
 
 ### Named Rules
 
 **The One Red Rule.** 빨강은 되돌릴 수 없는 작업과 오류에만 쓴다. 상태 표시(활성/비활성, 발송 완료)는 배지 변형(default/secondary/outline)으로 구분한다.
 
-**The Token Only Rule.** 색은 토큰(`bg-primary`, `text-destructive`, `text-muted-foreground`)으로만 쓴다. 지금 11개 파일에 `bg-red-600`, `text-blue-500` 같은 Tailwind 팔레트 색이 직접 들어가 있어 토큰과 어긋난다 — 고칠 대상.
+**The Token Only Rule.** 색은 토큰(`bg-primary`, `text-destructive`, `text-muted-foreground`, `text-rating`)으로만 쓴다. Tailwind 팔레트 색(`bg-red-600` 등)은 쓰지 않는다 — 토큰은 다크 모드 값이 따로 있어 팔레트 색을 쓰면 다크 모드에서 깨진다.
 
 카테고리 색(`CATEGORY_COLORS`, 10색)은 앱 사용자 데이터를 보여주는 값이라 디자인 토큰이 아니다. 색 견본으로만 표시한다.
 
 ## Typography
 
-**Display/Body Font:** Geist (Google Fonts, `latin`만 로드) — 한글은 시스템 고딕(macOS: Apple SD Gothic Neo, Windows: 맑은 고딕)으로 대체된다.
-**Mono Font:** Geist Mono — 색상 HEX 값 등 코드성 값에만.
+**Display/Body Font:** Pretendard Variable (npm `pretendard`, 동적 서브셋 CSS — 화면에 쓰인 글자 조각만 받음). 한글·영문·숫자가 한 글꼴로 맞는다.
+**Mono Font:** 시스템 모노(`ui-monospace`) — 색상 HEX 값 등 코드성 값에만.
 
 **Character:** 기술적이고 담백한 산세리프. 굵기는 400·500·600·700 네 단계만 쓴다.
 
@@ -153,7 +155,7 @@ shadcn/ui의 `new-york` 스타일 + `gray` 기본 색을 거의 그대로 쓰는
 
 ### Named Rules
 
-**The Hangul Fallback Rule.** 화면 문구는 한국어인데 웹폰트는 라틴만 있다. 한글과 숫자·영문이 섞인 줄에서 글꼴이 섞여 보일 수 있으니, 수치 정렬이 중요한 표에는 `tabular-nums`를 쓴다. 한글 웹폰트를 들일지는 미결정.
+**The Keep Words Rule.** 좁은 칸(세그먼트 설명, 배지, 카드 보조 문구)의 한국어는 `break-keep`으로 어절 단위 줄바꿈 — 글자 중간에서 끊기지 않게. 수치 열은 `tabular-nums`.
 
 ## Layout
 
@@ -161,7 +163,9 @@ shadcn/ui의 `new-york` 스타일 + `gray` 기본 색을 거의 그대로 쓰는
 - 본문 여백: 모바일 16px, 데스크톱 24px(`p-4 md:px-6`), 페이지 안 세로 간격 16px(`space-y-4`).
 - 목록 페이지: `Heading` → 구분선 → 도구 줄(검색·필터·컬럼 설정) → 테이블(최소 폭 640px, 가로 스크롤) → 페이지네이션.
 - 대시보드: 통계 카드 그리드 1열 → 2열(sm) → 4열(lg), 그 아래 최근 활동 카드.
-- 상세 화면: 뒤로가기 아이콘 버튼 + 제목, 내용은 탭(정보/설정 등)으로 나눈다.
+- 대시보드도 목록 페이지와 같이 `PageContainer` → `Heading` → 구분선으로 시작한다.
+- 상세 화면: 뒤로가기 아이콘 버튼(`aria-label` 필수) + 제목, 내용은 탭(정보/설정 등)으로 나눈다.
+- 작성 폼(알림 만들기·수정): 왼쪽에 질문형 제목의 카드 묶음(언제 / 누구에게 / 무엇을 / 어디로), 오른쪽 320px에 고정(sticky) 미리보기 + 제출 버튼. 1024px 미만에서는 한 열로 쌓인다.
 
 ## Elevation & Depth
 
@@ -198,12 +202,20 @@ shadcn/ui의 `new-york` 스타일 + `gray` 기본 색을 거의 그대로 쓰는
 - **Style:** 36px 높이, Haze Line 테두리, 투명 배경, 8px 반경, `shadow-xs`.
 - **Focus:** ring 색 테두리 + 3px 링.
 - **Error:** Signal Red 테두리 + 옅은 빨간 링(`aria-invalid`), 폼 메시지는 빨간 12–14px.
+- **Textarea:** 입력칸과 같은 테두리·링, 최소 높이 64px. 글자 수 제한이 권장값일 때는 아래에 `17/40` 식 카운터(넘으면 빨강, 저장은 막지 않음).
+- **Segmented Control** (`shared/ui/segmented-control`): 결과가 큰 단일 선택(발송 방식·반복 주기)은 Select 대신 선택지를 모두 펼친다. 각 칸에 라벨 + 한 줄 설명, 선택 시 Ink Slate 배경. Base UI RadioGroup이라 화살표 키로 이동.
+- **Weekday Picker:** 월요일 시작 7칸 토글 버튼(`aria-pressed`), 키보드로 고를 수 있다.
 
 ### Cards / Containers
 
 - **Corner Style:** 14px.
 - **Background:** Ledger White, Haze Line 테두리, `shadow-sm`.
 - **Internal Padding:** 위아래 24px, 좌우 24px, 요소 간 24px.
+
+### Notification Preview
+
+- 휴대폰 알림 모양 카드 하나(앱 아이콘 · "노트리" · 제목 1줄 · 본문 2줄 잘림) + 그 아래 평평한 요약 목록(받는 사람 / 발송 시점 / 누르면). 카드 안에 카드를 넣지 않는다.
+- 즉시 발송은 버튼 문구에 인원을 넣고("지금 N명에게 발송", Destructive) 확인 대화상자에서 같은 요약을 한 번 더 보여준다.
 
 ### Chips / Badges
 
@@ -212,7 +224,7 @@ shadcn/ui의 `new-york` 스타일 + `gray` 기본 색을 거의 그대로 쓰는
 
 ### Navigation
 
-- **Sidebar:** Sidebar Paper 배경, 상단에 "Noturi Admin" + 로그인한 관리자 이메일, 메뉴는 아이콘 + 14px 라벨, 활성/호버 시 Mist 배경. 하단에 로그아웃.
+- **Sidebar:** Sidebar Paper 배경, 상단에 "Noturi Admin" + 로그인한 관리자 이메일, 메뉴는 아이콘 + 14px 라벨, 활성/호버 시 Mist 배경. 하단에 다크 모드 토글 + 로그아웃.
 - **Mobile:** 768px 미만에서 시트(왼쪽에서 밀려나옴)로 열리고, 메뉴를 누르면 닫힌다.
 
 ### Data Table (signature)
@@ -231,11 +243,12 @@ shadcn/ui의 `new-york` 스타일 + `gray` 기본 색을 거의 그대로 쓰는
 - **Do** 새 목록 화면은 `Heading` → 도구 줄 → `DataTable` → 페이지네이션 순서를 그대로 따른다.
 - **Do** 페이지 제목은 `Heading` 컴포넌트로 (24px → md 30px, 700, tracking-tight).
 - **Do** 숫자 열·통계에는 `tabular-nums`.
+- **Do** 새 화면은 라이트·다크 둘 다 확인한다 (`data-checked:` 같은 상태 클래스에 `dark:` 배경이 덮어쓰지 않는지).
 
 ### Don't:
 
-- **Don't** `bg-red-600`, `text-blue-500` 같은 Tailwind 팔레트 색을 직접 쓰지 않는다 (지금 11개 파일 — 정리 대상).
+- **Don't** `bg-red-600`, `text-blue-500` 같은 Tailwind 팔레트 색을 직접 쓰지 않는다.
 - **Don't** 강조색을 새로 들이지 않는다. 구분이 필요하면 배지 변형·굵기·여백으로.
-- **Don't** 다크 모드를 전제로 한 디자인을 하지 않는다 — 토큰만 있고 켜는 장치가 없다 (켜려면 별도 작업).
+- **Don't** 회색 배경(`bg-muted`) 위에 `text-muted-foreground`를 올리지 않는다 — 대비 4.4:1로 AA(4.5:1) 미달.
 - **Don't** 카테고리 색(`CATEGORY_COLORS`)을 UI 장식 색으로 쓰지 않는다 — 사용자 데이터 값이다.
-- **Don't** 대시보드에만 `h1`을 직접 쓰는 식으로 제목 스타일을 화면마다 다르게 두지 않는다.
+- **Don't** 페이지 제목을 `h1`로 직접 쓰지 않는다 — 모든 화면이 `Heading`을 쓴다.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-04T01:15:03.648486+00:00",
+  "generatedAt": "2026-11-04T01:39:06.782519+00:00",
   "title": "Design System: Noturi Admin",
   "extensions": {
     "colorMeta": {
@@ -138,12 +138,27 @@
           "oklch(0.88 0.2 27.325)",
           "oklch(0.95 0.2 27.325)"
         ]
+      },
+      "rating": {
+        "role": "status",
+        "displayName": "Star Amber",
+        "canonical": "oklch(0.795 0.184 86.047)",
+        "tonalRamp": [
+          "oklch(0.15 0.184 86.047)",
+          "oklch(0.25 0.184 86.047)",
+          "oklch(0.35 0.184 86.047)",
+          "oklch(0.5 0.184 86.047)",
+          "oklch(0.65 0.184 86.047)",
+          "oklch(0.78 0.184 86.047)",
+          "oklch(0.88 0.184 86.047)",
+          "oklch(0.95 0.184 86.047)"
+        ]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "페이지 제목(데스크톱), 대시보드 제목."
+        "purpose": "페이지 제목(데스크톱), 모든 화면이 Heading 사용."
       },
       "headline": {
         "displayName": "Headline",
@@ -155,7 +170,7 @@
       },
       "body": {
         "displayName": "Body",
-        "purpose": "표 셀·폼·설명문. 한글은 시스템 고딕으로 대체."
+        "purpose": "표 셀·폼·설명문. 한글·영문 모두 Pretendard."
       },
       "label": {
         "displayName": "Label",
@@ -218,7 +233,7 @@
       "refersTo": "button-primary",
       "description": "주 행동(저장·등록).",
       "html": "<button class=\"ds-btn-primary\">저장</button>",
-      "css": ".ds-btn-primary { font-family: Geist, system-ui, sans-serif; display:inline-flex; align-items:center; justify-content:center; height:36px; padding:8px 16px; border:0; border-radius:8px; background:oklch(0.21 0.034 264.665); color:oklch(0.985 0.002 247.839); font-size:14px; font-weight:500; cursor:pointer; transition:background .15s, box-shadow .15s; } .ds-btn-primary:hover { background:oklch(0.21 0.034 264.665 / 0.9); } .ds-btn-primary:focus-visible { outline:none; box-shadow:0 0 0 3px oklch(0.707 0.022 261.325 / 0.5); }"
+      "css": ".ds-btn-primary { font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif; display:inline-flex; align-items:center; justify-content:center; height:36px; padding:8px 16px; border:0; border-radius:8px; background:oklch(0.21 0.034 264.665); color:oklch(0.985 0.002 247.839); font-size:14px; font-weight:500; cursor:pointer; transition:background .15s, box-shadow .15s; } .ds-btn-primary:hover { background:oklch(0.21 0.034 264.665 / 0.9); } .ds-btn-primary:focus-visible { outline:none; box-shadow:0 0 0 3px oklch(0.707 0.022 261.325 / 0.5); }"
     },
     {
       "name": "Outline Button",
@@ -226,7 +241,7 @@
       "refersTo": "button-outline",
       "description": "보조 행동, 테이블 도구 줄 필터(점선 변형).",
       "html": "<button class=\"ds-btn-outline\">취소</button>",
-      "css": ".ds-btn-outline { font-family: Geist, system-ui, sans-serif; display:inline-flex; align-items:center; height:36px; padding:8px 16px; border:1px solid oklch(0.928 0.006 264.531); border-radius:8px; background:oklch(1 0 0); color:oklch(0.13 0.028 261.692); font-size:14px; font-weight:500; box-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05); cursor:pointer; transition:background .15s; } .ds-btn-outline:hover { background:oklch(0.967 0.003 264.542); } .ds-btn-outline:focus-visible { outline:none; border-color:oklch(0.707 0.022 261.325); box-shadow:0 0 0 3px oklch(0.707 0.022 261.325 / 0.5); }"
+      "css": ".ds-btn-outline { font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif; display:inline-flex; align-items:center; height:36px; padding:8px 16px; border:1px solid oklch(0.928 0.006 264.531); border-radius:8px; background:oklch(1 0 0); color:oklch(0.13 0.028 261.692); font-size:14px; font-weight:500; box-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05); cursor:pointer; transition:background .15s; } .ds-btn-outline:hover { background:oklch(0.967 0.003 264.542); } .ds-btn-outline:focus-visible { outline:none; border-color:oklch(0.707 0.022 261.325); box-shadow:0 0 0 3px oklch(0.707 0.022 261.325 / 0.5); }"
     },
     {
       "name": "Destructive Button",
@@ -234,7 +249,7 @@
       "refersTo": "button-destructive",
       "description": "삭제 확인 전용.",
       "html": "<button class=\"ds-btn-destructive\">삭제</button>",
-      "css": ".ds-btn-destructive { font-family: Geist, system-ui, sans-serif; display:inline-flex; align-items:center; height:36px; padding:8px 16px; border:0; border-radius:8px; background:oklch(0.577 0.245 27.325); color:#fff; font-size:14px; font-weight:500; cursor:pointer; } .ds-btn-destructive:hover { background:oklch(0.577 0.245 27.325 / 0.9); } .ds-btn-destructive:focus-visible { outline:none; box-shadow:0 0 0 3px oklch(0.577 0.245 27.325 / 0.2); }"
+      "css": ".ds-btn-destructive { font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif; display:inline-flex; align-items:center; height:36px; padding:8px 16px; border:0; border-radius:8px; background:oklch(0.577 0.245 27.325); color:#fff; font-size:14px; font-weight:500; cursor:pointer; } .ds-btn-destructive:hover { background:oklch(0.577 0.245 27.325 / 0.9); } .ds-btn-destructive:focus-visible { outline:none; box-shadow:0 0 0 3px oklch(0.577 0.245 27.325 / 0.2); }"
     },
     {
       "name": "Text Input",
@@ -242,7 +257,7 @@
       "refersTo": "input",
       "description": "검색·폼 입력.",
       "html": "<input class=\"ds-input\" placeholder=\"이메일로 검색\" />",
-      "css": ".ds-input { font-family: Geist, system-ui, sans-serif; height:36px; width:240px; padding:4px 12px; border:1px solid oklch(0.928 0.006 264.531); border-radius:8px; background:transparent; color:oklch(0.13 0.028 261.692); font-size:14px; box-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05); transition:border-color .15s, box-shadow .15s; } .ds-input::placeholder { color:oklch(0.551 0.027 264.364); } .ds-input:focus-visible { outline:none; border-color:oklch(0.707 0.022 261.325); box-shadow:0 0 0 3px oklch(0.707 0.022 261.325 / 0.5); }"
+      "css": ".ds-input { font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif; height:36px; width:240px; padding:4px 12px; border:1px solid oklch(0.928 0.006 264.531); border-radius:8px; background:transparent; color:oklch(0.13 0.028 261.692); font-size:14px; box-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05); transition:border-color .15s, box-shadow .15s; } .ds-input::placeholder { color:oklch(0.551 0.027 264.364); } .ds-input:focus-visible { outline:none; border-color:oklch(0.707 0.022 261.325); box-shadow:0 0 0 3px oklch(0.707 0.022 261.325 / 0.5); }"
     },
     {
       "name": "Status Badge",
@@ -250,7 +265,7 @@
       "refersTo": "badge",
       "description": "활성·역할·발송 상태.",
       "html": "<span class=\"ds-badge\">활성</span> <span class=\"ds-badge ds-badge-outline\">비활성</span>",
-      "css": ".ds-badge { font-family: Geist, system-ui, sans-serif; display:inline-flex; align-items:center; padding:2px 8px; border:1px solid transparent; border-radius:8px; background:oklch(0.21 0.034 264.665); color:oklch(0.985 0.002 247.839); font-size:12px; font-weight:500; } .ds-badge-outline { background:transparent; color:oklch(0.13 0.028 261.692); border-color:oklch(0.928 0.006 264.531); }"
+      "css": ".ds-badge { font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif; display:inline-flex; align-items:center; padding:2px 8px; border:1px solid transparent; border-radius:8px; background:oklch(0.21 0.034 264.665); color:oklch(0.985 0.002 247.839); font-size:12px; font-weight:500; } .ds-badge-outline { background:transparent; color:oklch(0.13 0.028 261.692); border-color:oklch(0.928 0.006 264.531); }"
     },
     {
       "name": "Stat Card",
@@ -258,7 +273,7 @@
       "refersTo": "card",
       "description": "대시보드 통계 카드.",
       "html": "<div class=\"ds-card\"><div class=\"ds-card-head\"><span>전체 사용자</span></div><div class=\"ds-card-value\">1,234</div><p class=\"ds-card-sub\">지난주 대비 +1.5%</p></div>",
-      "css": ".ds-card { font-family: Geist, system-ui, sans-serif; width:240px; padding:24px; border:1px solid oklch(0.928 0.006 264.531); border-radius:14px; background:oklch(1 0 0); color:oklch(0.13 0.028 261.692); box-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); } .ds-card-head { font-size:14px; font-weight:500; } .ds-card-value { margin-top:8px; font-size:24px; font-weight:700; font-variant-numeric:tabular-nums; } .ds-card-sub { margin:4px 0 0; font-size:12px; color:oklch(0.551 0.027 264.364); }"
+      "css": ".ds-card { font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif; width:240px; padding:24px; border:1px solid oklch(0.928 0.006 264.531); border-radius:14px; background:oklch(1 0 0); color:oklch(0.13 0.028 261.692); box-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); } .ds-card-head { font-size:14px; font-weight:500; } .ds-card-value { margin-top:8px; font-size:24px; font-weight:700; font-variant-numeric:tabular-nums; } .ds-card-sub { margin:4px 0 0; font-size:12px; color:oklch(0.551 0.027 264.364); }"
     },
     {
       "name": "Sidebar Nav Item",
@@ -266,7 +281,7 @@
       "refersTo": "nav-item-active",
       "description": "사이드바 메뉴(활성·기본).",
       "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item ds-nav-active\" href=\"#\">대시보드</a><a class=\"ds-nav-item\" href=\"#\">사용자 관리</a></nav>",
-      "css": ".ds-nav { font-family: Geist, system-ui, sans-serif; display:flex; flex-direction:column; gap:4px; width:220px; padding:8px; background:oklch(0.985 0.002 247.839); } .ds-nav-item { display:flex; align-items:center; height:32px; padding:8px; border-radius:8px; color:oklch(0.13 0.028 261.692); font-size:14px; text-decoration:none; } .ds-nav-item:hover, .ds-nav-active { background:oklch(0.967 0.003 264.542); color:oklch(0.21 0.034 264.665); } .ds-nav-item:focus-visible { outline:none; box-shadow:0 0 0 2px oklch(0.707 0.022 261.325); }"
+      "css": ".ds-nav { font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif; display:flex; flex-direction:column; gap:4px; width:220px; padding:8px; background:oklch(0.985 0.002 247.839); } .ds-nav-item { display:flex; align-items:center; height:32px; padding:8px; border-radius:8px; color:oklch(0.13 0.028 261.692); font-size:14px; text-decoration:none; } .ds-nav-item:hover, .ds-nav-active { background:oklch(0.967 0.003 264.542); color:oklch(0.21 0.034 264.665); } .ds-nav-item:focus-visible { outline:none; box-shadow:0 0 0 2px oklch(0.707 0.022 261.325); }"
     }
   ],
   "narrative": {
@@ -276,7 +291,7 @@
       "무채색 슬레이트 단일 톤, 강조색 없음 — 파괴적 작업만 빨강",
       "테이블 중심 정보 밀도 (본문 14px, 행 높이 촘촘)",
       "얇은 테두리와 아주 옅은 그림자(shadow-xs/shadow-sm)로 층을 구분",
-      "라이트 모드만 실제 동작 (다크 토큰은 정의만 되어 있고 켜는 장치가 없음)"
+      "라이트·다크 모드 모두 동작 (next-themes, .dark 클래스 — 사이드바 하단 토글, 기본은 시스템 설정)"
     ],
     "rules": [
       {
@@ -286,12 +301,12 @@
       },
       {
         "name": "The Token Only Rule",
-        "body": "색은 토큰(bg-primary, text-destructive, text-muted-foreground)으로만 쓴다. 지금 11개 파일에 bg-red-600, text-blue-500 같은 Tailwind 팔레트 색이 직접 들어가 있어 토큰과 어긋난다 — 고칠 대상.",
+        "body": "색은 토큰(bg-primary, text-destructive, text-muted-foreground, text-rating)으로만 쓴다. Tailwind 팔레트 색(bg-red-600 등)은 쓰지 않는다 — 토큰은 다크 모드 값이 따로 있어 팔레트 색을 쓰면 다크 모드에서 깨진다.",
         "section": "colors"
       },
       {
-        "name": "The Hangul Fallback Rule",
-        "body": "화면 문구는 한국어인데 웹폰트는 라틴만 있다. 한글과 숫자·영문이 섞인 줄에서 글꼴이 섞여 보일 수 있으니, 수치 정렬이 중요한 표에는 tabular-nums를 쓴다. 한글 웹폰트를 들일지는 미결정.",
+        "name": "The Keep Words Rule",
+        "body": "좁은 칸(세그먼트 설명, 배지, 카드 보조 문구)의 한국어는 break-keep으로 어절 단위 줄바꿈 — 글자 중간에서 끊기지 않게. 수치 열은 tabular-nums.",
         "section": "typography"
       },
       {
@@ -301,18 +316,19 @@
       }
     ],
     "dos": [
-      "Do 색은 토큰으로만 — bg-primary, text-destructive, text-muted-foreground, border-border.",
+      "Do 색은 토큰으로만 — bg-primary, text-destructive, text-muted-foreground, text-rating, border-border.",
       "Do 삭제·알림 발송처럼 되돌릴 수 없는 작업은 확인 대화상자 + Destructive 버튼으로.",
       "Do 새 목록 화면은 Heading → 도구 줄 → DataTable → 페이지네이션 순서를 그대로 따른다.",
       "Do 페이지 제목은 Heading 컴포넌트로 (24px → md 30px, 700, tracking-tight).",
-      "Do 숫자 열·통계에는 tabular-nums."
+      "Do 숫자 열·통계에는 tabular-nums.",
+      "Do 새 화면은 라이트·다크 둘 다 확인한다 (data-checked: 같은 상태 클래스에 dark: 배경이 덮어쓰지 않는지)."
     ],
     "donts": [
-      "Don't bg-red-600, text-blue-500 같은 Tailwind 팔레트 색을 직접 쓰지 않는다 (지금 11개 파일 — 정리 대상).",
+      "Don't bg-red-600, text-blue-500 같은 Tailwind 팔레트 색을 직접 쓰지 않는다.",
       "Don't 강조색을 새로 들이지 않는다. 구분이 필요하면 배지 변형·굵기·여백으로.",
-      "Don't 다크 모드를 전제로 한 디자인을 하지 않는다 — 토큰만 있고 켜는 장치가 없다 (켜려면 별도 작업).",
+      "Don't 회색 배경(bg-muted) 위에 text-muted-foreground를 올리지 않는다 — 대비 4.4:1로 AA(4.5:1) 미달.",
       "Don't 카테고리 색(CATEGORY_COLORS)을 UI 장식 색으로 쓰지 않는다 — 사용자 데이터 값이다.",
-      "Don't 대시보드에만 h1을 직접 쓰는 식으로 제목 스타일을 화면마다 다르게 두지 않는다."
+      "Don't 페이지 제목을 h1로 직접 쓰지 않는다 — 모든 화면이 Heading을 쓴다."
     ]
   }
 }

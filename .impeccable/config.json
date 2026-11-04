@@ -8,6 +8,18 @@
         "value": "#000000",
         "createdAt": "2026-11-04T01:25:17.338Z",
         "reason": "카테고리 색 데이터의 기본값(사용자 데이터), UI 색 아님"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#ff6b6b",
+        "createdAt": "2026-11-04T01:36:51.282Z",
+        "reason": "카테고리 색 데이터(사용자 데이터·테스트 픽스처), UI 색 아님"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#3b82f6",
+        "createdAt": "2026-11-04T01:36:52.166Z",
+        "reason": "카테고리 색 데이터(사용자 데이터·테스트 픽스처), UI 색 아님"
       }
     ]
   }
