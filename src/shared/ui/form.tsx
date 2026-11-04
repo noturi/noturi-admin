@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import * as LabelPrimitive from '@radix-ui/react-label';
-import { Slot } from '@radix-ui/react-slot';
+import { mergeProps } from '@base-ui/react/merge-props';
+import { useRender } from '@base-ui/react/use-render';
 import {
   Controller,
   FormProvider,
@@ -79,7 +79,7 @@ function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>) {
+function FormLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
   const { error, formItemId } = useFormField();
 
   return (
@@ -93,18 +93,25 @@ function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPri
   );
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
+/**
+ * 자식 입력 요소 하나에 id·aria 속성을 붙임 (Radix Slot → Base UI useRender)
+ * 예: <FormControl><Input {...field} /></FormControl>
+ */
+function FormControl({ children, ...props }: { children: React.ReactElement } & React.HTMLAttributes<HTMLElement>) {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
-  return (
-    <Slot
-      data-slot="form-control"
-      id={formItemId}
-      aria-describedby={!error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`}
-      aria-invalid={!!error}
-      {...props}
-    />
-  );
+  return useRender({
+    render: children,
+    props: mergeProps(
+      {
+        'data-slot': 'form-control',
+        id: formItemId,
+        'aria-describedby': !error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`,
+        'aria-invalid': !!error,
+      } as React.HTMLAttributes<HTMLElement>,
+      props
+    ),
+  });
 }
 
 function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {

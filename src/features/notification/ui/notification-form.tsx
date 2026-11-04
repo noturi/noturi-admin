@@ -16,7 +16,12 @@ import { createNotification, updateNotification } from '@/features/notification/
 import { UserSelectField } from './user-select-field';
 import { DatePickerField } from './date-picker-field';
 import { MonthDaysGrid } from './month-days-grid';
-import { getFormDefaultValues, buildNotificationData, SCREEN_OPTIONS } from './notification-form.utils';
+import {
+  getFormDefaultValues,
+  buildNotificationData,
+  SCREEN_OPTIONS,
+  SEND_TYPE_OPTIONS,
+} from './notification-form.utils';
 import type { Notification, RepeatType } from '@/entities/notification';
 import { REPEAT_DAYS_MAP } from '@/entities/notification';
 import { Checkbox } from '@/shared/ui/checkbox';
@@ -194,7 +199,8 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>화면</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  {/* items: 트리거에 값('Home') 대신 라벨('홈')을 보이게 (Base UI Select) */}
+                  <Select items={SCREEN_OPTIONS} onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="화면 선택" />
@@ -288,16 +294,18 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>발송 타입</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select items={SEND_TYPE_OPTIONS} onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="발송 타입 선택" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="immediate">즉시 발송</SelectItem>
-                      <SelectItem value="scheduled">예약 발송</SelectItem>
-                      <SelectItem value="repeat">반복 발송</SelectItem>
+                      {SEND_TYPE_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

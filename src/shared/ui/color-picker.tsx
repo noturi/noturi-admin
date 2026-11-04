@@ -61,11 +61,11 @@ function ColorPicker({ value, onChange, presets = [...PRESET_COLORS] }: ColorPic
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" className={cn('w-full justify-start gap-2 font-normal')} type="button">
-          <div className="h-5 w-5 shrink-0 rounded-full border" style={{ backgroundColor: value || '#000000' }} />
-          <span className="font-mono text-sm">{value || '색상 선택'}</span>
-        </Button>
+      <PopoverTrigger
+        render={<Button variant="outline" className={cn('w-full justify-start gap-2 font-normal')} type="button" />}
+      >
+        <div className="h-5 w-5 shrink-0 rounded-full border" style={{ backgroundColor: value || '#000000' }} />
+        <span className="font-mono text-sm">{value || '색상 선택'}</span>
       </PopoverTrigger>
       <PopoverContent className="w-64 space-y-3" align="start">
         <div className="flex items-center gap-2">

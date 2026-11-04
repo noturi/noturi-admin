@@ -9,7 +9,6 @@ export * from './form';
 export * from './heading';
 export * from './input';
 export * from './label';
-export * from './navigation-menu';
 export * from './page-container';
 export * from './popover';
 export * from './scroll-area';

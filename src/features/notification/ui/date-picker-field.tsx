@@ -18,14 +18,16 @@ interface DatePickerFieldProps {
 export function DatePickerField({ value, onChange, placeholder = '날짜 선택' }: DatePickerFieldProps) {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn('w-full justify-start text-left font-normal', !value && 'text-muted-foreground')}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(value, 'PPP', { locale: ko }) : placeholder}
-        </Button>
+      <PopoverTrigger
+        render={
+          <Button
+            variant="outline"
+            className={cn('w-full justify-start text-left font-normal', !value && 'text-muted-foreground')}
+          />
+        }
+      >
+        <CalendarIcon className="mr-2 h-4 w-4" />
+        {value ? format(value, 'PPP', { locale: ko }) : placeholder}
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar mode="single" selected={value} onSelect={onChange} autoFocus />

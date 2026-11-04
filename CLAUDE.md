@@ -5,7 +5,11 @@
 ## 기술 스택
 
 - **Next.js 16** (App Router, Turbopack) + **React 19.3** (React Compiler) + **TypeScript 7** (Go 기반 컴파일러)
-- **Tailwind CSS 4** + **shadcn/ui** (`@/shared/ui/`에서 import, `cn()` 사용, Radix는 개별 `@radix-ui/*` 패키지)
+- **Tailwind CSS 4** + **shadcn/ui on Base UI** (`@base-ui/react`, Radix 아님) — `@/shared/ui/`에서 import, `cn()` 사용
+  - `asChild` 없음 → `render` prop: `<PopoverTrigger render={<Button variant="outline" />}>…`, 링크 버튼은 `nativeButton={false}`
+  - Select 라벨은 Root `items={[{ value, label }]}`로 (없으면 값이 그대로 보임), onValueChange는 `string | null`
+  - 상태 클래스: `data-open`/`data-closed`, 트리거는 `data-popup-open`, 탭은 `data-active`, 체크는 `data-checked`
+  - `components.json` style이 `new-york`(Radix용)이라 `shadcn add`는 Radix 버전을 받음 — 새 컴포넌트는 base-nova 레지스트리 구조로 직접 옮길 것
 - **Zod 4** (스키마 → `z.infer`) + **React Hook Form 7** (`useWatch` 사용, `form.watch()` 금지 — 컴파일러 최적화가 꺼짐)
 - **TanStack Table v9** (쓰는 기능만 `shared/ui/table/table-features.ts`에 등록, 타입 첫 자리 `DataTableFeatures`) + **sonner** (toast) + **nuqs** (URL 상태), 로그는 `logger`(tslog) — `console.*` 금지
 - **pnpm**

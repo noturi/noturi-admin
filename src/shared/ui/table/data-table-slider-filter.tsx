@@ -91,9 +91,10 @@ export function DataTableSliderFilter<TData extends RowData>({ column, title }: 
   );
 
   const onSliderValueChange = React.useCallback(
-    (value: RangeValue) => {
+    // Base UI Slider는 number | number[]를 넘김 — 범위(값 2개)일 때만 필터 적용
+    (value: number | readonly number[]) => {
       if (Array.isArray(value) && value.length === 2) {
-        column.setFilterValue(value);
+        column.setFilterValue([value[0], value[1]] as RangeValue);
       }
     },
     [column]
@@ -111,30 +112,28 @@ export function DataTableSliderFilter<TData extends RowData>({ column, title }: 
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed">
-          {columnFilterValue ? (
-            <div
-              role="button"
-              aria-label={`Clear ${title} filter`}
-              tabIndex={0}
-              className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-              onClick={onReset}
-            >
-              <XCircle />
-            </div>
-          ) : (
-            <PlusCircle />
-          )}
-          <span>{title}</span>
-          {columnFilterValue ? (
-            <>
-              <Separator orientation="vertical" className="mx-0.5 data-[orientation=vertical]:h-4" />
-              {formatValue(columnFilterValue[0])} - {formatValue(columnFilterValue[1])}
-              {unit ? ` ${unit}` : ''}
-            </>
-          ) : null}
-        </Button>
+      <PopoverTrigger render={<Button variant="outline" size="sm" className="border-dashed" />}>
+        {columnFilterValue ? (
+          <div
+            role="button"
+            aria-label={`Clear ${title} filter`}
+            tabIndex={0}
+            className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+            onClick={onReset}
+          >
+            <XCircle />
+          </div>
+        ) : (
+          <PlusCircle />
+        )}
+        <span>{title}</span>
+        {columnFilterValue ? (
+          <>
+            <Separator orientation="vertical" className="mx-0.5 data-[orientation=vertical]:h-4" />
+            {formatValue(columnFilterValue[0])} - {formatValue(columnFilterValue[1])}
+            {unit ? ` ${unit}` : ''}
+          </>
+        ) : null}
       </PopoverTrigger>
       <PopoverContent align="start" className="flex w-auto flex-col gap-4">
         <div className="flex flex-col gap-3">

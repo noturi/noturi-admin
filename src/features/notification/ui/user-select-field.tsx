@@ -108,11 +108,9 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
 
       {/* 유저 검색 및 선택 */}
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" role="combobox" className="w-full justify-between">
-            {placeholder}
-            <Users className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
+        <PopoverTrigger render={<Button variant="outline" role="combobox" className="w-full justify-between" />}>
+          {placeholder}
+          <Users className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
           <Command shouldFilter={false}>

@@ -79,11 +79,9 @@ export function AppSidebar({ user }: AppSidebarProps) {
                 .filter((item) => item.url)
                 .map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link href={item.url} onClick={handleMenuClick}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
+                    <SidebarMenuButton render={<Link href={item.url} onClick={handleMenuClick} />}>
+                      <item.icon />
+                      <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

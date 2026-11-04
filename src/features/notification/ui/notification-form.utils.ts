@@ -15,6 +15,12 @@ export const SCREEN_OPTIONS = [
 /**
  * Notification에서 발송 타입을 추출
  */
+export const SEND_TYPE_OPTIONS: { value: SendType; label: string }[] = [
+  { value: 'immediate', label: '즉시 발송' },
+  { value: 'scheduled', label: '예약 발송' },
+  { value: 'repeat', label: '반복 발송' },
+];
+
 export function getSendType(notification?: Notification): SendType {
   if (!notification) return 'immediate';
   if (notification.isRepeat) return 'repeat';
