@@ -1,5 +1,7 @@
 ---
-description: FSD 엔티티 스캐폴딩 (api + model/types + ui + index 생성)
+name: fsd-entity
+description: 새 비즈니스 엔티티를 FSD 구조(entities/{name}의 api·model/types·index, 선택적으로 features/{name}/api/actions)로 스캐폴딩한다. 새 엔티티·도메인 슬라이스·관리 화면용 데이터 계층을 추가할 때 사용.
+argument-hint: '[entity-name]'
 ---
 
 # FSD Entity 스캐폴딩
@@ -35,17 +37,18 @@ src/entities/{name}/
 ### `api/{name}-api.ts`
 
 ```typescript
-import { serverApi } from '@/shared/api/server-api';
+// #http: 서버(RSC)에서는 serverApi, 브라우저에서는 /api/proxy — 같은 함수를 양쪽에서 사용
+import { http } from '#http';
 import type { {PascalName}, {PascalName}ListResponse, {PascalName}QueryParams } from '../model/types';
 
 export const get{PascalName}List = async (params?: {PascalName}QueryParams) => {
-  return serverApi.get<{PascalName}ListResponse>('/{pluralName}', {
+  return http.get<{PascalName}ListResponse>('/{pluralName}', {
     searchParams: params,
   });
 };
 
 export const get{PascalName}ById = async (id: string) => {
-  return serverApi.get<{PascalName}>(`/{pluralName}/${id}`);
+  return http.get<{PascalName}>(`/{pluralName}/${id}`);
 };
 ```
 
@@ -146,6 +149,7 @@ export const delete{PascalName} = async (id: string) => {
 
 - `@/` 절대경로 사용
 - Zod 스키마 먼저 정의 → `z.infer`로 타입 추론
-- 읽기(GET)는 entities, CUD는 features에 배치
+- 읽기(GET)는 entities(`#http`), CUD는 features(`serverApi` + Server Action)에 배치
+- entities의 api 파일에서 `@/shared/api/server-api`를 직접 import하지 않는다 (Client Component에서 쓰면 빌드 에러)
 - `'use server'` 지시어는 features/api/actions.ts에만 사용
 - 이미 존재하는 엔티티면 생성하지 않고 안내

@@ -114,3 +114,20 @@ const onSubmit = async (values: FormValues) => {
   if (result !== undefined) router.push('/dashboard/entity');
 };
 ```
+
+## try/catch와 리다이렉트
+
+- `redirect()`·`notFound()`는 예외를 던져 동작한다. API 401이면 `serverApi`가 세션 만료 경로로 `redirect()`하므로,
+  Server Component·Server Action에서 API 호출을 `try/catch`로 감쌀 때는 catch 첫 줄에 `unstable_rethrow(error)`를 둔다
+  (없으면 세션 만료가 404나 에러 메시지로 바뀜)
+
+```typescript
+import { notFound, unstable_rethrow } from 'next/navigation';
+
+try {
+  user = await getUserById(id);
+} catch (error) {
+  unstable_rethrow(error);
+  notFound();
+}
+```

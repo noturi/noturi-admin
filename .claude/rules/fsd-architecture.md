@@ -10,8 +10,8 @@ paths:
 
 ```
 src/
-├── app/                          # Next.js App Router - 순수 라우팅만
-├── pages/                        # 페이지 컴포넌트 (widgets 조합)
+├── app/                          # Next.js App Router — 라우팅 + 페이지 조합 (pages 레이어 없음)
+│   └── api/proxy/                # 브라우저 → 어드민 API GET 프록시 (#http 브라우저 구현)
 ├── widgets/                      # 복합 UI 블록 (ui/ 세그먼트 필수)
 ├── features/{slice}/             # CUD 비즈니스 기능
 │   ├── api/actions.ts            # 'use server' Server Actions
@@ -24,7 +24,7 @@ src/
 │   ├── ui/                       # 읽기 전용 UI
 │   └── index.ts
 └── shared/
-    ├── api/                      # EnhancedFetch, serverApi
+    ├── api/                      # EnhancedFetch, serverApi, http/(#http 서버·브라우저 구현)
     ├── ui/                       # shadcn/ui 컴포넌트
     └── lib/                      # utils, hooks, model, config
 ```

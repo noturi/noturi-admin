@@ -1,5 +1,7 @@
 ---
-description: 변경사항 분석 후 논리적 단위로 커밋 분리하여 생성
+name: commit
+description: 변경사항을 분석해 논리적 단위로 커밋을 나눠 만든다. 사용자가 /commit을 입력했을 때만 실행.
+disable-model-invocation: true
 ---
 
 # Commit
@@ -42,4 +44,10 @@ type(scope): 간단한 설명
 
 ### Scope 예시
 
-- `주문`, `회원`, `상품`, `파트너` 등 도메인
+- `인증`, `사용자`, `운영자`, `카테고리`, `알림`, `대시보드` 등 화면·도메인 (한국어)
+
+## 이 저장소에서 주의할 점
+
+- pre-commit 훅(husky)이 `eslint --fix`와 `prettier --write .`를 돌린다. 커밋 뒤 파일이 다시 수정되어 있으면 포맷 변경분이니 `git add` 후 `--amend`로 합친다 (push 전일 때만).
+- `git rm`으로 미리 스테이징한 삭제가 엉뚱한 커밋에 섞이지 않게, 커밋 전 `git diff --cached --name-only`로 확인한다.
+- 커밋 전 확인: `npx tsc --noEmit` · `pnpm lint` · `pnpm build`

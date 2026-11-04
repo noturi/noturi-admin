@@ -3,6 +3,7 @@ paths:
   - 'src/entities/*/api/**'
   - 'src/features/*/api/**'
   - 'src/shared/api/**'
+  - 'src/app/api/**'
 ---
 
 # API 패턴
