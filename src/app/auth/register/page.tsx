@@ -1,11 +1,13 @@
 'use client';
 
 import { Suspense } from 'react';
+import { useRouter } from 'next/navigation';
 import { EmailStep, RoleStep, PasswordStep, type FunnelState, registerAction } from '@/features/auth';
-import { useFunnel } from '@/shared/lib';
+import { ROUTES, useFunnel } from '@/shared/lib';
 import { toast } from 'sonner';
 
 function RegisterForm() {
+  const router = useRouter();
   const [Funnel, funnelState, updateFunnelState, clearFunnelState] = useFunnel(['email', 'role', 'password'] as const, {
     initialStep: 'email',
     history: 'replace',
@@ -47,6 +49,7 @@ function RegisterForm() {
             } else {
               toast.success('회원가입이 완료되었습니다!');
               clearFunnelState();
+              router.push(ROUTES.AUTH.LOGIN);
             }
           }}
         />

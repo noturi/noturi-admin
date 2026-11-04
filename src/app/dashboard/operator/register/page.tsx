@@ -46,9 +46,9 @@ export default function UserRegisterPage() {
             if (result?.error) {
               toast.error(result.error);
             } else {
-              toast.success('사용자 등록이 완료되었습니다!');
+              toast.success('운영자 등록이 완료되었습니다!');
               clearFunnelState();
-              router.push('/dashboard/user');
+              router.push('/dashboard/operator');
             }
           }}
         />

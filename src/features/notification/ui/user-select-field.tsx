@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Badge } from '@/shared/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/shared/ui/command';
 import { cn } from '@/shared/lib';
-import { getUserList } from '@/entities/user/api/user-api';
-import type { User } from '@/entities/user/model/types';
+import { getUserList } from '@/entities/user';
+import type { User } from '@/entities/user';
 import { CheckIcon, X, Users } from 'lucide-react';
 import logger from '@/shared/lib/utils/logger';
+import { useDebouncedCallback } from '@/shared/lib/hooks/use-debounced-callback';
 
 interface UserSelectFieldProps {
   value: string[];
@@ -17,41 +18,61 @@ interface UserSelectFieldProps {
   placeholder?: string;
 }
 
+const SEARCH_LIMIT = 100;
+const SEARCH_DEBOUNCE_MS = 300;
+
 export function UserSelectField({ value, onChange, placeholder = '유저 검색 및 선택' }: UserSelectFieldProps) {
   const [users, setUsers] = useState<User[]>([]);
+  // 선택된 유저 배지를 그리려면 검색 결과가 바뀌어도 이전에 본 유저 정보를 기억해야 함
+  const [knownUsers, setKnownUsers] = useState<Map<string, User>>(new Map());
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const latestRequestRef = useRef(0);
 
-  // 유저 목록 로드
+  // 검색 결과 반영 — 이전에 본 유저는 선택 배지용으로 계속 기억
+  const applyUsers = (list: User[]) => {
+    setUsers(list);
+    setKnownUsers((prev) => {
+      const next = new Map(prev);
+      list.forEach((user) => next.set(user.id, user));
+      return next;
+    });
+  };
+
+  // 서버에서 검색 — 처음 100명만 받아 브라우저에서 거르면 101번째 이후 유저는 찾을 수 없음
+  const fetchUsers = (keyword: string) =>
+    getUserList({ limit: SEARCH_LIMIT, notification: true, ...(keyword && { keyword }) }).then(
+      (response) => response.data ?? []
+    );
+
+  const searchUsers = useDebouncedCallback((keyword: string) => {
+    const requestId = ++latestRequestRef.current;
+    fetchUsers(keyword)
+      .then((list) => {
+        if (requestId === latestRequestRef.current) applyUsers(list); // 늦게 도착한 이전 검색 결과는 버림
+      })
+      .catch((error) => logger.error('Failed to search users:', error));
+  }, SEARCH_DEBOUNCE_MS);
+
+  // 처음 목록 (#http 브라우저 구현 → /api/proxy) — 수정 화면에서 이미 선택된 유저 배지도 이걸로 표시
   useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        // #http 브라우저 구현 → /api/proxy (Server Action 우회 없이 entities 조회 함수를 그대로 사용)
-        const response = await getUserList({ limit: 100, notification: true });
-        setUsers(response.data ?? []);
-      } catch (error) {
-        logger.error('Failed to load users:', error);
-      }
+    let ignore = false;
+    fetchUsers('')
+      .then((list) => {
+        if (!ignore) applyUsers(list);
+      })
+      .catch((error) => logger.error('Failed to load users:', error));
+    return () => {
+      ignore = true;
     };
-    loadUsers();
   }, []);
 
-  // 검색된 유저 필터링
-  const filteredUsers = useMemo(() => {
-    if (!searchQuery) return users;
-    const query = searchQuery.toLowerCase();
-    return users.filter(
-      (user) =>
-        user.name.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query) ||
-        user.nickname.toLowerCase().includes(query)
-    );
-  }, [users, searchQuery]);
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    searchUsers(query.trim());
+  };
 
-  // 선택된 유저 정보
-  const selectedUsers = useMemo(() => {
-    return users.filter((user) => value.includes(user.id));
-  }, [users, value]);
+  const selectedUsers = value.map((id) => knownUsers.get(id)).filter((user): user is User => !!user);
 
   const handleToggleUser = (userId: string) => {
     if (value.includes(userId)) {
@@ -94,16 +115,16 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder="이름, 이메일, 닉네임으로 검색..."
               value={searchQuery}
-              onValueChange={setSearchQuery}
+              onValueChange={handleSearchChange}
             />
             <CommandList>
               <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
               <CommandGroup>
-                {filteredUsers.map((user) => {
+                {users.map((user) => {
                   const isSelected = value.includes(user.id);
                   return (
                     <CommandItem
