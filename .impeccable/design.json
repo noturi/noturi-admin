@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-04T01:39:06.782519+00:00",
+  "generatedAt": "2026-11-04T02:30:13.371731+00:00",
   "title": "Design System: Noturi Admin",
   "extensions": {
     "colorMeta": {
@@ -321,14 +321,20 @@
       "Do 새 목록 화면은 Heading → 도구 줄 → DataTable → 페이지네이션 순서를 그대로 따른다.",
       "Do 페이지 제목은 Heading 컴포넌트로 (24px → md 30px, 700, tracking-tight).",
       "Do 숫자 열·통계에는 tabular-nums.",
-      "Do 새 화면은 라이트·다크 둘 다 확인한다 (data-checked: 같은 상태 클래스에 dark: 배경이 덮어쓰지 않는지)."
+      "Do 새 화면은 라이트·다크 둘 다 확인한다 (data-checked: 같은 상태 클래스에 dark: 배경이 덮어쓰지 않는지).",
+      "Do 날짜·시각은 formatKstDate / formatKstDateTime / formatKstLong로만 (KST 고정).",
+      "Do 문구는 해요체, 앱 용어는 앱과 같게(할 일).",
+      "Do 되돌리기 어려운 작업은 ConfirmDialog — 대상을 넣은 질문 제목 + 결과 설명 + ConfirmSummary, 실행 중 열어둠.",
+      "Do 모든 화면은 PageHeader로 시작, 작성 폼은 왼쪽 질문형 카드 + 오른쪽 320px 고정 요약."
     ],
     "donts": [
       "Don't bg-red-600, text-blue-500 같은 Tailwind 팔레트 색을 직접 쓰지 않는다.",
       "Don't 강조색을 새로 들이지 않는다. 구분이 필요하면 배지 변형·굵기·여백으로.",
       "Don't 회색 배경(bg-muted) 위에 text-muted-foreground를 올리지 않는다 — 대비 4.4:1로 AA(4.5:1) 미달.",
       "Don't 카테고리 색(CATEGORY_COLORS)을 UI 장식 색으로 쓰지 않는다 — 사용자 데이터 값이다.",
-      "Don't 페이지 제목을 h1로 직접 쓰지 않는다 — 모든 화면이 Heading을 쓴다."
+      "Don't 페이지 제목을 h1로 직접 쓰지 않는다 — 모든 화면이 PageHeader를 쓴다.",
+      "Don't <Link><Button/></Link> 중첩 — Button render={<Link/>}.",
+      "Don't 오류를 토스트로만 알리지 않는다 — 폼 오류는 폼 위에 role=alert로."
     ]
   }
 }
