@@ -36,7 +36,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
         return (
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 rounded-full border" style={{ backgroundColor: color }} />
-            <span className="text-muted-foreground text-sm">{color}</span>
+            <span className="text-sm text-muted-foreground">{color}</span>
           </div>
         );
       },
@@ -53,7 +53,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
       ),
       cell: ({ cell }) => {
         const description = cell.getValue<string | null>();
-        return <div className="text-muted-foreground max-w-[300px] truncate text-sm">{description || '-'}</div>;
+        return <div className="max-w-[300px] truncate text-sm text-muted-foreground">{description || '-'}</div>;
       },
       enableSorting: false,
       meta: {

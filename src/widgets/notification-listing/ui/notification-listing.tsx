@@ -3,9 +3,7 @@ import { NotificationTable } from './notification-table';
 import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 import { auth } from '@/shared/lib/utils/auth.server';
 
-type NotificationListingPage = Record<string, never>;
-
-export async function NotificationListing({}: NotificationListingPage) {
+export async function NotificationListing() {
   const authData = await auth();
 
   if (!authData.user) {

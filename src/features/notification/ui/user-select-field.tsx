@@ -97,7 +97,7 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
               <button
                 type="button"
                 onClick={() => handleRemoveUser(user.id)}
-                className="hover:bg-secondary-foreground/20 ml-1 rounded-full"
+                className="ml-1 rounded-full hover:bg-secondary-foreground/20"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -135,7 +135,7 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
                     >
                       <div
                         className={cn(
-                          'border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border',
+                          'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
                           isSelected ? 'bg-primary' : 'opacity-50 [&_svg]:invisible'
                         )}
                       >
@@ -143,7 +143,7 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
                       </div>
                       <div className="flex flex-col">
                         <span>{user.name || user.nickname}</span>
-                        <span className="text-muted-foreground text-xs">{user.email}</span>
+                        <span className="text-xs text-muted-foreground">{user.email}</span>
                       </div>
                     </CommandItem>
                   );

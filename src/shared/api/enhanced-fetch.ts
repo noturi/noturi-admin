@@ -184,11 +184,7 @@ export class EnhancedFetch {
 
         // 에러 핸들러 실행
         if (this.errorHandler) {
-          try {
-            await this.errorHandler(error as Error & { response?: { status: number; text(): Promise<string> } });
-          } catch (handlerError) {
-            throw handlerError;
-          }
+          await this.errorHandler(error as Error & { response?: { status: number; text(): Promise<string> } });
         }
         throw error;
       }

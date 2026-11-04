@@ -17,7 +17,7 @@ export default function DashboardError({ error, reset }: { error: Error & { dige
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-4 py-24 text-center">
       <h2 className="text-lg font-semibold">화면을 불러오지 못했어요</h2>
-      <p className="text-muted-foreground text-sm">
+      <p className="text-sm text-muted-foreground">
         권한이 없거나 서버에 문제가 있어요. 잠시 후 다시 시도해 주세요. 계속되면 개발팀에 알려주세요.
       </p>
       <Button onClick={reset}>다시 시도</Button>

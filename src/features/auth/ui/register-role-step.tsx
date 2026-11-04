@@ -45,7 +45,7 @@ export function RoleStep({ defaultValue, next }: RoleStepProps) {
   ];
 
   return (
-    <div className="bg-background flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl">회원가입</CardTitle>
@@ -60,10 +60,10 @@ export function RoleStep({ defaultValue, next }: RoleStepProps) {
                   key={roleOption.value}
                   className={`rounded-lg border p-4 transition-colors ${
                     roleOption.disabled
-                      ? 'border-border bg-muted/30 cursor-not-allowed opacity-50'
+                      ? 'cursor-not-allowed border-border bg-muted/30 opacity-50'
                       : role === roleOption.value
-                        ? 'border-primary bg-primary/5 cursor-pointer'
-                        : 'border-border hover:border-primary/50 cursor-pointer'
+                        ? 'cursor-pointer border-primary bg-primary/5'
+                        : 'cursor-pointer border-border hover:border-primary/50'
                   }`}
                   onClick={() => !roleOption.disabled && setRole(roleOption.value)}
                 >
@@ -90,7 +90,7 @@ export function RoleStep({ defaultValue, next }: RoleStepProps) {
                         {roleOption.label}
                         {roleOption.disabled && ' (사용 불가)'}
                       </p>
-                      <p className="text-muted-foreground text-sm">{roleOption.description}</p>
+                      <p className="text-sm text-muted-foreground">{roleOption.description}</p>
                     </div>
                   </div>
                 </div>

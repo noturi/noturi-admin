@@ -15,7 +15,7 @@ interface DatePickerFieldProps {
   label?: string;
 }
 
-export function DatePickerField({ value, onChange, placeholder = '날짜 선택', label }: DatePickerFieldProps) {
+export function DatePickerField({ value, onChange, placeholder = '날짜 선택' }: DatePickerFieldProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -28,7 +28,7 @@ export function DatePickerField({ value, onChange, placeholder = '날짜 선택'
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <Calendar mode="single" selected={value} onSelect={onChange} initialFocus />
+        <Calendar mode="single" selected={value} onSelect={onChange} autoFocus />
       </PopoverContent>
     </Popover>
   );

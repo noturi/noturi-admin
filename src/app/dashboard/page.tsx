@@ -42,11 +42,11 @@ export default async function DashboardPage() {
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className="text-muted-foreground h-4 w-4" />
+              <stat.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-muted-foreground text-xs">{stat.description}</p>
+              <p className="text-xs text-muted-foreground">{stat.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -64,7 +64,7 @@ export default async function DashboardPage() {
                 <div key={`${activity.type}-${activity.createdAt}-${activity.title}`} className="flex items-center">
                   <div className="space-y-1">
                     <p className="text-sm leading-none font-medium">{activity.title}</p>
-                    <p className="text-muted-foreground text-sm">{activity.description}</p>
+                    <p className="text-sm text-muted-foreground">{activity.description}</p>
                   </div>
                   <div className="ml-auto font-medium">
                     {new Date(activity.createdAt).toLocaleString('ko-KR', {

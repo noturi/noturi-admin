@@ -20,8 +20,8 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
       <Card>
         <CardHeader>
           <div className="flex items-center gap-4">
-            <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
-              <Bell className="text-primary h-6 w-6" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Bell className="h-6 w-6 text-primary" />
             </div>
             <div className="flex-1">
               <CardTitle className="flex items-center gap-2 text-xl">
@@ -43,22 +43,22 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
         <CardContent>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <div className="flex items-center gap-2">
-              <Users className="text-muted-foreground h-4 w-4" />
+              <Users className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">대상: {notification.targetUserCount.toLocaleString()}명</span>
             </div>
             <div className="flex items-center gap-2">
-              <Calendar className="text-muted-foreground h-4 w-4" />
+              <Calendar className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">생성: {new Date(notification.createdAt).toLocaleDateString('ko-KR')}</span>
             </div>
             {notification.scheduledAt && (
               <div className="flex items-center gap-2">
-                <Clock className="text-muted-foreground h-4 w-4" />
+                <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">예약: {new Date(notification.scheduledAt).toLocaleString('ko-KR')}</span>
               </div>
             )}
             {notification.lastSentAt && (
               <div className="flex items-center gap-2">
-                <Send className="text-muted-foreground h-4 w-4" />
+                <Send className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
                   마지막 발송: {new Date(notification.lastSentAt).toLocaleString('ko-KR')}
                 </span>
@@ -92,7 +92,7 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {/* 발송 타입 */}
                 <div className="rounded-lg border p-4">
-                  <p className="text-muted-foreground text-sm">발송 타입</p>
+                  <p className="text-sm text-muted-foreground">발송 타입</p>
                   <p className="mt-1 font-medium">
                     {!notification.scheduledAt && !notification.scheduledTime
                       ? '즉시 발송'
@@ -105,7 +105,7 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
                 {/* 예약 시간 */}
                 {notification.scheduledTime && (
                   <div className="rounded-lg border p-4">
-                    <p className="text-muted-foreground text-sm">발송 시간</p>
+                    <p className="text-sm text-muted-foreground">발송 시간</p>
                     <p className="mt-1 font-medium">{notification.scheduledTime}</p>
                   </div>
                 )}
@@ -115,7 +115,7 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
                   notification.repeatDays &&
                   (notification.repeatType === 'MONTHLY' ? (
                     <div className="rounded-lg border p-4">
-                      <p className="text-muted-foreground text-sm">반복 날짜</p>
+                      <p className="text-sm text-muted-foreground">반복 날짜</p>
                       <div className="mt-2 flex flex-wrap gap-1">
                         {[...notification.repeatDays]
                           .sort((a, b) => a - b)
@@ -126,14 +126,14 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
                           ))}
                       </div>
                       {notification.repeatDays.some((day) => day >= 29) && (
-                        <p className="text-muted-foreground mt-2 text-sm">
+                        <p className="mt-2 text-sm text-muted-foreground">
                           해당 날짜가 없는 달: {notification.sendOnLastDay ? '말일에 발송' : '발송하지 않음'}
                         </p>
                       )}
                     </div>
                   ) : (
                     <div className="rounded-lg border p-4">
-                      <p className="text-muted-foreground text-sm">반복 요일</p>
+                      <p className="text-sm text-muted-foreground">반복 요일</p>
                       <div className="mt-2 flex gap-1">
                         {[0, 1, 2, 3, 4, 5, 6].map((day) => (
                           <Badge key={day} variant={notification.repeatDays?.includes(day) ? 'default' : 'outline'}>
@@ -147,7 +147,7 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
                 {/* 공휴일 제외 */}
                 {notification.isRepeat && (
                   <div className="rounded-lg border p-4">
-                    <p className="text-muted-foreground text-sm">공휴일 제외</p>
+                    <p className="text-sm text-muted-foreground">공휴일 제외</p>
                     <p className="mt-1 font-medium">
                       {notification.skipHolidays ? '예 (공휴일에는 발송하지 않음)' : '아니오'}
                     </p>
@@ -157,17 +157,17 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
                 {/* 반복 종료일 */}
                 {notification.repeatEndAt && (
                   <div className="rounded-lg border p-4">
-                    <p className="text-muted-foreground text-sm">반복 종료일</p>
+                    <p className="text-sm text-muted-foreground">반복 종료일</p>
                     <p className="mt-1 font-medium">{new Date(notification.repeatEndAt).toLocaleDateString('ko-KR')}</p>
                   </div>
                 )}
 
                 {/* 딥링크 설정 */}
                 <div className="rounded-lg border p-4 md:col-span-2">
-                  <p className="text-muted-foreground text-sm">딥링크</p>
+                  <p className="text-sm text-muted-foreground">딥링크</p>
                   <p className="mt-1 font-mono text-sm">screen: {notification.data.screen}</p>
                   {notification.data.params && (
-                    <p className="text-muted-foreground mt-1 font-mono text-sm">
+                    <p className="mt-1 font-mono text-sm text-muted-foreground">
                       params: {JSON.stringify(notification.data.params)}
                     </p>
                   )}

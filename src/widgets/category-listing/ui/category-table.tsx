@@ -39,11 +39,11 @@ function SortableRow({ category }: { category: Category }) {
       <TableCell>
         <div className="flex items-center gap-2">
           <div className="h-4 w-4 rounded-full border" style={{ backgroundColor: category.color }} />
-          <span className="text-muted-foreground text-sm">{category.color}</span>
+          <span className="text-sm text-muted-foreground">{category.color}</span>
         </div>
       </TableCell>
       <TableCell>
-        <div className="text-muted-foreground max-w-[300px] truncate text-sm">{category.description || '-'}</div>
+        <div className="max-w-[300px] truncate text-sm text-muted-foreground">{category.description || '-'}</div>
       </TableCell>
       <TableCell>
         <div className="text-center font-mono">{category.sortOrder}</div>

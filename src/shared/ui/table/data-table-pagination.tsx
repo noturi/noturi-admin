@@ -24,7 +24,7 @@ export function DataTablePagination<TData>({
       )}
       {...props}
     >
-      <div className="text-muted-foreground flex-1 text-sm whitespace-nowrap">
+      <div className="flex-1 text-sm whitespace-nowrap text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length > 0 ? (
           <>
             {table.getFilteredRowModel().rows.length}개 중 {table.getFilteredSelectedRowModel().rows.length}개 선택됨

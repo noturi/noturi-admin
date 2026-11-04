@@ -21,10 +21,10 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
         const id = row.original.id;
         return (
           <div className="flex items-center gap-2">
-            <Bell className="text-muted-foreground h-4 w-4" />
+            <Bell className="h-4 w-4 text-muted-foreground" />
             <Link
               href={`/dashboard/notification/${id}`}
-              className="text-primary w-[200px] truncate font-medium hover:underline"
+              className="w-[200px] truncate font-medium text-primary hover:underline"
             >
               {title}
             </Link>
@@ -45,7 +45,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
       ),
       cell: ({ cell }) => {
         const body = cell.getValue<string>();
-        return <div className="text-muted-foreground max-w-[250px] truncate text-sm">{body}</div>;
+        return <div className="max-w-[250px] truncate text-sm text-muted-foreground">{body}</div>;
       },
       enableSorting: false,
       meta: {
@@ -161,7 +161,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
         return (
           <div className="min-w-[140px] text-sm">
             {new Date(date).toLocaleDateString('ko-KR')}
-            <span className="text-muted-foreground ml-1 text-xs">
+            <span className="ml-1 text-xs text-muted-foreground">
               {new Date(date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
             </span>
           </div>

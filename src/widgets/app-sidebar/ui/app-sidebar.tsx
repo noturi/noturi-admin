@@ -62,11 +62,11 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
   return (
     <Sidebar>
-      <SidebarHeader className="border-sidebar-border border-b">
+      <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-2 px-4 py-2">
           <div className="flex flex-col gap-0.5 leading-none">
             <span className="font-semibold">Noturi Admin</span>
-            <span className="text-muted-foreground text-xs">{user?.email}</span>
+            <span className="text-xs text-muted-foreground">{user?.email}</span>
           </div>
         </div>
       </SidebarHeader>
@@ -91,7 +91,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-sidebar-border border-t">
+      <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => logoutAction()}>

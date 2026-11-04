@@ -2,3 +2,6 @@ allowBuilds:
   '@tailwindcss/oxide': true
   sharp: true
   unrs-resolver: true
+
+# 공개된 지 7일(10080분) 안 된 버전은 설치하지 않음 — 갓 나온 버전의 회귀 버그·공급망 공격(탈취된 계정으로 올린 악성 버전) 방지
+minimumReleaseAge: 10080

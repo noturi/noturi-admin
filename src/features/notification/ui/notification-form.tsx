@@ -16,7 +16,7 @@ import { createNotification, updateNotification } from '@/features/notification/
 import { UserSelectField } from './user-select-field';
 import { DatePickerField } from './date-picker-field';
 import { MonthDaysGrid } from './month-days-grid';
-import { getFormDefaultValues, buildNotificationData, SCREEN_OPTIONS, type SendType } from './notification-form.utils';
+import { getFormDefaultValues, buildNotificationData, SCREEN_OPTIONS } from './notification-form.utils';
 import type { Notification, RepeatType } from '@/entities/notification';
 import { REPEAT_DAYS_MAP } from '@/entities/notification';
 import { Checkbox } from '@/shared/ui/checkbox';
@@ -441,7 +441,7 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                   )}
                 />
                 {repeatSummary && (
-                  <p className="bg-muted text-muted-foreground rounded-md p-3 text-sm">{repeatSummary}</p>
+                  <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">{repeatSummary}</p>
                 )}
               </>
             )}

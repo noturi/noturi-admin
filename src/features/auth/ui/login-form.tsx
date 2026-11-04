@@ -27,7 +27,7 @@ export function LoginForm({ sessionExpired = false }: LoginFormProps) {
   }, [state]);
 
   return (
-    <div className="bg-background flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl">Noturi Admin</CardTitle>

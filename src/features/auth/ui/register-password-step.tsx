@@ -50,18 +50,18 @@ export function PasswordStep({ defaultValues, next }: PasswordStepProps) {
   };
 
   return (
-    <div className="bg-background flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl">회원가입</CardTitle>
           <CardDescription className="text-center">3/3단계: 비밀번호를 설정해주세요</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="bg-muted mb-4 rounded-lg p-3">
-            <p className="text-muted-foreground text-sm">
+          <div className="mb-4 rounded-lg bg-muted p-3">
+            <p className="text-sm text-muted-foreground">
               <strong>이메일:</strong> {defaultValues.email}
             </p>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-sm text-muted-foreground">
               <strong>역할:</strong> {defaultValues.role === 'ADMIN' ? '관리자' : '최고 관리자'}
             </p>
           </div>

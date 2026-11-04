@@ -48,6 +48,6 @@ type(scope): 간단한 설명
 
 ## 이 저장소에서 주의할 점
 
-- pre-commit 훅(husky)이 `eslint --fix`와 `prettier --write .`를 돌린다. 커밋 뒤 파일이 다시 수정되어 있으면 포맷 변경분이니 `git add` 후 `--amend`로 합친다 (push 전일 때만).
+- pre-commit 훅(husky)이 `oxlint --fix`와 `oxfmt`를 돌린다. 커밋 뒤 파일이 다시 수정되어 있으면 포맷 변경분이니 `git add` 후 `--amend`로 합친다 (push 전일 때만).
 - `git rm`으로 미리 스테이징한 삭제가 엉뚱한 커밋에 섞이지 않게, 커밋 전 `git diff --cached --name-only`로 확인한다.
 - 커밋 전 확인: `npx tsc --noEmit` · `pnpm lint` · `pnpm build`

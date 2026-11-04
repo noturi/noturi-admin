@@ -34,9 +34,12 @@ interface ColorPickerProps {
 function ColorPicker({ value, onChange, presets = [...PRESET_COLORS] }: ColorPickerProps) {
   const [hexInput, setHexInput] = React.useState(value);
 
-  React.useEffect(() => {
+  // 바깥에서 value가 바뀌면 입력칸도 맞춤 — effect 대신 렌더 중 상태 조정
+  const [prevValue, setPrevValue] = React.useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
     setHexInput(value);
-  }, [value]);
+  }
 
   const handleHexChange = (hex: string) => {
     setHexInput(hex);
@@ -81,7 +84,7 @@ function ColorPicker({ value, onChange, presets = [...PRESET_COLORS] }: ColorPic
           />
         </div>
         <div>
-          <p className="text-muted-foreground mb-2 text-xs font-medium">프리셋 색상</p>
+          <p className="mb-2 text-xs font-medium text-muted-foreground">프리셋 색상</p>
           <div className="grid grid-cols-8 gap-1.5">
             {presets.map((color) => (
               <button
@@ -89,7 +92,7 @@ function ColorPicker({ value, onChange, presets = [...PRESET_COLORS] }: ColorPic
                 type="button"
                 className={cn(
                   'h-6 w-6 rounded-full border-2 transition-transform hover:scale-110',
-                  value === color ? 'border-foreground ring-foreground ring-1 ring-offset-1' : 'border-transparent'
+                  value === color ? 'border-foreground ring-1 ring-foreground ring-offset-1' : 'border-transparent'
                 )}
                 style={{ backgroundColor: color }}
                 onClick={() => handlePresetClick(color)}

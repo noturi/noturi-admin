@@ -91,7 +91,7 @@ interface SortableHandleProps {
 function SortableHandle({ className }: SortableHandleProps) {
   return (
     <span className={cn('cursor-grab active:cursor-grabbing', className)}>
-      <GripVertical className="text-muted-foreground size-4" />
+      <GripVertical className="size-4 text-muted-foreground" />
     </span>
   );
 }

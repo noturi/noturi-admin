@@ -4,9 +4,7 @@ import { OperatorQueryParams } from '@/entities/operator';
 import { auth } from '@/shared/lib/utils/auth.server';
 import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
 
-type OperatorListingPage = Record<string, never>;
-
-export async function OperatorListing({}: OperatorListingPage) {
+export async function OperatorListing() {
   // Get current user from server
   const authData = await auth();
 

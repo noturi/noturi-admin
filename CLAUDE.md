@@ -4,7 +4,7 @@
 
 ## 기술 스택
 
-- **Next.js 16** (App Router, Turbopack) + **React 19.2** (React Compiler) + **TypeScript 5**
+- **Next.js 16** (App Router, Turbopack) + **React 19.3** (React Compiler) + **TypeScript 7** (Go 기반 컴파일러)
 - **Tailwind CSS 4** + **shadcn/ui** (`@/shared/ui/`에서 import, `cn()` 사용, Radix는 개별 `@radix-ui/*` 패키지)
 - **Zod 4** (스키마 → `z.infer`) + **React Hook Form 7** (`useWatch` 사용, `form.watch()` 금지 — 컴파일러 최적화가 꺼짐)
 - **TanStack Table** + **sonner** (toast) + **nuqs** (URL 상태), 로그는 `logger`(tslog) — `console.*` 금지
@@ -16,11 +16,13 @@
 pnpm dev                           # 개발 서버
 pnpm build                         # 프로덕션 빌드 (검증용)
 npx tsc --noEmit                   # 타입 검사
-pnpm lint                          # ESLint
+pnpm lint                          # Oxlint (설정: .oxlintrc.json)
+pnpm format                        # Oxfmt (설정: .oxfmtrc.json, Tailwind 클래스 정렬 포함)
 pnpm dlx shadcn@latest add [name]  # shadcn/ui 컴포넌트 추가
 ```
 
-- pre-commit 훅(husky)이 `eslint --fix` + `prettier --write .`를 실행
+- pre-commit 훅(husky)이 `oxlint --fix` + `oxfmt`를 실행 (ESLint·Prettier는 쓰지 않음)
+- 의존성: `pnpm-workspace.yaml`의 `minimumReleaseAge`로 공개 7일 안 된 버전은 설치되지 않음
 - `.env.local`의 `NEXT_PUBLIC_API_URL`은 **운영 서버**를 가리킨다 — 테스트용 빌드·실행은 `NEXT_PUBLIC_API_URL=http://localhost:...`로 덮어쓸 것
 
 ## 아키텍처: FSD

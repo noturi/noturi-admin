@@ -42,8 +42,8 @@ export function UserDetailView({ user }: UserDetailViewProps) {
                 className="h-16 w-16 rounded-full object-cover"
               />
             ) : (
-              <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-full">
-                <User className="text-muted-foreground h-8 w-8" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                <User className="h-8 w-8 text-muted-foreground" />
               </div>
             )}
             <div className="flex-1">
@@ -58,16 +58,16 @@ export function UserDetailView({ user }: UserDetailViewProps) {
         <CardContent>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
             <div className="flex items-center gap-2 overflow-hidden">
-              <Mail className="text-muted-foreground h-4 w-4 shrink-0" />
+              <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
               <span className="truncate text-sm">{user.email}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Calendar className="text-muted-foreground h-4 w-4 shrink-0" />
+              <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
               <span className="text-sm">가입일: {new Date(user.createdAt).toLocaleDateString('ko-KR')}</span>
             </div>
             {user.providers && user.providers.length > 0 && (
               <div className="flex items-center gap-2">
-                <Globe className="text-muted-foreground h-4 w-4 shrink-0" />
+                <Globe className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <div className="flex flex-wrap gap-1">
                   {user.providers.map((provider) => (
                     <Badge key={provider} variant="outline" className="text-xs">
@@ -126,25 +126,25 @@ export function UserDetailView({ user }: UserDetailViewProps) {
               {user.settings ? (
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div className="flex items-center gap-3 rounded-lg border p-4">
-                    <Palette className="text-muted-foreground h-5 w-5" />
+                    <Palette className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-muted-foreground text-sm">테마</p>
+                      <p className="text-sm text-muted-foreground">테마</p>
                       <p className="font-medium">{user.settings.theme === 'light' ? '라이트' : '다크'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 rounded-lg border p-4">
-                    <Globe className="text-muted-foreground h-5 w-5" />
+                    <Globe className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-muted-foreground text-sm">언어</p>
+                      <p className="text-sm text-muted-foreground">언어</p>
                       <p className="font-medium">
                         {user.settings.language === 'ko' ? '한국어' : user.settings.language}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 rounded-lg border p-4">
-                    <Bell className="text-muted-foreground h-5 w-5" />
+                    <Bell className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-muted-foreground text-sm">알림</p>
+                      <p className="text-sm text-muted-foreground">알림</p>
                       <Badge variant={user.settings.notification ? 'default' : 'secondary'}>
                         {user.settings.notification ? '활성화' : '비활성화'}
                       </Badge>
@@ -177,7 +177,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
                         </div>
                         {category.fields.length > 0 && (
                           <div className="mt-2">
-                            <p className="text-muted-foreground text-xs">필드:</p>
+                            <p className="text-xs text-muted-foreground">필드:</p>
                             <div className="mt-1 flex flex-wrap gap-1">
                               {category.fields.map((field) => (
                                 <Badge key={field.id} variant="outline" className="text-xs">
@@ -187,7 +187,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
                             </div>
                           </div>
                         )}
-                        <p className="text-muted-foreground mt-2 text-xs">
+                        <p className="mt-2 text-xs text-muted-foreground">
                           생성일: {new Date(category.createdAt).toLocaleDateString('ko-KR')}
                         </p>
                       </div>
@@ -339,7 +339,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
                       <Separator className="my-3" />
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between gap-2">
-                          <span className="text-muted-foreground shrink-0">푸시 토큰</span>
+                          <span className="shrink-0 text-muted-foreground">푸시 토큰</span>
                           <span className="min-w-0 truncate font-mono text-xs">{device.expoPushToken}</span>
                         </div>
                         <div className="flex justify-between">
