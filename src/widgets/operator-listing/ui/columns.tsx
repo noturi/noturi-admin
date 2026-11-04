@@ -7,6 +7,7 @@ import { Column, ColumnDef } from '@tanstack/react-table';
 import { Operator } from '@/entities/operator';
 import { CellAction } from './cell-action';
 import { can, type AuthUser } from '@/shared/lib/permissions';
+import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
 const getRoleDisplay = (role: string) => {
   const roleConfig = {
@@ -34,12 +35,12 @@ const CellActionWrapper: React.FC<{ data: Operator; currentUser: AuthUser }> = (
   return <CellAction data={data} />;
 };
 
-export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[] {
+export function getOperatorColumns(currentUser: AuthUser): ColumnDef<DataTableFeatures, Operator>[] {
   return [
     {
       id: 'email',
       accessorKey: 'email',
-      header: ({ column }: { column: Column<Operator, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Operator, unknown> }) => (
         <DataTableColumnHeader column={column} title="이메일" />
       ),
       cell: ({ cell }) => {
@@ -56,7 +57,7 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[]
     {
       id: 'name',
       accessorKey: 'name',
-      header: ({ column }: { column: Column<Operator, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Operator, unknown> }) => (
         <DataTableColumnHeader column={column} title="이름" />
       ),
       cell: ({ cell }) => {
@@ -72,7 +73,7 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[]
     {
       id: 'nickname',
       accessorKey: 'nickname',
-      header: ({ column }: { column: Column<Operator, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Operator, unknown> }) => (
         <DataTableColumnHeader column={column} title="닉네임" />
       ),
       cell: ({ cell }) => {
@@ -88,7 +89,7 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[]
     {
       id: 'role',
       accessorKey: 'role',
-      header: ({ column }: { column: Column<Operator, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Operator, unknown> }) => (
         <DataTableColumnHeader column={column} title="역할" />
       ),
       cell: ({ cell }) => {
@@ -114,7 +115,7 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<Operator>[]
     {
       id: 'createdAt',
       accessorKey: 'createdAt',
-      header: ({ column }: { column: Column<Operator, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Operator, unknown> }) => (
         <DataTableColumnHeader column={column} title="등록일" />
       ),
       cell: ({ cell }) => {

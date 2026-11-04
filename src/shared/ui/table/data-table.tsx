@@ -1,16 +1,17 @@
 import * as React from 'react';
-import { type Table as TanstackTable, flexRender } from '@tanstack/react-table';
+import { flexRender, type RowData } from '@tanstack/react-table';
+import type { DataTableInstance } from './table-features';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../table';
 import { getCommonPinningStyles } from './data-table-util';
 import { DataTablePagination } from './data-table-pagination';
 
-interface DataTableProps<TData> extends React.ComponentProps<'div'> {
-  table: TanstackTable<TData>;
+interface DataTableProps<TData extends RowData> extends React.ComponentProps<'div'> {
+  table: DataTableInstance<TData>;
   actionBar?: React.ReactNode;
 }
 
-export function DataTable<TData>({ table, actionBar, children }: DataTableProps<TData>) {
+export function DataTable<TData extends RowData>({ table, actionBar, children }: DataTableProps<TData>) {
   return (
     <div className="w-full space-y-4">
       {children}

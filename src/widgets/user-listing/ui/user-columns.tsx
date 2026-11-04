@@ -7,6 +7,7 @@ import { Column, ColumnDef } from '@tanstack/react-table';
 import { User } from '@/entities/user';
 import { CellAction } from './cell-action';
 import { can, type AuthUser } from '@/shared/lib/permissions';
+import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
 const normalizeUser = (user: Record<string, unknown>): User =>
   ({
@@ -25,12 +26,12 @@ const CellActionWrapper: React.FC<{ data: User; currentUser: AuthUser }> = ({ da
   return <CellAction data={data} />;
 };
 
-export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
+export function getUserColumns(currentUser: AuthUser): ColumnDef<DataTableFeatures, User>[] {
   return [
     {
       id: 'email',
       accessorKey: 'email',
-      header: ({ column }: { column: Column<User, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, User, unknown> }) => (
         <DataTableColumnHeader column={column} title="이메일" />
       ),
       cell: ({ cell, row }) => {
@@ -58,7 +59,9 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
     {
       id: 'name',
       accessorKey: 'name',
-      header: ({ column }: { column: Column<User, unknown> }) => <DataTableColumnHeader column={column} title="이름" />,
+      header: ({ column }: { column: Column<DataTableFeatures, User, unknown> }) => (
+        <DataTableColumnHeader column={column} title="이름" />
+      ),
       cell: ({ cell }) => {
         const name = cell.getValue<string>();
 
@@ -74,7 +77,7 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
     {
       id: 'nickname',
       accessorKey: 'nickname',
-      header: ({ column }: { column: Column<User, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, User, unknown> }) => (
         <DataTableColumnHeader column={column} title="닉네임" />
       ),
       cell: ({ cell }) => {
@@ -111,7 +114,7 @@ export function getUserColumns(currentUser: AuthUser): ColumnDef<User>[] {
     {
       id: 'createdAt',
       accessorKey: 'createdAt',
-      header: ({ column }: { column: Column<User, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, User, unknown> }) => (
         <DataTableColumnHeader column={column} title="등록일" />
       ),
       cell: ({ cell }) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Table } from '@tanstack/react-table';
+import type { RowData } from '@tanstack/react-table';
 import { Settings2 } from 'lucide-react';
 
 import { Button } from '@/shared/ui/button';
@@ -9,12 +9,13 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { cn } from '@/shared/lib';
 import { CheckIcon, ChevronDownIcon } from 'lucide-react';
 import { useMemo } from 'react';
+import type { DataTableInstance } from './table-features';
 
-interface DataTableViewOptionsProps<TData> {
-  table: Table<TData>;
+interface DataTableViewOptionsProps<TData extends RowData> {
+  table: DataTableInstance<TData>;
 }
 
-export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
+export function DataTableViewOptions<TData extends RowData>({ table }: DataTableViewOptionsProps<TData>) {
   const columns = useMemo(
     () => table.getAllColumns().filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide()),
     [table]

@@ -6,13 +6,14 @@ import { Column, ColumnDef } from '@tanstack/react-table';
 
 import { Category } from '@/entities/category';
 import { CellAction } from './cell-action';
+import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
-export function getCategoryColumns(): ColumnDef<Category>[] {
+export function getCategoryColumns(): ColumnDef<DataTableFeatures, Category>[] {
   return [
     {
       id: 'name',
       accessorKey: 'name',
-      header: ({ column }: { column: Column<Category, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Category, unknown> }) => (
         <DataTableColumnHeader column={column} title="카테고리명" />
       ),
       cell: ({ cell }) => {
@@ -28,7 +29,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
     {
       id: 'color',
       accessorKey: 'color',
-      header: ({ column }: { column: Column<Category, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Category, unknown> }) => (
         <DataTableColumnHeader column={column} title="색상" />
       ),
       cell: ({ cell }) => {
@@ -48,7 +49,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
     {
       id: 'description',
       accessorKey: 'description',
-      header: ({ column }: { column: Column<Category, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Category, unknown> }) => (
         <DataTableColumnHeader column={column} title="설명" />
       ),
       cell: ({ cell }) => {
@@ -63,7 +64,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
     {
       id: 'sortOrder',
       accessorKey: 'sortOrder',
-      header: ({ column }: { column: Column<Category, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Category, unknown> }) => (
         <DataTableColumnHeader column={column} title="정렬 순서" />
       ),
       cell: ({ cell }) => {
@@ -80,7 +81,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
     {
       id: 'isActive',
       accessorKey: 'isActive',
-      header: ({ column }: { column: Column<Category, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Category, unknown> }) => (
         <DataTableColumnHeader column={column} title="상태" />
       ),
       cell: ({ cell }) => {
@@ -100,7 +101,7 @@ export function getCategoryColumns(): ColumnDef<Category>[] {
     {
       id: 'createdAt',
       accessorKey: 'createdAt',
-      header: ({ column }: { column: Column<Category, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Category, unknown> }) => (
         <DataTableColumnHeader column={column} title="등록일" />
       ),
       cell: ({ cell }) => {

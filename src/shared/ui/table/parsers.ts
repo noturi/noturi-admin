@@ -1,3 +1,4 @@
+import type { RowData } from '@tanstack/react-table';
 import { createParser } from 'nuqs/server';
 import { z } from 'zod';
 
@@ -10,7 +11,7 @@ const sortingItemSchema = z.object({
   desc: z.boolean(),
 });
 
-export const getSortingStateParser = <TData>(columnIds?: string[] | Set<string>) => {
+export const getSortingStateParser = <TData extends RowData>(columnIds?: string[] | Set<string>) => {
   const validKeys = columnIds ? (columnIds instanceof Set ? columnIds : new Set(columnIds)) : null;
 
   return createParser({
@@ -46,7 +47,7 @@ const filterItemSchema = z.object({
 
 export type FilterItemSchema = z.infer<typeof filterItemSchema>;
 
-export const getFiltersStateParser = <TData>(columnIds?: string[] | Set<string>) => {
+export const getFiltersStateParser = <TData extends RowData>(columnIds?: string[] | Set<string>) => {
   const validKeys = columnIds ? (columnIds instanceof Set ? columnIds : new Set(columnIds)) : null;
 
   return createParser({

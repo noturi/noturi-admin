@@ -1,6 +1,6 @@
 'use client';
 
-import type { Column } from '@tanstack/react-table';
+import type { Column, RowData } from '@tanstack/react-table';
 import { CalendarIcon, XCircle } from 'lucide-react';
 import * as React from 'react';
 import type { DateRange } from 'react-day-picker';
@@ -10,6 +10,7 @@ import { Calendar } from '@/shared/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { Separator } from '@/shared/ui/separator';
 import { formatDate } from '@/shared/lib/utils/format-time';
+import type { DataTableFeatures } from './table-features';
 
 type DateSelection = Date[] | DateRange;
 
@@ -45,13 +46,17 @@ function parseColumnFilterValue(value: unknown) {
   return [];
 }
 
-interface DataTableDateFilterProps<TData> {
-  column: Column<TData, unknown>;
+interface DataTableDateFilterProps<TData extends RowData> {
+  column: Column<DataTableFeatures, TData, unknown>;
   title?: string;
   multiple?: boolean;
 }
 
-export function DataTableDateFilter<TData>({ column, title, multiple }: DataTableDateFilterProps<TData>) {
+export function DataTableDateFilter<TData extends RowData>({
+  column,
+  title,
+  multiple,
+}: DataTableDateFilterProps<TData>) {
   const columnFilterValue = column.getFilterValue();
 
   const selectedDates = React.useMemo<DateSelection>(() => {

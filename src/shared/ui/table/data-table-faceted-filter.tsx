@@ -1,7 +1,7 @@
 'use client';
 
 import type { Option } from '@/shared/ui/table/data-table.type';
-import type { Column } from '@tanstack/react-table';
+import type { Column, RowData } from '@tanstack/react-table';
 import { PlusCircle, XCircle } from 'lucide-react';
 
 import { Badge } from '@/shared/ui/badge';
@@ -20,15 +20,16 @@ import { Separator } from '@/shared/ui/separator';
 import { cn } from '@/shared/lib';
 import * as React from 'react';
 import { CheckIcon } from 'lucide-react';
+import type { DataTableFeatures } from './table-features';
 
-interface DataTableFacetedFilterProps<TData, TValue> {
-  column?: Column<TData, TValue>;
+interface DataTableFacetedFilterProps<TData extends RowData, TValue> {
+  column?: Column<DataTableFeatures, TData, TValue>;
   title?: string;
   options: Option[];
   multiple?: boolean;
 }
 
-export function DataTableFacetedFilter<TData, TValue>({
+export function DataTableFacetedFilter<TData extends RowData, TValue>({
   column,
   title,
   options,

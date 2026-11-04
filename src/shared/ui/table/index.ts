@@ -25,3 +25,4 @@ export * from './data-table-view-option';
 
 // Hook
 export * from './use-data-table';
+export * from './table-features';

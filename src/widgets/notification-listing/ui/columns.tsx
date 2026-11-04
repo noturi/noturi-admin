@@ -7,13 +7,14 @@ import { Column, ColumnDef } from '@tanstack/react-table';
 import { Notification, formatRepeatSchedule } from '@/entities/notification';
 import { CellAction } from './cell-action';
 import { Bell, Clock, Repeat } from 'lucide-react';
+import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
-export function getNotificationColumns(): ColumnDef<Notification>[] {
+export function getNotificationColumns(): ColumnDef<DataTableFeatures, Notification>[] {
   return [
     {
       id: 'title',
       accessorKey: 'title',
-      header: ({ column }: { column: Column<Notification, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
         <DataTableColumnHeader column={column} title="제목" />
       ),
       cell: ({ cell, row }) => {
@@ -40,7 +41,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
     {
       id: 'body',
       accessorKey: 'body',
-      header: ({ column }: { column: Column<Notification, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
         <DataTableColumnHeader column={column} title="내용" />
       ),
       cell: ({ cell }) => {
@@ -55,7 +56,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
     {
       id: 'targetUserCount',
       accessorKey: 'targetUserCount',
-      header: ({ column }: { column: Column<Notification, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
         <DataTableColumnHeader column={column} title="대상자" />
       ),
       cell: ({ cell }) => {
@@ -70,7 +71,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
     {
       id: 'scheduledAt',
       accessorKey: 'scheduledAt',
-      header: ({ column }: { column: Column<Notification, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
         <DataTableColumnHeader column={column} title="예약 시간" />
       ),
       cell: ({ row }) => {
@@ -105,7 +106,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
     {
       id: 'isRepeat',
       accessorKey: 'isRepeat',
-      header: ({ column }: { column: Column<Notification, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
         <DataTableColumnHeader column={column} title="반복" />
       ),
       cell: ({ row }) => {
@@ -131,7 +132,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
     {
       id: 'isActive',
       accessorKey: 'isActive',
-      header: ({ column }: { column: Column<Notification, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
         <DataTableColumnHeader column={column} title="상태" />
       ),
       cell: ({ cell }) => {
@@ -152,7 +153,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
     {
       id: 'lastSentAt',
       accessorKey: 'lastSentAt',
-      header: ({ column }: { column: Column<Notification, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
         <DataTableColumnHeader column={column} title="마지막 발송" />
       ),
       cell: ({ cell }) => {
@@ -175,7 +176,7 @@ export function getNotificationColumns(): ColumnDef<Notification>[] {
     {
       id: 'createdAt',
       accessorKey: 'createdAt',
-      header: ({ column }: { column: Column<Notification, unknown> }) => (
+      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
         <DataTableColumnHeader column={column} title="등록일" />
       ),
       cell: ({ cell }) => {

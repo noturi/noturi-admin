@@ -1,16 +1,17 @@
-import type { Table } from '@tanstack/react-table';
+import type { RowData } from '@tanstack/react-table';
 import { ChevronsLeft, ChevronsRight, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 import { Button } from '@/shared/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { cn } from '@/shared/lib';
+import type { DataTableInstance } from './table-features';
 
-interface DataTablePaginationProps<TData> extends React.ComponentProps<'div'> {
-  table: Table<TData>;
+interface DataTablePaginationProps<TData extends RowData> extends React.ComponentProps<'div'> {
+  table: DataTableInstance<TData>;
   pageSizeOptions?: number[];
 }
 
-export function DataTablePagination<TData>({
+export function DataTablePagination<TData extends RowData>({
   table,
   pageSizeOptions = [10, 20, 30, 40, 50],
   className,
@@ -37,13 +38,13 @@ export function DataTablePagination<TData>({
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium whitespace-nowrap">페이지당 행 수</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={`${table.state.pagination.pageSize}`}
             onValueChange={(value: string) => {
               table.setPageSize(Number(value));
             }}
           >
             <SelectTrigger className="h-8 w-[4.5rem] [&[data-size]]:h-8">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+              <SelectValue placeholder={table.state.pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
               {pageSizeOptions.map((pageSize) => (
@@ -55,7 +56,7 @@ export function DataTablePagination<TData>({
           </Select>
         </div>
         <div className="flex items-center justify-center text-sm font-medium">
-          {table.getPageCount()}페이지 중 {table.getState().pagination.pageIndex + 1}페이지
+          {table.getPageCount()}페이지 중 {table.state.pagination.pageIndex + 1}페이지
         </div>
         <div className="flex items-center space-x-2">
           <Button

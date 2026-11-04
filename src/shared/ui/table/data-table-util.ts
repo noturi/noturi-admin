@@ -1,17 +1,18 @@
 import type { ExtendedColumnFilter, FilterOperator, FilterVariant } from './data-table.type';
-import type { Column } from '@tanstack/react-table';
+import type { Column, RowData } from '@tanstack/react-table';
 import { dataTableConfig } from './data-table-config';
+import type { DataTableFeatures } from './table-features';
 
-export function getCommonPinningStyles<TData>({
+export function getCommonPinningStyles<TData extends RowData>({
   column,
   withBorder = false,
 }: {
-  column: Column<TData>;
+  column: Column<DataTableFeatures, TData>;
   withBorder?: boolean;
 }): React.CSSProperties {
   const isPinned = column.getIsPinned();
-  const isLastLeftPinnedColumn = isPinned === 'left' && column.getIsLastColumn('left');
-  const isFirstRightPinnedColumn = isPinned === 'right' && column.getIsFirstColumn('right');
+  const isLastLeftPinnedColumn = isPinned === 'start' && column.getIsLastColumn('start');
+  const isFirstRightPinnedColumn = isPinned === 'end' && column.getIsFirstColumn('end');
 
   return {
     boxShadow: withBorder
@@ -21,8 +22,8 @@ export function getCommonPinningStyles<TData>({
           ? '4px 0 4px -4px hsl(var(--border)) inset'
           : undefined
       : undefined,
-    left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
-    right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
+    left: isPinned === 'start' ? `${column.getStart('start')}px` : undefined,
+    right: isPinned === 'end' ? `${column.getAfter('end')}px` : undefined,
     opacity: isPinned ? 0.97 : 1,
     position: isPinned ? 'sticky' : 'relative',
     background: isPinned ? 'hsl(var(--background))' : 'hsl(var(--background))',
@@ -52,7 +53,9 @@ export function getDefaultFilterOperator(filterVariant: FilterVariant) {
   return operators[0]?.value ?? (filterVariant === 'text' ? 'iLike' : 'eq');
 }
 
-export function getValidFilters<TData>(filters: ExtendedColumnFilter<TData>[]): ExtendedColumnFilter<TData>[] {
+export function getValidFilters<TData extends RowData>(
+  filters: ExtendedColumnFilter<TData>[]
+): ExtendedColumnFilter<TData>[] {
   return filters.filter(
     (filter) =>
       filter.operator === 'isEmpty' ||
