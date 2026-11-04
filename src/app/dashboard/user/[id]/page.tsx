@@ -1,26 +1,17 @@
 import { notFound, unstable_rethrow } from 'next/navigation';
-import Link from 'next/link';
+
+import { getUserById, UserDetailView, type UserDetail } from '@/entities/user';
+import { DeleteUserButton } from '@/features/user';
+import { auth, can, ROUTES } from '@/shared/lib';
+import { PageHeader } from '@/shared/ui/heading';
 import PageContainer from '@/shared/ui/page-container';
-import { Heading } from '@/shared/ui/heading';
-import { Separator } from '@/shared/ui/separator';
-import { Button } from '@/shared/ui/button';
-import { getUserById } from '@/entities/user';
-import { UserDetailView } from '@/entities/user';
-import { ArrowLeft } from 'lucide-react';
 
-export const metadata = {
-  title: 'Dashboard: User Detail',
-};
+export const metadata = { title: '사용자 상세 | Noturi Admin' };
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
+export default async function UserDetailPage(props: { params: Promise<{ id: string }> }) {
+  const { id } = await props.params;
 
-export default async function UserDetailPage(props: Props) {
-  const params = await props.params;
-  const { id } = params;
-
-  let user;
+  let user: UserDetail;
   try {
     user = await getUserById(id);
   } catch (error) {
@@ -28,25 +19,32 @@ export default async function UserDetailPage(props: Props) {
     unstable_rethrow(error);
     notFound();
   }
+  if (!user) notFound();
 
-  if (!user) {
-    notFound();
-  }
+  const { user: currentUser } = await auth();
+  const canDelete = !!currentUser && can(currentUser).deleteUser(user);
 
   return (
-    <PageContainer scrollable>
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/user">
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Heading title={`${user.name} 상세`} description={`@${user.nickname}의 상세 정보`} />
-        </div>
-        <Separator />
-        <UserDetailView user={user} />
-      </div>
+    <PageContainer>
+      <PageHeader
+        title={user.name}
+        description={`@${user.nickname} · ${user.email}`}
+        back={{ href: ROUTES.DASHBOARD.USER, label: '사용자 목록으로' }}
+        actions={
+          canDelete && (
+            <DeleteUserButton
+              user={{
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                memoCount: user.memos?.length,
+                categoryCount: user.categories?.length,
+              }}
+            />
+          )
+        }
+      />
+      <UserDetailView user={user} />
     </PageContainer>
   );
 }

@@ -1,4 +1,4 @@
-import { Bell } from 'lucide-react';
+import { NotificationPhonePreview } from '@/entities/notification';
 
 interface NotificationPreviewProps {
   title: string;
@@ -15,19 +15,7 @@ interface NotificationPreviewProps {
 export function NotificationPreview({ title, body, targetCount, schedule, destination }: NotificationPreviewProps) {
   return (
     <section aria-label="발송 미리보기" className="space-y-4">
-      <div className="flex items-start gap-3 rounded-xl border bg-card p-3 text-card-foreground shadow-sm">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <Bell className="size-4" aria-hidden />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-            <span>노트리</span>
-            <span>지금</span>
-          </div>
-          <p className="truncate text-sm font-semibold">{title || '제목'}</p>
-          <p className="line-clamp-2 text-sm text-muted-foreground">{body || '내용이 여기에 보여요'}</p>
-        </div>
-      </div>
+      <NotificationPhonePreview title={title} body={body} />
 
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 px-1 text-sm">
         <dt className="text-muted-foreground">받는 사람</dt>

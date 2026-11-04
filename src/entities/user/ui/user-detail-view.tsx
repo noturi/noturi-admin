@@ -1,377 +1,244 @@
 'use client';
 
 import Image from 'next/image';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Badge } from '@/shared/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
-import { Separator } from '@/shared/ui/separator';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
-import { ScrollArea } from '@/shared/ui/scroll-area';
-import type { UserDetail } from '../model/types';
-import {
-  User,
-  Mail,
-  Calendar,
-  Settings,
-  Smartphone,
-  FolderOpen,
-  FileText,
-  Bell,
-  Star,
-  Globe,
-  Palette,
-} from 'lucide-react';
+import { parseAsStringLiteral, useQueryState } from 'nuqs';
+import { Bell, Star, User } from 'lucide-react';
 
-interface UserDetailViewProps {
-  user: UserDetail;
+import { formatKstDate, formatKstDateTime } from '@/shared/lib/utils/format-time';
+import { Badge } from '@/shared/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { RoleBadge } from '@/shared/ui/role-badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
+
+import type { UserDetail } from '../model/types';
+
+const TABS = ['memos', 'categories', 'calendar', 'devices'] as const;
+
+const PROVIDER_LABEL: Record<string, string> = { GOOGLE: '구글', APPLE: '애플', KAKAO: '카카오', NAVER: '네이버' };
+const THEME_LABEL: Record<string, string> = { light: '라이트', dark: '다크', system: '기기 설정 따름' };
+const LANGUAGE_LABEL: Record<string, string> = { ko: '한국어', en: '영어' };
+const NOTIFY_BEFORE_LABEL: Record<string, string> = {
+  TEN_MINUTES_BEFORE: '10분 전',
+  THIRTY_MINUTES_BEFORE: '30분 전',
+  ONE_HOUR_BEFORE: '1시간 전',
+  ONE_DAY_BEFORE: '1일 전',
+};
+
+function Empty({ children }: { children: React.ReactNode }) {
+  return <p className="py-8 text-center text-sm text-muted-foreground">{children}</p>;
 }
 
-export function UserDetailView({ user }: UserDetailViewProps) {
+/**
+ * 사용자 상세 — 왼쪽: 앱에서 쓴 기록(탭, URL ?tab=에 남아 링크로 공유 가능) / 오른쪽: 계정 정보
+ * 작업(계정 삭제)은 페이지 머리글에
+ */
+export function UserDetailView({ user }: { user: UserDetail }) {
+  const [tab, setTab] = useQueryState('tab', parseAsStringLiteral(TABS).withDefault('memos'));
+  const memos = user.memos ?? [];
+  const categories = user.categories ?? [];
+  const calendarMemos = user.calendarMemos ?? [];
+  const devices = user.devices ?? [];
+
+  const account: { label: string; value: React.ReactNode }[] = [
+    { label: '이메일', value: <span className="break-all">{user.email}</span> },
+    {
+      label: '로그인',
+      value: user.providers?.length ? user.providers.map((p) => PROVIDER_LABEL[p] ?? p).join(', ') : '-',
+    },
+    { label: '역할', value: <RoleBadge role={user.role} /> },
+    { label: '가입일', value: formatKstDate(user.createdAt) },
+    { label: '통계 공개', value: user.isStatsPublic ? '공개' : '비공개' },
+    ...(user.settings
+      ? [
+          { label: '푸시 알림', value: user.settings.notification ? '받음' : '안 받음' },
+          { label: '테마', value: THEME_LABEL[user.settings.theme] ?? user.settings.theme },
+          { label: '언어', value: LANGUAGE_LABEL[user.settings.language] ?? user.settings.language },
+        ]
+      : []),
+  ];
+
   return (
-    <div className="space-y-6">
-      {/* User Profile Card */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-4">
-            {user.avatarUrl ? (
-              <Image
-                src={user.avatarUrl}
-                alt={user.name}
-                width={64}
-                height={64}
-                className="h-16 w-16 rounded-full object-cover"
-              />
-            ) : (
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                <User className="h-8 w-8 text-muted-foreground" />
-              </div>
-            )}
-            <div className="flex-1">
-              <CardTitle className="flex items-center gap-2 text-xl">
-                {user.name}
-                <Badge variant={user.role === 'ADMIN' ? 'default' : 'secondary'}>{user.role}</Badge>
-              </CardTitle>
-              <CardDescription className="mt-1">@{user.nickname}</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-            <div className="flex items-center gap-2 overflow-hidden">
-              <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
-              <span className="truncate text-sm">{user.email}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
-              <span className="text-sm">가입일: {new Date(user.createdAt).toLocaleDateString('ko-KR')}</span>
-            </div>
-            {user.providers && user.providers.length > 0 && (
-              <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4 shrink-0 text-muted-foreground" />
-                <div className="flex flex-wrap gap-1">
-                  {user.providers.map((provider) => (
-                    <Badge key={provider} variant="outline" className="text-xs">
-                      {provider}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <Badge variant={user.isStatsPublic ? 'default' : 'outline'}>
-                {user.isStatsPublic ? '통계 공개' : '통계 비공개'}
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <Tabs
+        value={tab}
+        onValueChange={(value) => void setTab(value as (typeof TABS)[number])}
+        className="min-w-0 gap-4"
+      >
+        {/* 모바일에서도 라벨이 보이게 가로 스크롤 */}
+        <div className="overflow-x-auto">
+          <TabsList>
+            <TabsTrigger value="memos">메모 {memos.length.toLocaleString()}</TabsTrigger>
+            <TabsTrigger value="categories">카테고리 {categories.length.toLocaleString()}</TabsTrigger>
+            <TabsTrigger value="calendar">캘린더 {calendarMemos.length.toLocaleString()}</TabsTrigger>
+            <TabsTrigger value="devices">기기 {devices.length.toLocaleString()}</TabsTrigger>
+          </TabsList>
+        </div>
 
-      {/* Tabs for detailed info */}
-      <Tabs defaultValue="settings" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="settings" className="flex items-center gap-1 text-xs sm:text-sm">
-            <Settings className="h-4 w-4 shrink-0" />
-            <span className="hidden sm:inline">설정</span>
-          </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-1 text-xs sm:text-sm">
-            <FolderOpen className="h-4 w-4 shrink-0" />
-            <span className="hidden truncate sm:inline">카테고리</span>
-            <span className="tabular-nums">({user.categories?.length ?? 0})</span>
-          </TabsTrigger>
-          <TabsTrigger value="memos" className="flex items-center gap-1 text-xs sm:text-sm">
-            <FileText className="h-4 w-4 shrink-0" />
-            <span className="hidden sm:inline">메모</span>
-            <span className="tabular-nums">({user.memos?.length ?? 0})</span>
-          </TabsTrigger>
-          <TabsTrigger value="calendar" className="flex items-center gap-1 text-xs sm:text-sm">
-            <Calendar className="h-4 w-4 shrink-0" />
-            <span className="hidden truncate sm:inline">캘린더</span>
-            <span className="tabular-nums">({user.calendarMemos?.length ?? 0})</span>
-          </TabsTrigger>
-          <TabsTrigger value="devices" className="flex items-center gap-1 text-xs sm:text-sm">
-            <Smartphone className="h-4 w-4 shrink-0" />
-            <span className="hidden truncate sm:inline">디바이스</span>
-            <span className="tabular-nums">({user.devices?.length ?? 0})</span>
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Settings Tab */}
-        <TabsContent value="settings">
-          <Card>
-            <CardHeader>
-              <CardTitle>사용자 설정</CardTitle>
-              <CardDescription>앱 설정 및 알림 설정</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {user.settings ? (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="flex items-center gap-3 rounded-lg border p-4">
-                    <Palette className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">테마</p>
-                      <p className="font-medium">{user.settings.theme === 'light' ? '라이트' : '다크'}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-lg border p-4">
-                    <Globe className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">언어</p>
-                      <p className="font-medium">
-                        {user.settings.language === 'ko' ? '한국어' : user.settings.language}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-lg border p-4">
-                    <Bell className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">알림</p>
-                      <Badge variant={user.settings.notification ? 'default' : 'secondary'}>
-                        {user.settings.notification ? '활성화' : '비활성화'}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-muted-foreground">설정 정보가 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Categories Tab */}
-        <TabsContent value="categories">
-          <Card>
-            <CardHeader>
-              <CardTitle>카테고리</CardTitle>
-              <CardDescription>사용자가 생성한 카테고리 목록</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {user.categories && user.categories.length > 0 ? (
-                <ScrollArea className="h-[400px]">
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {user.categories.map((category) => (
-                      <div key={category.id} className="rounded-lg border p-4">
-                        <div className="flex items-center gap-2">
-                          <div className="h-4 w-4 rounded-full" style={{ backgroundColor: category.color }} />
-                          <span className="font-medium">{category.name}</span>
-                        </div>
-                        {category.fields.length > 0 && (
-                          <div className="mt-2">
-                            <p className="text-xs text-muted-foreground">필드:</p>
-                            <div className="mt-1 flex flex-wrap gap-1">
-                              {category.fields.map((field) => (
-                                <Badge key={field.id} variant="outline" className="text-xs">
-                                  {field.name}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        <p className="mt-2 text-xs text-muted-foreground">
-                          생성일: {new Date(category.createdAt).toLocaleDateString('ko-KR')}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              ) : (
-                <p className="text-muted-foreground">카테고리가 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Memos Tab */}
         <TabsContent value="memos">
-          <Card>
-            <CardHeader>
-              <CardTitle>메모</CardTitle>
-              <CardDescription>사용자가 작성한 메모 목록</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {user.memos && user.memos.length > 0 ? (
-                <ScrollArea className="h-[400px]">
-                  <div className="min-w-[600px]">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>제목</TableHead>
-                          <TableHead>카테고리</TableHead>
-                          <TableHead>평점</TableHead>
-                          <TableHead>경험일</TableHead>
-                          <TableHead>작성일</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {user.memos.map((memo) => (
-                          <TableRow key={memo.id}>
-                            <TableCell className="font-medium">{memo.title}</TableCell>
-                            <TableCell>
-                              <Badge variant="outline">{memo.categoryName}</Badge>
-                            </TableCell>
-                            <TableCell>
-                              {memo.rating !== undefined && (
-                                <div className="flex items-center gap-1">
-                                  <Star className="h-4 w-4 fill-rating text-rating" />
-                                  <span>{memo.rating}</span>
-                                </div>
-                              )}
-                            </TableCell>
-                            <TableCell className="whitespace-nowrap">
-                              {memo.experienceDate && new Date(memo.experienceDate).toLocaleDateString('ko-KR')}
-                            </TableCell>
-                            <TableCell className="whitespace-nowrap">
-                              {new Date(memo.createdAt).toLocaleDateString('ko-KR')}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </ScrollArea>
-              ) : (
-                <p className="text-muted-foreground">메모가 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Calendar Tab */}
-        <TabsContent value="calendar">
-          <Card>
-            <CardHeader>
-              <CardTitle>캘린더 메모</CardTitle>
-              <CardDescription>일정 및 알림 설정</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {user.calendarMemos && user.calendarMemos.length > 0 ? (
-                <ScrollArea className="h-[400px]">
-                  <div className="min-w-[600px]">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>제목</TableHead>
-                          <TableHead>시작일</TableHead>
-                          <TableHead>종료일</TableHead>
-                          <TableHead>종일</TableHead>
-                          <TableHead>알림</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {user.calendarMemos.map((memo) => (
-                          <TableRow key={memo.id}>
-                            <TableCell className="font-medium">{memo.title}</TableCell>
-                            <TableCell className="whitespace-nowrap">
-                              {new Date(memo.startDate).toLocaleString('ko-KR')}
-                            </TableCell>
-                            <TableCell className="whitespace-nowrap">
-                              {new Date(memo.endDate).toLocaleString('ko-KR')}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={memo.isAllDay ? 'default' : 'outline'}>
-                                {memo.isAllDay ? '종일' : '시간 지정'}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              {memo.hasNotification ? (
-                                <div className="flex items-center gap-1">
-                                  <Bell className="h-4 w-4 text-primary" />
-                                  <span className="text-xs">{formatNotifyBefore(memo.notifyBefore)}</span>
-                                </div>
-                              ) : (
-                                <span className="text-muted-foreground">-</span>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </ScrollArea>
-              ) : (
-                <p className="text-muted-foreground">캘린더 메모가 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Devices Tab */}
-        <TabsContent value="devices">
-          <Card>
-            <CardHeader>
-              <CardTitle>디바이스</CardTitle>
-              <CardDescription>등록된 기기 및 푸시 알림 설정</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {user.devices && user.devices.length > 0 ? (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {user.devices.map((device) => (
-                    <div key={device.id} className="rounded-lg border p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Smartphone className="h-5 w-5" />
-                          <span className="font-medium capitalize">{device.platform}</span>
-                        </div>
-                        <Badge variant={device.isActive ? 'default' : 'secondary'}>
-                          {device.isActive ? '활성' : '비활성'}
-                        </Badge>
-                      </div>
-                      <Separator className="my-3" />
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between gap-2">
-                          <span className="shrink-0 text-muted-foreground">푸시 토큰</span>
-                          <span className="min-w-0 truncate font-mono text-xs">{device.expoPushToken}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">등록일</span>
-                          <span>{new Date(device.createdAt).toLocaleDateString('ko-KR')}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">마지막 활동</span>
-                          <span>{new Date(device.lastActiveAt).toLocaleString('ko-KR')}</span>
-                        </div>
-                      </div>
-                    </div>
+          {memos.length === 0 ? (
+            <Empty>아직 쓴 메모가 없어요.</Empty>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border">
+              <Table className="min-w-[560px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>제목</TableHead>
+                    <TableHead>카테고리</TableHead>
+                    <TableHead className="text-right">별점</TableHead>
+                    <TableHead>경험한 날</TableHead>
+                    <TableHead>쓴 날</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {memos.map((memo) => (
+                    <TableRow key={memo.id}>
+                      <TableCell className="max-w-64 truncate font-medium">{memo.title}</TableCell>
+                      <TableCell>{memo.categoryName}</TableCell>
+                      <TableCell className="text-right">
+                        {memo.rating != null ? (
+                          <span className="inline-flex items-center gap-1 tabular-nums">
+                            <Star className="size-3.5 fill-rating text-rating" aria-hidden />
+                            {memo.rating}
+                          </span>
+                        ) : (
+                          '-'
+                        )}
+                      </TableCell>
+                      <TableCell className="tabular-nums">
+                        {memo.experienceDate ? formatKstDate(memo.experienceDate) : '-'}
+                      </TableCell>
+                      <TableCell className="tabular-nums">{formatKstDate(memo.createdAt)}</TableCell>
+                    </TableRow>
                   ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground">등록된 디바이스가 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="categories">
+          {categories.length === 0 ? (
+            <Empty>카테고리가 없어요.</Empty>
+          ) : (
+            <ul className="divide-y rounded-lg border">
+              {categories.map((category) => (
+                <li key={category.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3">
+                  <span
+                    className="size-3 shrink-0 rounded-full"
+                    style={{ backgroundColor: category.color }}
+                    aria-hidden
+                  />
+                  <span className="font-medium">{category.name}</span>
+                  {category.fields.length > 0 && (
+                    <span className="text-sm text-muted-foreground">
+                      항목: {category.fields.map((field) => field.name).join(', ')}
+                    </span>
+                  )}
+                  <span className="ml-auto text-sm text-muted-foreground tabular-nums">
+                    {formatKstDate(category.createdAt)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </TabsContent>
+
+        <TabsContent value="calendar">
+          {calendarMemos.length === 0 ? (
+            <Empty>캘린더 일정이 없어요.</Empty>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border">
+              <Table className="min-w-[560px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>제목</TableHead>
+                    <TableHead>언제</TableHead>
+                    <TableHead>알림</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {calendarMemos.map((memo) => (
+                    <TableRow key={memo.id}>
+                      <TableCell className="max-w-64 truncate font-medium">{memo.title}</TableCell>
+                      <TableCell className="tabular-nums">
+                        {memo.isAllDay
+                          ? `${formatKstDate(memo.startDate)} 종일`
+                          : `${formatKstDateTime(memo.startDate)} ~ ${formatKstDateTime(memo.endDate)}`}
+                      </TableCell>
+                      <TableCell>
+                        {memo.hasNotification ? (
+                          <span className="inline-flex items-center gap-1 text-sm">
+                            <Bell className="size-3.5 text-muted-foreground" aria-hidden />
+                            {NOTIFY_BEFORE_LABEL[memo.notifyBefore ?? ''] ?? memo.notifyBefore}
+                            {memo.notificationSent && <span className="text-muted-foreground">· 보냄</span>}
+                          </span>
+                        ) : (
+                          '-'
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="devices">
+          {devices.length === 0 ? (
+            <Empty>알림 받을 기기가 등록되지 않았어요. 이 사용자에게는 푸시 알림이 가지 않아요.</Empty>
+          ) : (
+            <ul className="divide-y rounded-lg border">
+              {devices.map((device) => (
+                <li key={device.id} className="grid gap-1 px-4 py-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">
+                      {device.platform === 'ios'
+                        ? 'iPhone'
+                        : device.platform === 'android'
+                          ? 'Android'
+                          : device.platform}
+                    </span>
+                    <Badge variant={device.isActive ? 'secondary' : 'outline'}>
+                      {device.isActive ? '알림 받음' : '알림 안 받음'}
+                    </Badge>
+                  </div>
+                  <span className="text-muted-foreground tabular-nums">
+                    등록 {formatKstDate(device.createdAt)} · 마지막 사용 {formatKstDateTime(device.lastActiveAt)}
+                  </span>
+                  <code className="truncate font-mono text-xs text-muted-foreground">{device.expoPushToken}</code>
+                </li>
+              ))}
+            </ul>
+          )}
         </TabsContent>
       </Tabs>
+
+      <aside className="lg:sticky lg:top-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-3 space-y-0">
+            {user.avatarUrl ? (
+              <Image src={user.avatarUrl} alt="" width={40} height={40} className="size-10 rounded-full object-cover" />
+            ) : (
+              <div className="flex size-10 items-center justify-center rounded-full bg-muted">
+                <User className="size-5 text-muted-foreground" aria-hidden />
+              </div>
+            )}
+            <CardTitle>계정 정보</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2.5 text-sm">
+              {account.map((row) => (
+                <div key={row.label} className="contents">
+                  <dt className="text-muted-foreground">{row.label}</dt>
+                  <dd className="font-medium">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </CardContent>
+        </Card>
+      </aside>
     </div>
   );
-}
-
-function formatNotifyBefore(notifyBefore?: string): string {
-  if (!notifyBefore) return '';
-  const map: Record<string, string> = {
-    TEN_MINUTES_BEFORE: '10분 전',
-    THIRTY_MINUTES_BEFORE: '30분 전',
-    ONE_HOUR_BEFORE: '1시간 전',
-    ONE_DAY_BEFORE: '1일 전',
-  };
-  return map[notifyBefore] || notifyBefore;
 }

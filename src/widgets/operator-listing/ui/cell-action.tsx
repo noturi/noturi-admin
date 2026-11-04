@@ -1,75 +1,39 @@
 'use client';
 
 import { useState } from 'react';
+import { MoreHorizontal, Trash } from 'lucide-react';
+
+import { Operator } from '@/entities/operator';
+import { DeleteOperatorDialog } from '@/features/operator';
 import { Button } from '@/shared/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/shared/ui/alert-dialog';
-import { Operator } from '@/entities/operator';
-import { MoreHorizontal, Trash, Edit } from 'lucide-react';
-import { deleteOperator } from '@/features/operator';
-import { executeAction } from '@/shared/lib';
 
-interface CellActionProps {
-  data: Operator;
-}
-
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const handleDelete = async () => {
-    const result = await executeAction(() => deleteOperator(data.id), {
-      successMessage: '운영자가 삭제되었습니다.',
-      errorMessage: '삭제에 실패했습니다.',
-    });
-    if (result !== undefined) {
-      setDeleteDialogOpen(false);
-    }
-  };
+export const CellAction = ({ data }: { data: Operator }) => {
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" />}>
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              aria-label={`${data.name || data.email} 작업 메뉴`}
+            />
+          }
+        >
+          <MoreHorizontal />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <Edit className="mr-2 h-4 w-4" />
-            수정
-          </DropdownMenuItem>
-          <DropdownMenuItem variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" />
-            삭제
+          <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
+            <Trash />
+            운영자 삭제
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>운영자 삭제</AlertDialogTitle>
-            <AlertDialogDescription>
-              정말 이 운영자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleDelete}>
-              삭제
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteOperatorDialog operator={data} open={deleteOpen} onOpenChange={setDeleteOpen} />
     </>
   );
 };

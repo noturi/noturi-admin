@@ -1,30 +1,23 @@
-import Link from 'next/link';
+import { getCategoryList } from '@/entities/category';
+import { CategoryForm, getNextSortOrder } from '@/features/category';
+import { ROUTES } from '@/shared/lib';
+import { PageHeader } from '@/shared/ui/heading';
 import PageContainer from '@/shared/ui/page-container';
-import { Heading } from '@/shared/ui/heading';
-import { Separator } from '@/shared/ui/separator';
-import { Button } from '@/shared/ui/button';
-import { CategoryForm } from '@/features/category';
-import { ArrowLeft } from 'lucide-react';
 
-export const metadata = {
-  title: 'Dashboard: Create Category',
-};
+export const metadata = { title: '카테고리 추가 | Noturi Admin' };
 
-export default function CreateCategoryPage() {
+export default async function CreateCategoryPage() {
+  // 새 카테고리는 맨 뒤에 — 현재 최댓값 + 1
+  const categories = await getCategoryList({ sortBy: 'sortOrder', order: 'asc' });
+
   return (
-    <PageContainer scrollable>
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/category">
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Heading title="카테고리 등록" description="새로운 카테고리를 등록합니다" />
-        </div>
-        <Separator />
-        <CategoryForm mode="create" />
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="카테고리 추가"
+        description="새로 가입하는 사용자에게 만들어질 카테고리"
+        back={{ href: ROUTES.DASHBOARD.CATEGORY, label: '기본 카테고리 목록으로' }}
+      />
+      <CategoryForm mode="create" nextSortOrder={getNextSortOrder(categories)} />
     </PageContainer>
   );
 }

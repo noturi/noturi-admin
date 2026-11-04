@@ -78,7 +78,7 @@ export function DataTableFacetedFilter<TData extends RowData, TValue>({
         {selectedValues?.size > 0 ? (
           <div
             role="button"
-            aria-label={`Clear ${title} filter`}
+            aria-label={`${title} 필터 지우기`}
             tabIndex={0}
             onClick={onReset}
             className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
@@ -117,7 +117,7 @@ export function DataTableFacetedFilter<TData extends RowData, TValue>({
         <Command>
           <CommandInput placeholder={title} />
           <CommandList className="max-h-full">
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>맞는 항목이 없어요</CommandEmpty>
             <CommandGroup className="max-h-[18.75rem] overflow-x-hidden overflow-y-auto">
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
@@ -144,7 +144,7 @@ export function DataTableFacetedFilter<TData extends RowData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem onSelect={() => onReset()} className="justify-center text-center">
-                    Clear filters
+                    필터 지우기
                   </CommandItem>
                 </CommandGroup>
               </>

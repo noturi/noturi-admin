@@ -1,38 +1,42 @@
-import { getOperatorList } from '@/entities/operator';
-import { OperatorTable } from './operator-table';
-import { OperatorQueryParams } from '@/entities/operator';
+import { getOperatorList, type OperatorQueryParams } from '@/entities/operator';
 import { auth } from '@/shared/lib/utils/auth.server';
-import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
+import { getSearchParams, PageType, toServerSort } from '@/shared/lib/utils/search-params';
+
+import { OperatorTable } from './operator-table';
+
+const OPERATOR_SORTABLE_COLUMNS = ['email', 'name', 'nickname', 'role', 'createdAt'] as const;
+const OPERATOR_ROLES = ['ADMIN', 'SUPER_ADMIN'] as const;
 
 export async function OperatorListing() {
-  // Get current user from server
-  const authData = await auth();
+  const { user: currentUser } = await auth();
+  if (!currentUser) return null;
 
-  if (!authData.user) {
-    return <div>Unauthorized</div>;
-  }
-
-  // Get operator-specific search params
   const { cache } = getSearchParams(PageType.OPERATOR);
+  const email = cache.get('email') as string | null;
+  const createdAt = cache.get('createdAt') as string | null;
+  // URL에는 "ADMIN,SUPER_ADMIN" 한 문자열로 남음 → 배열로
+  const roles = ((cache.get('role') as string | null) ?? '')
+    .split(',')
+    .filter((role): role is (typeof OPERATOR_ROLES)[number] => (OPERATOR_ROLES as readonly string[]).includes(role));
+  const sort = toServerSort(cache.get('sort') as string | null, OPERATOR_SORTABLE_COLUMNS);
 
-  const page = cache.get('page');
-  const email = cache.get('email');
-  const limit = cache.get('perPage');
-  const role = cache.get('role');
-  const createdAt = cache.get('createdAt');
-
-  const filters = {
-    page,
-    limit,
+  const filters: OperatorQueryParams = {
+    page: cache.get('page') as number,
+    limit: cache.get('perPage') as number,
     ...(email && { email }),
-    ...(role && { role: role as OperatorQueryParams['role'] }),
+    ...(roles.length && { role: roles }),
     ...(createdAt && { createdAt }),
+    ...(sort && { sort }),
   };
 
   const response = await getOperatorList(filters);
 
-  const operators = response.data ?? [];
-  const pageCount = response.totalPages ?? 1;
-
-  return <OperatorTable data={operators} pageCount={pageCount} currentUser={authData.user} />;
+  return (
+    <OperatorTable
+      data={response.data ?? []}
+      pageCount={response.totalPages ?? 1}
+      totalCount={response.total}
+      currentUser={currentUser}
+    />
+  );
 }

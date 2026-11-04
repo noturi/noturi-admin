@@ -243,8 +243,10 @@ export function useDataTable<TData extends RowData>(props: UseDataTableProps<TDa
     onSortingChange,
     onColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
+    // 페이지·정렬·필터 모두 서버에서 — 정렬을 브라우저에서 하면 현재 페이지 10행 안에서만 정렬돼 전체가 정렬된 것처럼 보임
+    // 서버가 정렬을 지원하지 않는 열은 열 정의에서 enableSorting: false
     manualPagination: true,
-    manualSorting: false,
+    manualSorting: true,
     manualFiltering: true,
   });
 

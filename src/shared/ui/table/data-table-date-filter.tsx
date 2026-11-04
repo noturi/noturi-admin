@@ -164,7 +164,7 @@ export function DataTableDateFilter<TData extends RowData>({
         {hasValue ? (
           <div
             role="button"
-            aria-label={`Clear ${title} filter`}
+            aria-label={`${title} 필터 지우기`}
             tabIndex={0}
             onClick={onReset}
             className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"

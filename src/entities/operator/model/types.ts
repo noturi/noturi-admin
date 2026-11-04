@@ -23,7 +23,8 @@ export const OperatorQueryParamsSchema = z.object({
   email: z.string().optional(),
   role: z.union([z.enum(['ADMIN', 'SUPER_ADMIN']), z.array(z.enum(['ADMIN', 'SUPER_ADMIN']))]).optional(),
   createdAt: z.string().optional(),
-  sort: z.array(z.string()).optional(),
+  /** JSON 문자열 `[{"id":"createdAt","desc":true}]` (toServerSort로 만듦) */
+  sort: z.string().optional(),
 });
 
 export type OperatorQueryParams = z.infer<typeof OperatorQueryParamsSchema>;

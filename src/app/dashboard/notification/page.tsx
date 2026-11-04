@@ -1,45 +1,37 @@
-import PageContainer from '@/shared/ui/page-container';
-import { Heading } from '@/shared/ui/heading';
-import { Separator } from '@/shared/ui/separator';
-import { Button } from '@/shared/ui/button';
-import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
-import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
-import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
-import { NotificationListing } from '@/widgets/notification-listing';
 import Link from 'next/link';
+import { SearchParams } from 'nuqs/server';
 import { Plus } from 'lucide-react';
 
-export const metadata = {
-  title: 'Dashboard: Notification',
-};
+import { NotificationListing } from '@/widgets/notification-listing';
+import { ROUTES } from '@/shared/lib';
+import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
+import { Button } from '@/shared/ui/button';
+import { PageHeader } from '@/shared/ui/heading';
+import PageContainer from '@/shared/ui/page-container';
+import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
 
-type Props = {
-  searchParams: Promise<SearchParams>;
-};
+export const metadata = { title: '알림 관리 | Noturi Admin' };
 
-export default async function Page(props: Props) {
+export default async function Page(props: { searchParams: Promise<SearchParams> }) {
   const searchParams = await props.searchParams;
-  const { cache } = getSearchParams(PageType.NOTIFICATION);
-  cache.parse(searchParams);
+  getSearchParams(PageType.NOTIFICATION).cache.parse(searchParams);
 
   return (
-    <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-start justify-between">
-          <Heading title="알림 관리" description="푸시 알림 발송 및 관리" />
-          <Link href="/dashboard/notification/create">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              알림 생성
-            </Button>
-          </Link>
-        </div>
-        <Separator />
-        <Suspense fallback={<DataTableSkeleton columnCount={8} rowCount={8} filterCount={2} />}>
-          <NotificationListing />
-        </Suspense>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="알림 관리"
+        description="앱 사용자 휴대폰으로 보내는 푸시 알림 — 예약·반복 일정과 발송 기록"
+        actions={
+          <Button nativeButton={false} render={<Link href={`${ROUTES.DASHBOARD.NOTIFICATION}/create`} />}>
+            <Plus />
+            알림 만들기
+          </Button>
+        }
+      />
+      <Suspense fallback={<DataTableSkeleton columnCount={6} rowCount={8} filterCount={2} />}>
+        <NotificationListing />
+      </Suspense>
     </PageContainer>
   );
 }

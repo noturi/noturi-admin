@@ -22,3 +22,7 @@ export * from './sonner';
 export * from './sortable';
 export * from './table';
 export * from './tooltip';
+export * from './confirm-dialog';
+export * from './role-badge';
+export * from './segmented-control';
+export * from './textarea';

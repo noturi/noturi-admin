@@ -1,239 +1,122 @@
-'use client';
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Badge } from '@/shared/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
-import { ScrollArea } from '@/shared/ui/scroll-area';
-import type { NotificationDetail } from '../model/types';
-import { REPEAT_DAYS_MAP } from '../model/types';
-import { Bell, Calendar, Clock, Users, Repeat, Send, CheckCircle2, XCircle, Info } from 'lucide-react';
+import { formatKstDate, formatKstDateTime, formatKstLong } from '@/shared/lib/utils/format-time';
 
-interface NotificationDetailViewProps {
-  notification: NotificationDetail;
+import { describeNotificationDestination, describeNotificationSchedule, getNotificationStatus } from '../model/status';
+import type { NotificationDetail } from '../model/types';
+import { NotificationPhonePreview } from './notification-phone-preview';
+import { NotificationStatusBadge } from './notification-status-badge';
+
+/** 상태별 한 줄 안내 — "지금 이 알림이 어떻게 되는지"를 먼저 말함 */
+function statusMessage(n: NotificationDetail, status: ReturnType<typeof getNotificationStatus>) {
+  const people = `${n.targetUserCount.toLocaleString()}명`;
+  switch (status) {
+    case 'scheduled':
+      return `${people}에게 ${describeNotificationSchedule(n)}에 나가요.`;
+    case 'repeating':
+      return `반복 일정대로 ${people}에게 나가고 있어요.`;
+    case 'paused':
+      return '꺼져 있어서 발송되지 않아요. 켜면 다시 일정대로 나가요.';
+    case 'sent':
+      return n.lastSentAt ? `${formatKstLong(n.lastSentAt)}에 보냈어요.` : '보낸 알림이에요.';
+    case 'missed':
+      return '예약 시각에 꺼져 있어서 발송되지 않았어요. 다시 보내려면 새 알림을 만들거나 지금 보내기를 쓰세요.';
+  }
 }
 
-export function NotificationDetailView({ notification }: NotificationDetailViewProps) {
+export function NotificationDetailView({ notification: n }: { notification: NotificationDetail }) {
+  const status = getNotificationStatus(n);
+  const logs = n.logs ?? [];
+
+  const rows: { label: string; value: React.ReactNode }[] = [
+    { label: '상태', value: <NotificationStatusBadge status={status} /> },
+    { label: n.isRepeat ? '반복' : '예약', value: describeNotificationSchedule(n) },
+    { label: '받는 사람', value: `${n.targetUserCount.toLocaleString()}명` },
+    { label: '누르면', value: describeNotificationDestination(n.data) },
+    ...(n.data.params && Object.keys(n.data.params).length
+      ? [
+          {
+            label: '화면 값',
+            value: <code className="font-mono text-xs break-all">{JSON.stringify(n.data.params)}</code>,
+          },
+        ]
+      : []),
+    { label: '만든 날', value: formatKstDate(n.createdAt) },
+    { label: '마지막 발송', value: n.lastSentAt ? formatKstDateTime(n.lastSentAt) : '아직 없음' },
+  ];
+
   return (
-    <div className="space-y-6">
-      {/* Notification Info Card */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <Bell className="h-6 w-6 text-primary" />
-            </div>
-            <div className="flex-1">
-              <CardTitle className="flex items-center gap-2 text-xl">
-                {notification.title}
-                <Badge variant={notification.isActive ? 'default' : 'secondary'}>
-                  {notification.isActive ? '활성' : '비활성'}
-                </Badge>
-                {notification.isRepeat && (
-                  <Badge variant="outline">
-                    <Repeat className="mr-1 h-3 w-3" />
-                    반복
-                  </Badge>
-                )}
-              </CardTitle>
-              <CardDescription className="mt-1">{notification.body}</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">대상: {notification.targetUserCount.toLocaleString()}명</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">생성: {new Date(notification.createdAt).toLocaleDateString('ko-KR')}</span>
-            </div>
-            {notification.scheduledAt && (
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">예약: {new Date(notification.scheduledAt).toLocaleString('ko-KR')}</span>
-              </div>
-            )}
-            {notification.lastSentAt && (
-              <div className="flex items-center gap-2">
-                <Send className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  마지막 발송: {new Date(notification.lastSentAt).toLocaleString('ko-KR')}
-                </span>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>발송 설정</CardTitle>
+            <CardDescription className={status === 'missed' ? 'text-destructive' : undefined}>
+              {statusMessage(n, status)}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-[8rem_minmax(0,1fr)]">
+              {rows.map((row) => (
+                <div key={row.label} className="contents">
+                  <dt className="text-muted-foreground">{row.label}</dt>
+                  <dd className="font-medium break-keep">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </CardContent>
+        </Card>
 
-      {/* Tabs */}
-      <Tabs defaultValue="info" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="info" className="flex items-center gap-1">
-            <Info className="h-4 w-4" />
-            상세 정보
-          </TabsTrigger>
-          <TabsTrigger value="logs" className="flex items-center gap-1">
-            <Send className="h-4 w-4" />
-            발송 로그 ({notification.logs?.length || 0})
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Info Tab */}
-        <TabsContent value="info">
-          <Card>
-            <CardHeader>
-              <CardTitle>알림 설정</CardTitle>
-              <CardDescription>알림 발송 설정 정보</CardDescription>
-            </CardHeader>
+        <Card>
+          <CardHeader>
+            <CardTitle>발송 기록</CardTitle>
+            <CardDescription>
+              {logs.length ? `${logs.length.toLocaleString()}번 보냈어요.` : '아직 보낸 적이 없어요.'}
+            </CardDescription>
+          </CardHeader>
+          {logs.length > 0 && (
             <CardContent>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {/* 발송 타입 */}
-                <div className="rounded-lg border p-4">
-                  <p className="text-sm text-muted-foreground">발송 타입</p>
-                  <p className="mt-1 font-medium">
-                    {!notification.scheduledAt && !notification.scheduledTime
-                      ? '즉시 발송'
-                      : notification.isRepeat
-                        ? '반복 발송'
-                        : '예약 발송'}
-                  </p>
-                </div>
-
-                {/* 예약 시간 */}
-                {notification.scheduledTime && (
-                  <div className="rounded-lg border p-4">
-                    <p className="text-sm text-muted-foreground">발송 시간</p>
-                    <p className="mt-1 font-medium">{notification.scheduledTime}</p>
-                  </div>
-                )}
-
-                {/* 반복 요일/날짜 */}
-                {notification.isRepeat &&
-                  notification.repeatDays &&
-                  (notification.repeatType === 'MONTHLY' ? (
-                    <div className="rounded-lg border p-4">
-                      <p className="text-sm text-muted-foreground">반복 날짜</p>
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {[...notification.repeatDays]
-                          .sort((a, b) => a - b)
-                          .map((day) => (
-                            <Badge key={day} variant="default">
-                              {day}일
-                            </Badge>
-                          ))}
-                      </div>
-                      {notification.repeatDays.some((day) => day >= 29) && (
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          해당 날짜가 없는 달: {notification.sendOnLastDay ? '말일에 발송' : '발송하지 않음'}
-                        </p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="rounded-lg border p-4">
-                      <p className="text-sm text-muted-foreground">반복 요일</p>
-                      <div className="mt-2 flex gap-1">
-                        {[0, 1, 2, 3, 4, 5, 6].map((day) => (
-                          <Badge key={day} variant={notification.repeatDays?.includes(day) ? 'default' : 'outline'}>
-                            {REPEAT_DAYS_MAP[day]}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-
-                {/* 공휴일 제외 */}
-                {notification.isRepeat && (
-                  <div className="rounded-lg border p-4">
-                    <p className="text-sm text-muted-foreground">공휴일 제외</p>
-                    <p className="mt-1 font-medium">
-                      {notification.skipHolidays ? '예 (공휴일에는 발송하지 않음)' : '아니오'}
-                    </p>
-                  </div>
-                )}
-
-                {/* 반복 종료일 */}
-                {notification.repeatEndAt && (
-                  <div className="rounded-lg border p-4">
-                    <p className="text-sm text-muted-foreground">반복 종료일</p>
-                    <p className="mt-1 font-medium">{new Date(notification.repeatEndAt).toLocaleDateString('ko-KR')}</p>
-                  </div>
-                )}
-
-                {/* 딥링크 설정 */}
-                <div className="rounded-lg border p-4 md:col-span-2">
-                  <p className="text-sm text-muted-foreground">딥링크</p>
-                  <p className="mt-1 font-mono text-sm">screen: {notification.data.screen}</p>
-                  {notification.data.params && (
-                    <p className="mt-1 font-mono text-sm text-muted-foreground">
-                      params: {JSON.stringify(notification.data.params)}
-                    </p>
-                  )}
-                </div>
+              <div className="overflow-x-auto rounded-lg border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>보낸 시각</TableHead>
+                      <TableHead className="text-right">성공</TableHead>
+                      <TableHead className="text-right">실패</TableHead>
+                      <TableHead className="text-right">성공률</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {logs.map((log) => {
+                      const success = log.successCount ?? 0;
+                      const failure = log.failureCount ?? 0;
+                      const total = success + failure;
+                      return (
+                        <TableRow key={log.id}>
+                          <TableCell className="tabular-nums">{formatKstDateTime(log.sentAt)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{success.toLocaleString()}</TableCell>
+                          {/* 빨강은 실패가 있을 때만 */}
+                          <TableCell className={`text-right tabular-nums ${failure > 0 ? 'text-destructive' : ''}`}>
+                            {failure.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">
+                            {total > 0 ? `${Math.round((success / total) * 100)}%` : '-'}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
               </div>
             </CardContent>
-          </Card>
-        </TabsContent>
+          )}
+        </Card>
+      </div>
 
-        {/* Logs Tab */}
-        <TabsContent value="logs">
-          <Card>
-            <CardHeader>
-              <CardTitle>발송 로그</CardTitle>
-              <CardDescription>알림 발송 히스토리</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {notification.logs && notification.logs.length > 0 ? (
-                <ScrollArea className="h-[400px]">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>발송 시간</TableHead>
-                        <TableHead>성공</TableHead>
-                        <TableHead>실패</TableHead>
-                        <TableHead>성공률</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {notification.logs.map((log) => {
-                        const successCount = log.successCount ?? 0;
-                        const failureCount = log.failureCount ?? 0;
-                        const total = successCount + failureCount;
-                        const successRate = total > 0 ? Math.round((successCount / total) * 100) : 0;
-
-                        return (
-                          <TableRow key={log.id}>
-                            <TableCell>{new Date(log.sentAt).toLocaleString('ko-KR')}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-1 tabular-nums">
-                                <CheckCircle2 className="h-4 w-4" />
-                                {successCount.toLocaleString()}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-1 text-destructive tabular-nums">
-                                <XCircle className="h-4 w-4" />
-                                {failureCount.toLocaleString()}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={successRate >= 90 ? 'default' : 'destructive'}>{successRate}%</Badge>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </ScrollArea>
-              ) : (
-                <p className="text-muted-foreground">발송 로그가 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      <aside aria-label="휴대폰에 보이는 모습" className="space-y-2 lg:sticky lg:top-6">
+        <p className="text-sm text-muted-foreground">휴대폰에 보이는 모습</p>
+        <NotificationPhonePreview title={n.title} body={n.body} />
+      </aside>
     </div>
   );
 }

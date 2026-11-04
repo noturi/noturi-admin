@@ -17,7 +17,7 @@ export interface RegisterData {
 export async function registerAction(data: RegisterData) {
   const validation = registerSchema.safeParse(data);
   if (!validation.success) {
-    return { error: '입력값을 확인해주세요.' };
+    return { error: '입력한 내용을 다시 확인해 주세요.' };
   }
 
   try {

@@ -95,6 +95,8 @@ function ColorPicker({ value, onChange, presets = [...PRESET_COLORS] }: ColorPic
                   value === color ? 'border-foreground ring-1 ring-foreground ring-offset-1' : 'border-transparent'
                 )}
                 style={{ backgroundColor: color }}
+                aria-label={`색상 ${color}`}
+                aria-pressed={value === color}
                 onClick={() => handlePresetClick(color)}
               />
             ))}

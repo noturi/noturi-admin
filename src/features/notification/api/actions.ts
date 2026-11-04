@@ -2,6 +2,7 @@
 
 import { serverApi } from '@/shared/api/server-api';
 import { revalidatePath } from 'next/cache';
+import { ROUTES } from '@/shared/lib/routes';
 import type {
   CreateNotificationRequest,
   UpdateNotificationRequest,
@@ -16,7 +17,7 @@ export async function createNotification(data: CreateNotificationRequest) {
   const result = await serverApi.post<{ id: string | null; sendResult?: SendNotificationResponse }>('/notifications', {
     json: data,
   });
-  revalidatePath('/dashboard/notification');
+  revalidatePath(ROUTES.DASHBOARD.NOTIFICATION);
   return result;
 }
 
@@ -25,17 +26,8 @@ export async function createNotification(data: CreateNotificationRequest) {
  */
 export async function updateNotification(id: string, data: UpdateNotificationRequest) {
   await serverApi.put(`/notifications/${id}`, { json: data });
-  revalidatePath('/dashboard/notification');
-  revalidatePath(`/dashboard/notification/${id}`);
-}
-
-/**
- * 알림 활성화/비활성화 토글
- */
-export async function toggleNotificationActive(id: string, isActive: boolean) {
-  await serverApi.put(`/notifications/${id}`, { json: { isActive } });
-  revalidatePath('/dashboard/notification');
-  revalidatePath(`/dashboard/notification/${id}`);
+  revalidatePath(ROUTES.DASHBOARD.NOTIFICATION);
+  revalidatePath(`${ROUTES.DASHBOARD.NOTIFICATION}/${id}`);
 }
 
 /**
@@ -43,7 +35,7 @@ export async function toggleNotificationActive(id: string, isActive: boolean) {
  */
 export async function deleteNotification(id: string) {
   await serverApi.delete(`/notifications/${id}`);
-  revalidatePath('/dashboard/notification');
+  revalidatePath(ROUTES.DASHBOARD.NOTIFICATION);
 }
 
 /**
@@ -51,7 +43,7 @@ export async function deleteNotification(id: string) {
  */
 export async function sendNotification(id: string): Promise<SendNotificationResponse> {
   const response = await serverApi.post<SendNotificationResponse>(`/notifications/${id}/send`);
-  revalidatePath('/dashboard/notification');
-  revalidatePath(`/dashboard/notification/${id}`);
+  revalidatePath(ROUTES.DASHBOARD.NOTIFICATION);
+  revalidatePath(`${ROUTES.DASHBOARD.NOTIFICATION}/${id}`);
   return response;
 }

@@ -1,26 +1,17 @@
 import { notFound, unstable_rethrow } from 'next/navigation';
-import Link from 'next/link';
-import PageContainer from '@/shared/ui/page-container';
-import { Heading } from '@/shared/ui/heading';
-import { Separator } from '@/shared/ui/separator';
-import { Button } from '@/shared/ui/button';
-import { getCategoryById } from '@/entities/category';
+
+import { getCategoryById, type Category } from '@/entities/category';
 import { CategoryForm } from '@/features/category';
-import { ArrowLeft } from 'lucide-react';
+import { ROUTES } from '@/shared/lib';
+import { PageHeader } from '@/shared/ui/heading';
+import PageContainer from '@/shared/ui/page-container';
 
-export const metadata = {
-  title: 'Dashboard: Edit Category',
-};
+export const metadata = { title: '카테고리 수정 | Noturi Admin' };
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
+export default async function EditCategoryPage(props: { params: Promise<{ id: string }> }) {
+  const { id } = await props.params;
 
-export default async function EditCategoryPage(props: Props) {
-  const params = await props.params;
-  const { id } = params;
-
-  let category;
+  let category: Category;
   try {
     category = await getCategoryById(id);
   } catch (error) {
@@ -28,25 +19,16 @@ export default async function EditCategoryPage(props: Props) {
     unstable_rethrow(error);
     notFound();
   }
-
-  if (!category) {
-    notFound();
-  }
+  if (!category) notFound();
 
   return (
-    <PageContainer scrollable>
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/category">
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Heading title="카테고리 수정" description={category.name} />
-        </div>
-        <Separator />
-        <CategoryForm category={category} mode="edit" />
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="카테고리 수정"
+        description={category.name}
+        back={{ href: ROUTES.DASHBOARD.CATEGORY, label: '기본 카테고리 목록으로' }}
+      />
+      <CategoryForm category={category} mode="edit" />
     </PageContainer>
   );
 }

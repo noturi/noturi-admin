@@ -2,6 +2,7 @@
 
 import { serverApi } from '@/shared/api/server-api';
 import { revalidatePath } from 'next/cache';
+import { ROUTES } from '@/shared/lib/routes';
 import type { CreateCategoryRequest, UpdateCategoryRequest } from '@/entities/category';
 
 /**
@@ -9,7 +10,7 @@ import type { CreateCategoryRequest, UpdateCategoryRequest } from '@/entities/ca
  */
 export async function createCategory(data: CreateCategoryRequest) {
   await serverApi.post('/categories', { json: data });
-  revalidatePath('/dashboard/categories');
+  revalidatePath(ROUTES.DASHBOARD.CATEGORY);
 }
 
 /**
@@ -17,7 +18,8 @@ export async function createCategory(data: CreateCategoryRequest) {
  */
 export async function updateCategory(id: string, data: UpdateCategoryRequest) {
   await serverApi.put(`/categories/${id}`, { json: data });
-  revalidatePath('/dashboard/categories');
+  revalidatePath(ROUTES.DASHBOARD.CATEGORY);
+  revalidatePath(`${ROUTES.DASHBOARD.CATEGORY}/${id}/edit`);
 }
 
 /**
@@ -25,7 +27,7 @@ export async function updateCategory(id: string, data: UpdateCategoryRequest) {
  */
 export async function deleteCategory(id: string) {
   await serverApi.delete(`/categories/${id}`);
-  revalidatePath('/dashboard/categories');
+  revalidatePath(ROUTES.DASHBOARD.CATEGORY);
 }
 
 /**
@@ -33,7 +35,7 @@ export async function deleteCategory(id: string) {
  */
 export async function toggleCategoryActive(id: string) {
   await serverApi.patch(`/categories/${id}/toggle-active`);
-  revalidatePath('/dashboard/categories');
+  revalidatePath(ROUTES.DASHBOARD.CATEGORY);
 }
 
 /**
@@ -41,5 +43,5 @@ export async function toggleCategoryActive(id: string) {
  */
 export async function reorderCategories(categories: { id: string; sortOrder: number }[]) {
   await serverApi.patch('/categories/reorder', { json: { categories } });
-  revalidatePath('/dashboard/categories');
+  revalidatePath(ROUTES.DASHBOARD.CATEGORY);
 }

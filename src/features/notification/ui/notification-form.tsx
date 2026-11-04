@@ -14,17 +14,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { SegmentedControl } from '@/shared/ui/segmented-control';
 import { Checkbox } from '@/shared/ui/checkbox';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/shared/ui/alert-dialog';
-import { executeAction } from '@/shared/lib';
+import { ConfirmDialog, ConfirmSummary } from '@/shared/ui/confirm-dialog';
+import { executeAction, ROUTES } from '@/shared/lib';
 import type { Notification } from '@/entities/notification';
 import { createNotification, updateNotification } from '../api/actions';
 import { UserSelectField } from './user-select-field';
@@ -124,14 +115,17 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
     return '저장';
   })();
 
-  const save = async (values: FormValues) => {
+  /** 저장 성공 여부를 돌려줌 — 즉시 발송 확인창은 실패하면 열어둠 */
+  const save = async (values: FormValues): Promise<boolean> => {
     setIsSubmitting(true);
+    let ok = false;
     const data = buildNotificationData({ ...values, sendType: values.sendType as SendType });
 
     if (mode === 'create') {
       const result = await executeAction(() => createNotification(data), { errorMessage: '알림을 저장하지 못했어요.' });
-      if (result !== undefined) {
-        const sent = result.sendResult;
+      ok = result.ok;
+      if (result.ok) {
+        const sent = result.data.sendResult;
         if (sent) {
           // 즉시 발송 결과를 그대로 보여줌 — "생성되었습니다"만으로는 실제로 나갔는지 알 수 없음
           if (sent.failCount > 0) {
@@ -144,16 +138,18 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
         } else {
           toast.success(values.sendType === 'repeat' ? '반복 발송을 저장했어요' : '예약했어요');
         }
-        router.push('/dashboard/notification');
+        router.push(ROUTES.DASHBOARD.NOTIFICATION);
       }
     } else if (notification) {
       const result = await executeAction(
         () => updateNotification(notification.id, { ...data, isActive: values.isActive }),
         { successMessage: '변경 사항을 저장했어요', errorMessage: '저장하지 못했어요.' }
       );
-      if (result !== undefined) router.push(`/dashboard/notification/${notification.id}`);
+      ok = result.ok;
+      if (result.ok) router.push(`${ROUTES.DASHBOARD.NOTIFICATION}/${notification.id}`);
     }
     setIsSubmitting(false);
+    return ok;
   };
 
   const onSubmit = (values: FormValues) => {
@@ -301,8 +297,7 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                               <div className="space-y-1 leading-none">
                                 <FormLabel>해당 날짜가 없는 달은 말일에 발송</FormLabel>
                                 <FormDescription>
-                                  예: 31일 선택 시 4월에는 30일에 발송됩니다. 체크하지 않으면 해당 달은 발송되지
-                                  않습니다.
+                                  예: 31일을 고르면 4월에는 30일에 나가요. 끄면 그런 달에는 보내지 않아요.
                                 </FormDescription>
                               </div>
                             </FormItem>
@@ -341,7 +336,7 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel>공휴일 제외</FormLabel>
-                          <FormDescription>발송일이 한국 공휴일이면 그날은 보내지 않습니다.</FormDescription>
+                          <FormDescription>발송일이 한국 공휴일이면 그날은 보내지 않아요.</FormDescription>
                         </div>
                       </FormItem>
                     )}
@@ -508,37 +503,29 @@ export function NotificationForm({ notification, mode }: NotificationFormProps) 
         </aside>
       </form>
 
-      {/* 즉시 발송 확인 — 되돌릴 수 없으므로 요약을 한 번 더 보여줌 (PRODUCT.md 원칙 1) */}
-      <AlertDialog open={!!pendingImmediate} onOpenChange={(open) => !open && setPendingImmediate(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>지금 {targetCount.toLocaleString()}명에게 보낼까요?</AlertDialogTitle>
-            <AlertDialogDescription>
-              보내면 취소할 수 없어요. 받는 사람의 휴대폰에 바로 알림이 떠요.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 rounded-md bg-muted p-3 text-sm">
-            <dt className="text-muted-foreground">제목</dt>
-            <dd className="font-medium break-all">{pendingImmediate?.title}</dd>
-            <dt className="text-muted-foreground">내용</dt>
-            <dd className="break-all">{pendingImmediate?.body}</dd>
-            <dt className="text-muted-foreground">누르면</dt>
-            <dd className="break-all">{destination}</dd>
-          </dl>
-          <AlertDialogFooter>
-            <AlertDialogCancel>다시 확인</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={() => {
-                if (pendingImmediate) void save(pendingImmediate);
-                setPendingImmediate(null);
-              }}
-            >
-              지금 발송
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* 즉시 발송 확인 — 되돌릴 수 없으므로 요약을 한 번 더 보여줌 (PRODUCT.md 원칙 1). 보내는 동안 열어둠 */}
+      <ConfirmDialog
+        open={!!pendingImmediate}
+        onOpenChange={(open) => !open && setPendingImmediate(null)}
+        title={`지금 ${targetCount.toLocaleString()}명에게 보낼까요?`}
+        description="보내면 취소할 수 없어요. 받는 사람의 휴대폰에 바로 알림이 떠요."
+        confirmLabel={`${targetCount.toLocaleString()}명에게 보내기`}
+        variant="destructive"
+        onConfirm={async () => {
+          if (!pendingImmediate) return true;
+          const ok = await save(pendingImmediate);
+          if (ok) setPendingImmediate(null);
+          return ok;
+        }}
+      >
+        <ConfirmSummary
+          items={[
+            { label: '제목', value: pendingImmediate?.title },
+            { label: '내용', value: pendingImmediate?.body },
+            { label: '누르면', value: destination },
+          ]}
+        />
+      </ConfirmDialog>
     </Form>
   );
 }

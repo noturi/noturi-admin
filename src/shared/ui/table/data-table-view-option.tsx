@@ -25,24 +25,18 @@ export function DataTableViewOptions<TData extends RowData>({ table }: DataTable
     <Popover>
       <PopoverTrigger
         render={
-          <Button
-            aria-label="Toggle columns"
-            role="combobox"
-            variant="outline"
-            size="sm"
-            className="ml-auto hidden h-8 lg:flex"
-          />
+          <Button aria-label="표시할 열 고르기" variant="outline" size="sm" className="ml-auto hidden h-8 lg:flex" />
         }
       >
         <Settings2 />
-        컬럼 설정
+        열 설정
         <ChevronDownIcon className="ml-auto opacity-50" />
       </PopoverTrigger>
       <PopoverContent align="end" className="w-44 p-0">
         <Command>
-          <CommandInput placeholder="컬럼을 검색하세요." />
+          <CommandInput placeholder="열 이름으로 찾기" />
           <CommandList>
-            <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
+            <CommandEmpty>맞는 열이 없어요</CommandEmpty>
             <CommandGroup>
               {columns.map((column) => (
                 <CommandItem key={column.id} onSelect={() => column.toggleVisibility(!column.getIsVisible())}>

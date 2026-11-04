@@ -1,41 +1,41 @@
-import PageContainer from '@/shared/ui/page-container';
-import { Heading } from '@/shared/ui/heading';
-import { Separator } from '@/shared/ui/separator';
-import { Button } from '@/shared/ui/button';
-import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
-import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
-import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
-import { OperatorListing } from '@/widgets/operator-listing';
 import Link from 'next/link';
+import { SearchParams } from 'nuqs/server';
+import { Plus } from 'lucide-react';
 
-export const metadata = {
-  title: 'Dashboard: Operators',
-};
+import { OperatorListing } from '@/widgets/operator-listing';
+import { auth, can, ROUTES } from '@/shared/lib';
+import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
+import { Button } from '@/shared/ui/button';
+import { PageHeader } from '@/shared/ui/heading';
+import PageContainer from '@/shared/ui/page-container';
+import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
 
-type Props = {
-  searchParams: Promise<SearchParams>;
-};
+export const metadata = { title: '운영자 관리 | Noturi Admin' };
 
-export default async function Page(props: Props) {
+export default async function Page(props: { searchParams: Promise<SearchParams> }) {
   const searchParams = await props.searchParams;
-  const { cache } = getSearchParams(PageType.OPERATOR);
-  cache.parse(searchParams);
+  getSearchParams(PageType.OPERATOR).cache.parse(searchParams);
+  const { user } = await auth();
 
   return (
-    <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-start justify-between">
-          <Heading title="운영자 관리" description="운영자 계정" />
-          <Link href="/dashboard/operator/register">
-            <Button>운영자 등록</Button>
-          </Link>
-        </div>
-        <Separator />
-        <Suspense fallback={<DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />}>
-          <OperatorListing />
-        </Suspense>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="운영자 관리"
+        description="어드민에 로그인할 수 있는 계정"
+        actions={
+          user &&
+          can(user).createOperator() && (
+            <Button nativeButton={false} render={<Link href={`${ROUTES.DASHBOARD.OPERATOR}/register`} />}>
+              <Plus />
+              운영자 등록
+            </Button>
+          )
+        }
+      />
+      <Suspense fallback={<DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />}>
+        <OperatorListing />
+      </Suspense>
     </PageContainer>
   );
 }

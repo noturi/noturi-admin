@@ -1,56 +1,41 @@
-import { notFound, unstable_rethrow } from 'next/navigation';
-import Link from 'next/link';
-import PageContainer from '@/shared/ui/page-container';
-import { Heading } from '@/shared/ui/heading';
-import { Separator } from '@/shared/ui/separator';
-import { Button } from '@/shared/ui/button';
-import { getNotificationById } from '@/entities/notification';
+import { notFound, redirect, unstable_rethrow } from 'next/navigation';
+
+import {
+  getNotificationById,
+  getNotificationCapabilities,
+  getNotificationStatus,
+  type NotificationDetail,
+} from '@/entities/notification';
 import { NotificationForm } from '@/features/notification';
-import { ArrowLeft } from 'lucide-react';
+import { ROUTES } from '@/shared/lib';
+import { PageHeader } from '@/shared/ui/heading';
+import PageContainer from '@/shared/ui/page-container';
 
-export const metadata = {
-  title: '알림 수정 | Noturi Admin',
-};
+export const metadata = { title: '알림 수정 | Noturi Admin' };
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
+export default async function EditNotificationPage(props: { params: Promise<{ id: string }> }) {
+  const { id } = await props.params;
+  const detailHref = `${ROUTES.DASHBOARD.NOTIFICATION}/${id}`;
 
-export default async function EditNotificationPage(props: Props) {
-  const params = await props.params;
-  const { id } = params;
-
-  let notification;
+  let notification: NotificationDetail;
   try {
     notification = await getNotificationById(id);
   } catch (error) {
-    // 세션 만료 리다이렉트(401)는 404로 바꾸지 않고 그대로 진행
     unstable_rethrow(error);
     notFound();
   }
-
-  if (!notification) {
-    notFound();
-  }
+  if (!notification) notFound();
+  // 이미 보낸·놓친 1회 알림은 고쳐도 다시 나가지 않음(서버 cron은 lastSentAt 없는 것만 보냄) → 상세로
+  if (!getNotificationCapabilities(getNotificationStatus(notification)).canEdit) redirect(detailHref);
 
   return (
-    <PageContainer scrollable>
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label="알림 상세로"
-            nativeButton={false}
-            render={<Link href={`/dashboard/notification/${id}`} />}
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <Heading title="알림 수정" description={notification.title} />
-        </div>
-        <Separator />
-        <NotificationForm notification={notification} mode="edit" />
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="알림 수정"
+        description={notification.title}
+        back={{ href: detailHref, label: '알림 상세로' }}
+      />
+      <NotificationForm notification={notification} mode="edit" />
     </PageContainer>
   );
 }

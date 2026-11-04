@@ -138,7 +138,7 @@ export function formatRepeatDays(days?: number[]): string {
   if (JSON.stringify(sortedDays) === JSON.stringify([1, 2, 3, 4, 5])) return '평일';
   if (JSON.stringify(sortedDays) === JSON.stringify([0, 6])) return '주말';
 
-  return days.map((d) => REPEAT_DAYS_MAP[d]).join(', ');
+  return sortedDays.map((d) => REPEAT_DAYS_MAP[d]).join(', ');
 }
 
 /**

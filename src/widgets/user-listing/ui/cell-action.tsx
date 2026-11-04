@@ -1,75 +1,55 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/shared/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/shared/ui/alert-dialog';
+import Link from 'next/link';
+import { Eye, MoreHorizontal, Trash } from 'lucide-react';
+
 import { User } from '@/entities/user';
-import { MoreHorizontal, Trash, Edit } from 'lucide-react';
-import { deleteUser } from '@/features/user';
-import { executeAction } from '@/shared/lib';
+import { DeleteUserDialog } from '@/features/user';
+import { Button } from '@/shared/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/shared/ui/dropdown-menu';
 
 interface CellActionProps {
   data: User;
+  /** 권한이 없으면 삭제 항목을 숨김 (눌러서 서버 오류를 받게 하지 않음) */
+  canDelete: boolean;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const handleDelete = async () => {
-    const result = await executeAction(() => deleteUser(data.id), {
-      successMessage: '사용자가 삭제되었습니다.',
-      errorMessage: '삭제에 실패했습니다.',
-    });
-    if (result !== undefined) {
-      setDeleteDialogOpen(false);
-    }
-  };
+export const CellAction = ({ data, canDelete }: CellActionProps) => {
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" />}>
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+        <DropdownMenuTrigger
+          render={<Button variant="ghost" size="icon" className="size-8" aria-label={`${data.name} 작업 메뉴`} />}
+        >
+          <MoreHorizontal />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <Edit className="mr-2 h-4 w-4" />
-            수정
+          <DropdownMenuItem render={<Link href={`/dashboard/user/${data.id}`} />}>
+            <Eye />
+            상세 보기
           </DropdownMenuItem>
-          <DropdownMenuItem variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" />
-            삭제
-          </DropdownMenuItem>
+          {canDelete && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
+                <Trash />
+                계정 삭제
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>사용자 삭제</AlertDialogTitle>
-            <AlertDialogDescription>
-              정말 이 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleDelete}>
-              삭제
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {canDelete && <DeleteUserDialog user={data} open={deleteOpen} onOpenChange={setDeleteOpen} />}
     </>
   );
 };

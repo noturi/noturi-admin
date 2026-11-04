@@ -1,37 +1,35 @@
 import { getUserList } from '@/entities/user';
-import { UserTable } from './user-table';
-import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
+import { getSearchParams, PageType, toServerSort } from '@/shared/lib/utils/search-params';
 import { auth } from '@/shared/lib/utils/auth.server';
 
+import { UserTable } from './user-table';
+
+/** 서버(/users)가 정렬할 수 있는 열 — 메모 수·카테고리 수는 집계 값이라 정렬 불가 */
+export const USER_SORTABLE_COLUMNS = ['email', 'name', 'nickname', 'createdAt'] as const;
+
 export async function UserListing() {
-  // Get current user from server
-  const authData = await auth();
+  const { user: currentUser } = await auth();
+  if (!currentUser) return null; // layout에서 이미 로그인 화면으로 보냄
 
-  if (!authData.user) {
-    return <div>Unauthorized</div>;
-  }
-
-  // Get user-specific search params
   const { cache } = getSearchParams(PageType.USER);
-
-  const page = cache.get('page');
   const email = cache.get('email');
-  const name = cache.get('name');
-  const limit = cache.get('perPage');
   const createdAt = cache.get('createdAt');
+  const sort = toServerSort(cache.get('sort') as string | null, USER_SORTABLE_COLUMNS);
 
-  const filters = {
-    page,
-    limit,
-    ...(email && { email }),
-    ...(name && { name }),
-    ...(createdAt && { createdAt }),
-  };
+  const response = await getUserList({
+    page: cache.get('page') as number,
+    limit: cache.get('perPage') as number,
+    ...(email && { email: email as string }),
+    ...(createdAt && { createdAt: createdAt as string }),
+    ...(sort && { sort }),
+  });
 
-  const response = await getUserList(filters);
-
-  const users = response.data ?? [];
-  const pageCount = response.totalPages ?? 1;
-
-  return <UserTable data={users} pageCount={pageCount} currentUser={authData.user} />;
+  return (
+    <UserTable
+      data={response.data ?? []}
+      pageCount={response.totalPages ?? 1}
+      totalCount={response.total}
+      currentUser={currentUser}
+    />
+  );
 }

@@ -1,196 +1,123 @@
 'use client';
 
 import Link from 'next/link';
-import { Badge } from '@/shared/ui/badge';
-import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
-import { Column, ColumnDef } from '@tanstack/react-table';
-import { Notification, formatRepeatSchedule } from '@/entities/notification';
-import { CellAction } from './cell-action';
-import { Bell, Clock, Repeat } from 'lucide-react';
+import { ColumnDef } from '@tanstack/react-table';
+import { Repeat } from 'lucide-react';
+
+import {
+  describeNotificationSchedule,
+  getNotificationStatus,
+  Notification,
+  NotificationStatusBadge,
+} from '@/entities/notification';
+import { NotificationActions } from '@/features/notification';
+import { formatKstDateTime } from '@/shared/lib';
 import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
+/**
+ * 서버(/notifications)는 정렬을 지원하지 않고 최신 등록순 고정 → 모든 열 정렬 끔
+ * 필터는 서버가 받는 isActive·isRepeat만
+ */
 export function getNotificationColumns(): ColumnDef<DataTableFeatures, Notification>[] {
   return [
     {
       id: 'title',
       accessorKey: 'title',
-      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
-        <DataTableColumnHeader column={column} title="제목" />
+      header: '알림',
+      cell: ({ row }) => (
+        <div className="max-w-md min-w-48">
+          <Link
+            href={`/dashboard/notification/${row.original.id}`}
+            className="block truncate font-medium underline-offset-4 hover:underline"
+          >
+            {row.original.title}
+          </Link>
+          <p className="truncate text-xs text-muted-foreground">{row.original.body}</p>
+        </div>
       ),
-      cell: ({ cell, row }) => {
-        const title = cell.getValue<string>();
-        const id = row.original.id;
-        return (
-          <div className="flex items-center gap-2">
-            <Bell className="h-4 w-4 text-muted-foreground" />
-            <Link
-              href={`/dashboard/notification/${id}`}
-              className="w-[200px] truncate font-medium text-primary hover:underline"
-            >
-              {title}
-            </Link>
-          </div>
-        );
-      },
-      enableSorting: true,
+      enableSorting: false,
       enableHiding: false,
-      meta: {
-        label: 'Title',
-      },
+      meta: { label: '알림' },
     },
     {
-      id: 'body',
-      accessorKey: 'body',
-      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
-        <DataTableColumnHeader column={column} title="내용" />
-      ),
-      cell: ({ cell }) => {
-        const body = cell.getValue<string>();
-        return <div className="max-w-[250px] truncate text-sm text-muted-foreground">{body}</div>;
-      },
+      id: 'status',
+      header: '상태',
+      cell: ({ row }) => <NotificationStatusBadge status={getNotificationStatus(row.original)} />,
       enableSorting: false,
-      meta: {
-        label: 'Body',
-      },
+      meta: { label: '상태' },
+    },
+    {
+      id: 'schedule',
+      header: '발송 일정',
+      cell: ({ row }) => (
+        <div className="flex min-w-40 items-center gap-1.5 text-sm tabular-nums">
+          {row.original.isRepeat && <Repeat className="size-3.5 shrink-0 text-muted-foreground" aria-label="반복" />}
+          <span className="break-keep">{describeNotificationSchedule(row.original)}</span>
+        </div>
+      ),
+      enableSorting: false,
+      meta: { label: '발송 일정' },
     },
     {
       id: 'targetUserCount',
       accessorKey: 'targetUserCount',
-      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
-        <DataTableColumnHeader column={column} title="대상자" />
-      ),
-      cell: ({ cell }) => {
-        const count = cell.getValue<number>();
-        return <div className="text-center font-mono">{count.toLocaleString()}명</div>;
-      },
-      enableSorting: true,
-      meta: {
-        label: 'Target Users',
-      },
+      header: () => <div className="text-right">받는 사람</div>,
+      cell: ({ cell }) => <div className="text-right tabular-nums">{cell.getValue<number>().toLocaleString()}명</div>,
+      enableSorting: false,
+      meta: { label: '받는 사람' },
     },
     {
-      id: 'scheduledAt',
-      accessorKey: 'scheduledAt',
-      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
-        <DataTableColumnHeader column={column} title="예약 시간" />
-      ),
-      cell: ({ row }) => {
-        const scheduledAt = row.original.scheduledAt;
-        const scheduledTime = row.original.scheduledTime;
-
-        if (!scheduledAt && !scheduledTime) {
-          return <Badge variant="outline">즉시 발송</Badge>;
-        }
-
-        if (scheduledAt) {
-          return (
-            <div className="flex items-center gap-1 text-sm">
-              <Clock className="h-3 w-3" />
-              {new Date(scheduledAt).toLocaleString('ko-KR')}
-            </div>
-          );
-        }
-
+      id: 'lastSentAt',
+      accessorKey: 'lastSentAt',
+      header: '마지막 발송',
+      cell: ({ cell }) => {
+        const date = cell.getValue<string | undefined>();
         return (
-          <div className="flex items-center gap-1 text-sm">
-            <Clock className="h-3 w-3" />
-            {scheduledTime}
+          <div className="min-w-32 text-sm text-muted-foreground tabular-nums">
+            {date ? formatKstDateTime(date) : '-'}
           </div>
         );
       },
-      enableSorting: true,
-      meta: {
-        label: 'Scheduled At',
-      },
+      enableSorting: false,
+      meta: { label: '마지막 발송' },
     },
+    // 아래 두 열은 필터 전용(화면에는 숨김) — 서버 쿼리 키(isRepeat·isActive)와 id가 같아야 함
     {
       id: 'isRepeat',
       accessorKey: 'isRepeat',
-      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
-        <DataTableColumnHeader column={column} title="반복" />
-      ),
-      cell: ({ row }) => {
-        const isRepeat = row.original.isRepeat;
-        const { repeatType, repeatDays, sendOnLastDay } = row.original;
-
-        if (!isRepeat) {
-          return <Badge variant="outline">1회</Badge>;
-        }
-
-        return (
-          <div className="flex items-center gap-1">
-            <Repeat className="h-3 w-3 text-muted-foreground" />
-            <Badge variant="secondary">{formatRepeatSchedule(repeatType, repeatDays, sendOnLastDay)}</Badge>
-          </div>
-        );
-      },
-      enableSorting: true,
+      header: '종류',
+      enableSorting: false,
+      enableColumnFilter: true,
+      enableHiding: false,
       meta: {
-        label: 'Repeat',
+        label: '종류',
+        variant: 'select',
+        options: [
+          { label: '1회', value: 'false' },
+          { label: '반복', value: 'true' },
+        ],
       },
     },
     {
       id: 'isActive',
       accessorKey: 'isActive',
-      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
-        <DataTableColumnHeader column={column} title="상태" />
-      ),
-      cell: ({ cell }) => {
-        const isActive = cell.getValue<boolean>();
-        return <Badge variant={isActive ? 'default' : 'secondary'}>{isActive ? '활성' : '비활성'}</Badge>;
-      },
-      enableSorting: true,
+      header: '켜짐',
+      enableSorting: false,
       enableColumnFilter: true,
+      enableHiding: false,
       meta: {
-        label: 'Status',
-        variant: 'multiSelect',
+        label: '켜짐 여부',
+        variant: 'select',
         options: [
-          { label: '활성', value: 'true' },
-          { label: '비활성', value: 'false' },
+          { label: '켜짐', value: 'true' },
+          { label: '꺼짐', value: 'false' },
         ],
       },
     },
     {
-      id: 'lastSentAt',
-      accessorKey: 'lastSentAt',
-      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
-        <DataTableColumnHeader column={column} title="마지막 발송" />
-      ),
-      cell: ({ cell }) => {
-        const date = cell.getValue<string | undefined>();
-        if (!date) return <span className="text-muted-foreground">-</span>;
-        return (
-          <div className="min-w-[140px] text-sm">
-            {new Date(date).toLocaleDateString('ko-KR')}
-            <span className="ml-1 text-xs text-muted-foreground">
-              {new Date(date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          </div>
-        );
-      },
-      enableSorting: true,
-      meta: {
-        label: 'Last Sent At',
-      },
-    },
-    {
-      id: 'createdAt',
-      accessorKey: 'createdAt',
-      header: ({ column }: { column: Column<DataTableFeatures, Notification, unknown> }) => (
-        <DataTableColumnHeader column={column} title="등록일" />
-      ),
-      cell: ({ cell }) => {
-        const date = cell.getValue<string>();
-        return <div className="min-w-[100px]">{new Date(date).toLocaleDateString('ko-KR')}</div>;
-      },
-      enableSorting: true,
-      meta: {
-        label: 'Created At',
-      },
-    },
-    {
       id: 'actions',
-      cell: ({ row }) => <CellAction data={row.original} />,
+      cell: ({ row }) => <NotificationActions notification={row.original} variant="menu" />,
+      enableHiding: false,
     },
   ];
 }

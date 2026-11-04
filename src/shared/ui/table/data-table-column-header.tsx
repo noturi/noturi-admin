@@ -83,7 +83,7 @@ export function DataTableColumnHeader<TData extends RowData, TValue>({
             onClick={() => column.toggleVisibility(false)}
           >
             <EyeOff />
-            컬럼 숨기기
+            열 숨기기
           </DropdownMenuCheckboxItem>
         )}
       </DropdownMenuContent>

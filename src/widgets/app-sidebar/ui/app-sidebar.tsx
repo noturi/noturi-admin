@@ -17,6 +17,7 @@ import {
 import { ROUTES, type AuthUser } from '@/shared/lib';
 import { logoutAction } from '@/features/auth';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ThemeToggleButton } from './theme-toggle-button';
 
 interface AppSidebarProps {
@@ -26,6 +27,10 @@ interface AppSidebarProps {
 
 export function AppSidebar({ user }: AppSidebarProps) {
   const { setOpenMobile, isMobile } = useSidebar();
+  const pathname = usePathname();
+  /** 지금 있는 메뉴 — 대시보드 홈은 정확히 일치할 때만 (모든 경로가 /dashboard로 시작) */
+  const isActive = (url: string) =>
+    url === ROUTES.DASHBOARD.HOME ? pathname === url : pathname === url || pathname.startsWith(`${url}/`);
 
   const handleMenuClick = () => {
     if (isMobile) {
@@ -46,11 +51,11 @@ export function AppSidebar({ user }: AppSidebarProps) {
     },
     {
       title: '운영자 관리',
-      url: '/dashboard/operator',
+      url: ROUTES.DASHBOARD.OPERATOR,
       icon: UserCog,
     },
     {
-      title: '카테고리 관리',
+      title: '기본 카테고리',
       url: ROUTES.DASHBOARD.CATEGORY,
       icon: FolderOpen,
     },
@@ -67,7 +72,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
         <div className="flex items-center gap-2 px-4 py-2">
           <div className="flex flex-col gap-0.5 leading-none">
             <span className="font-semibold">Noturi Admin</span>
-            <span className="text-xs text-muted-foreground">{user?.email}</span>
+            <span className="truncate text-xs text-muted-foreground">{user?.email}</span>
           </div>
         </div>
       </SidebarHeader>
@@ -80,7 +85,16 @@ export function AppSidebar({ user }: AppSidebarProps) {
                 .filter((item) => item.url)
                 .map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton render={<Link href={item.url} onClick={handleMenuClick} />}>
+                    <SidebarMenuButton
+                      isActive={isActive(item.url)}
+                      render={
+                        <Link
+                          href={item.url}
+                          onClick={handleMenuClick}
+                          aria-current={isActive(item.url) ? 'page' : undefined}
+                        />
+                      }
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </SidebarMenuButton>

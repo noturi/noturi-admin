@@ -291,12 +291,13 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   );
 }
 
-function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
+/** 본문 영역 (div — 안쪽에 페이지별 <main>을 둠). min-w-0이 없으면 넓은 표가 화면 밖으로 밀어냄 */
+function SidebarInset({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <main
+    <div
       data-slot="sidebar-inset"
       className={cn(
-        'relative flex w-full flex-1 flex-col bg-background',
+        'relative flex w-full min-w-0 flex-1 flex-col bg-background',
         'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
         className
       )}

@@ -42,8 +42,8 @@ export function DataTableToolbar<TData extends RowData>({
           <DataTableToolbarFilter key={column.id} column={column} />
         ))}
         {isFiltered && (
-          <Button aria-label="Reset filters" variant="outline" size="sm" className="border-dashed" onClick={onReset}>
-            Reset
+          <Button variant="ghost" size="sm" onClick={onReset}>
+            필터 모두 지우기
           </Button>
         )}
       </div>

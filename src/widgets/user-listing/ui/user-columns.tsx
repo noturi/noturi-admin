@@ -1,135 +1,87 @@
 'use client';
-import Link from 'next/link';
-import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 
+import Link from 'next/link';
 import { Column, ColumnDef } from '@tanstack/react-table';
 
 import { User } from '@/entities/user';
-import { CellAction } from './cell-action';
 import { can, type AuthUser } from '@/shared/lib/permissions';
+import { formatKstDate } from '@/shared/lib';
+import { DataTableColumnHeader } from '@/shared/ui/table/data-table-column-header';
 import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
-const normalizeUser = (user: Record<string, unknown>): User =>
-  ({
-    ...user,
-    avatarUrl: user.avatarUrl || undefined,
-  }) as User;
+import { CellAction } from './cell-action';
 
-const CellActionWrapper: React.FC<{ data: User; currentUser: AuthUser }> = ({ data, currentUser }) => {
-  if (!currentUser) return null;
+type UserColumn = Column<DataTableFeatures, User, unknown>;
 
-  const permissions = can(currentUser);
-  const hasAnyPermission = permissions.deleteUser(data) || permissions.updateUser(data);
-
-  if (!hasAnyPermission) return null;
-
-  return <CellAction data={data} />;
-};
+/** 값이 없으면 "-" — 빈 칸은 "0"인지 "모름"인지 구분이 안 됨 */
+const CountCell = ({ value }: { value: number | undefined }) => (
+  <div className="text-right tabular-nums">{value == null ? '-' : value.toLocaleString()}</div>
+);
 
 export function getUserColumns(currentUser: AuthUser): ColumnDef<DataTableFeatures, User>[] {
+  const permissions = can(currentUser);
+
   return [
     {
       id: 'email',
       accessorKey: 'email',
-      header: ({ column }: { column: Column<DataTableFeatures, User, unknown> }) => (
-        <DataTableColumnHeader column={column} title="이메일" />
+      header: ({ column }: { column: UserColumn }) => <DataTableColumnHeader column={column} title="이메일" />,
+      cell: ({ row }) => (
+        <Link
+          href={`/dashboard/user/${row.original.id}`}
+          className="block max-w-64 min-w-40 truncate font-medium underline-offset-4 hover:underline"
+        >
+          {row.original.email}
+        </Link>
       ),
-      cell: ({ cell, row }) => {
-        const email = cell.getValue<string>();
-        const userId = row.original.id;
-
-        return (
-          <Link
-            href={`/dashboard/user/${userId}`}
-            className="block min-w-[150px] truncate font-medium text-primary hover:underline"
-          >
-            {email}
-          </Link>
-        );
-      },
-      enableSorting: true,
       enableHiding: false,
       enableColumnFilter: true,
-      meta: {
-        label: 'Email',
-        variant: 'text',
-        placeholder: '이메일을 검색하세요.',
-      },
+      meta: { label: '이메일', variant: 'text', placeholder: '이메일로 찾기' },
     },
     {
       id: 'name',
       accessorKey: 'name',
-      header: ({ column }: { column: Column<DataTableFeatures, User, unknown> }) => (
-        <DataTableColumnHeader column={column} title="이름" />
-      ),
-      cell: ({ cell }) => {
-        const name = cell.getValue<string>();
-
-        return <div className="min-w-[80px] truncate">{name}</div>;
-      },
-      enableColumnFilter: true,
-      meta: {
-        label: 'Name',
-        variant: 'text',
-        placeholder: '이름을 검색하세요.',
-      },
+      header: ({ column }: { column: UserColumn }) => <DataTableColumnHeader column={column} title="이름" />,
+      cell: ({ cell }) => <div className="max-w-40 min-w-20 truncate">{cell.getValue<string>()}</div>,
+      meta: { label: '이름' },
     },
     {
       id: 'nickname',
       accessorKey: 'nickname',
-      header: ({ column }: { column: Column<DataTableFeatures, User, unknown> }) => (
-        <DataTableColumnHeader column={column} title="닉네임" />
+      header: ({ column }: { column: UserColumn }) => <DataTableColumnHeader column={column} title="닉네임" />,
+      cell: ({ cell }) => (
+        <div className="max-w-40 min-w-20 truncate text-muted-foreground">@{cell.getValue<string>()}</div>
       ),
-      cell: ({ cell }) => {
-        const nickname = cell.getValue<string>();
-
-        return <div className="min-w-[80px] truncate">{nickname}</div>;
-      },
-      meta: {
-        label: 'Nickname',
-      },
+      meta: { label: '닉네임' },
     },
     {
+      id: 'memoCount',
       accessorKey: 'memoCount',
-      header: '평가 메모 수',
-      cell: ({ cell }) => <div className="text-center font-mono">{cell.getValue<number>()}</div>,
-
-      meta: {
-        label: 'Memo Count',
-        variant: 'number',
-        placeholder: 'Filter by count...',
-      },
+      header: () => <div className="text-right">메모</div>,
+      cell: ({ cell }) => <CountCell value={cell.getValue<number | undefined>()} />,
+      enableSorting: false,
+      meta: { label: '메모 수' },
     },
     {
+      id: 'categoryCount',
       accessorKey: 'categoryCount',
-      header: '카테고리 수',
-      cell: ({ cell }) => <div className="text-center font-mono">{cell.getValue<number>()}</div>,
-
-      meta: {
-        label: 'Category Count',
-        variant: 'number',
-        placeholder: 'Filter by count...',
-      },
+      header: () => <div className="text-right">카테고리</div>,
+      cell: ({ cell }) => <CountCell value={cell.getValue<number | undefined>()} />,
+      enableSorting: false,
+      meta: { label: '카테고리 수' },
     },
     {
       id: 'createdAt',
       accessorKey: 'createdAt',
-      header: ({ column }: { column: Column<DataTableFeatures, User, unknown> }) => (
-        <DataTableColumnHeader column={column} title="등록일" />
-      ),
-      cell: ({ cell }) => {
-        const date = cell.getValue<string>();
-        const formatted = new Date(date).toLocaleDateString('ko-KR');
-
-        return <div className="min-w-[100px]">{formatted}</div>;
-      },
-      meta: {
-        label: 'Created At',
-      },
+      header: ({ column }: { column: UserColumn }) => <DataTableColumnHeader column={column} title="가입일" />,
+      cell: ({ cell }) => <div className="min-w-24 tabular-nums">{formatKstDate(cell.getValue<string>())}</div>,
+      enableColumnFilter: true,
+      meta: { label: '가입일', variant: 'dateRange' },
     },
     {
       id: 'actions',
-      cell: ({ row }) => <CellActionWrapper data={normalizeUser(row.original)} currentUser={currentUser} />,
+      cell: ({ row }) => <CellAction data={row.original} canDelete={permissions.deleteUser(row.original)} />,
+      enableHiding: false,
     },
   ];
 }

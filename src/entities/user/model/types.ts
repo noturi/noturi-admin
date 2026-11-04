@@ -116,12 +116,13 @@ export type UserListResponse = PaginatedResponse<User>;
 // =================================================================================
 
 export const UserQueryParamsSchema = z.object({
-  keyword: z.string().optional(),
+  email: z.string().optional(),
   role: z.enum(['USER', 'ADMIN', 'SUPER_ADMIN']).optional(),
   page: z.number().min(1).optional(),
   limit: z.number().min(1).max(100).optional(),
   createdAt: z.string().optional(),
-  sort: z.array(z.string()).optional(),
+  /** JSON 문자열 `[{"id":"createdAt","desc":true}]` (toServerSort로 만듦) */
+  sort: z.string().optional(),
   notification: z.boolean().optional(),
 });
 

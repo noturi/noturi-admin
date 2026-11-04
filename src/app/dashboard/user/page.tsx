@@ -1,37 +1,24 @@
-import PageContainer from '@/shared/ui/page-container';
-import { Heading } from '@/shared/ui/heading';
-import { Separator } from '@/shared/ui/separator';
-
-import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
-import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
-import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
+import { SearchParams } from 'nuqs/server';
+
 import { UserListing } from '@/widgets/user-listing';
+import { getSearchParams, PageType } from '@/shared/lib/utils/search-params';
+import { PageHeader } from '@/shared/ui/heading';
+import PageContainer from '@/shared/ui/page-container';
+import { DataTableSkeleton } from '@/shared/ui/table/data-table-skeleton';
 
-export const metadata = {
-  title: 'Dashboard: Users',
-};
+export const metadata = { title: '사용자 관리 | Noturi Admin' };
 
-type Props = {
-  searchParams: Promise<SearchParams>;
-};
-
-export default async function Page(props: Props) {
+export default async function Page(props: { searchParams: Promise<SearchParams> }) {
   const searchParams = await props.searchParams;
-  const { cache } = getSearchParams(PageType.USER);
-  cache.parse(searchParams);
+  getSearchParams(PageType.USER).cache.parse(searchParams);
 
   return (
-    <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-start justify-between">
-          <Heading title="사용자 관리" description="앱 사용자" />
-        </div>
-        <Separator />
-        <Suspense fallback={<DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />}>
-          <UserListing />
-        </Suspense>
-      </div>
+    <PageContainer>
+      <PageHeader title="사용자 관리" description="노트리 앱에 가입한 사용자 계정" />
+      <Suspense fallback={<DataTableSkeleton columnCount={6} rowCount={8} filterCount={2} />}>
+        <UserListing />
+      </Suspense>
     </PageContainer>
   );
 }

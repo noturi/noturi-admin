@@ -1,67 +1,11 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import { Suspense } from 'react';
-import { useRouter } from 'next/navigation';
-import { EmailStep, RoleStep, PasswordStep, type FunnelState, registerAction } from '@/features/auth';
-import { ROUTES, useFunnel } from '@/shared/lib';
-import { toast } from 'sonner';
+import { ROUTES } from '@/shared/lib';
 
-function RegisterForm() {
-  const router = useRouter();
-  const [Funnel, funnelState, updateFunnelState, clearFunnelState] = useFunnel(['email', 'role', 'password'] as const, {
-    initialStep: 'email',
-    history: 'replace',
-  }).withState<Omit<FunnelState, 'currentStep'>>({});
-
-  return (
-    <Funnel>
-      <Funnel.Step name="email">
-        <EmailStep
-          defaultValues={{ email: funnelState.email, name: funnelState.name, nickname: funnelState.nickname }}
-          next={(data) => {
-            updateFunnelState({ email: data.email, name: data.name, nickname: data.nickname, currentStep: 'role' });
-          }}
-        />
-      </Funnel.Step>
-      <Funnel.Step name="role">
-        <RoleStep
-          defaultValue={funnelState.role}
-          next={(role) => {
-            updateFunnelState({ role, currentStep: 'password' });
-          }}
-        />
-      </Funnel.Step>
-      <Funnel.Step name="password">
-        <PasswordStep
-          defaultValues={funnelState}
-          next={async ({ password, confirmPassword }) => {
-            const result = await registerAction({
-              email: funnelState.email!,
-              name: funnelState.name!,
-              nickname: funnelState.nickname!,
-              role: funnelState.role!,
-              password,
-              confirmPassword,
-            });
-
-            if (result?.error) {
-              toast.error(result.error);
-            } else {
-              toast.success('회원가입이 완료되었습니다!');
-              clearFunnelState();
-              router.push(ROUTES.AUTH.LOGIN);
-            }
-          }}
-        />
-      </Funnel.Step>
-    </Funnel>
-  );
-}
-
+/**
+ * 공개 가입 화면은 없음 — 서버 가입 API가 관리자 토큰을 요구해 로그인 없이는 동작하지 않음
+ * 예전 링크는 운영자 등록 화면으로 (로그인 안 했으면 dashboard layout이 로그인 화면으로 보냄)
+ */
 export default function RegisterPage() {
-  return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
-      <RegisterForm />
-    </Suspense>
-  );
+  redirect(`${ROUTES.DASHBOARD.OPERATOR}/register`);
 }

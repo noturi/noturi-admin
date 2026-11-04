@@ -129,12 +129,12 @@ export function UserSelectField({
         <PopoverContent className="w-full p-0" align="start">
           <Command shouldFilter={false}>
             <CommandInput
-              placeholder="이름, 이메일, 닉네임으로 검색..."
+              placeholder="이름·이메일·닉네임으로 찾기"
               value={searchQuery}
               onValueChange={handleSearchChange}
             />
             <CommandList>
-              <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
+              <CommandEmpty>맞는 사용자가 없어요.</CommandEmpty>
               <CommandGroup>
                 {users.map((user) => {
                   const isSelected = value.includes(user.id);

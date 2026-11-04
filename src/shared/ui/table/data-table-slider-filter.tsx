@@ -116,7 +116,7 @@ export function DataTableSliderFilter<TData extends RowData>({ column, title }: 
         {columnFilterValue ? (
           <div
             role="button"
-            aria-label={`Clear ${title} filter`}
+            aria-label={`${title} 필터 지우기`}
             tabIndex={0}
             className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
             onClick={onReset}
@@ -200,8 +200,8 @@ export function DataTableSliderFilter<TData extends RowData>({ column, title }: 
             onValueChange={onSliderValueChange}
           />
         </div>
-        <Button aria-label={`Clear ${title} filter`} variant="outline" size="sm" onClick={onReset}>
-          Clear
+        <Button aria-label={`${title} 필터 지우기`} variant="outline" size="sm" onClick={onReset}>
+          지우기
         </Button>
       </PopoverContent>
     </Popover>

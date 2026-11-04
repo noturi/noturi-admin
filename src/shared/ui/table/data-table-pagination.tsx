@@ -9,11 +9,14 @@ import type { DataTableInstance } from './table-features';
 interface DataTablePaginationProps<TData extends RowData> extends React.ComponentProps<'div'> {
   table: DataTableInstance<TData>;
   pageSizeOptions?: number[];
+  /** 서버 응답의 전체 개수 (현재 페이지 행 수가 아님) */
+  totalCount?: number;
 }
 
 export function DataTablePagination<TData extends RowData>({
   table,
   pageSizeOptions = [10, 20, 30, 40, 50],
+  totalCount,
   className,
   ...props
 }: DataTablePaginationProps<TData>) {
@@ -27,40 +30,41 @@ export function DataTablePagination<TData extends RowData>({
     >
       <div className="flex-1 text-sm whitespace-nowrap text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-          <>
-            {table.getFilteredRowModel().rows.length}개 중 {table.getFilteredSelectedRowModel().rows.length}개 선택됨
-          </>
+          <>{table.getFilteredSelectedRowModel().rows.length}개 선택됨</>
         ) : (
-          <>총 {table.getFilteredRowModel().rows.length}개</>
+          <span className="tabular-nums">
+            총 {(totalCount ?? table.getFilteredRowModel().rows.length).toLocaleString()}개
+          </span>
         )}
       </div>
       <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium whitespace-nowrap">페이지당 행 수</p>
+          <p className="text-sm whitespace-nowrap text-muted-foreground">페이지당</p>
           <Select
             value={`${table.state.pagination.pageSize}`}
+            items={pageSizeOptions.map((size) => ({ value: `${size}`, label: `${size}개` }))}
             onValueChange={(value) => {
               if (value) table.setPageSize(Number(value));
             }}
           >
-            <SelectTrigger className="h-8 w-[4.5rem] [&[data-size]]:h-8">
+            <SelectTrigger className="h-8 w-20 [&[data-size]]:h-8" aria-label="페이지당 행 수">
               <SelectValue placeholder={table.state.pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
               {pageSizeOptions.map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
+                  {pageSize}개
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center justify-center text-sm font-medium">
-          {table.getPageCount()}페이지 중 {table.state.pagination.pageIndex + 1}페이지
+        <div className="flex items-center justify-center text-sm tabular-nums">
+          {table.state.pagination.pageIndex + 1} / {Math.max(table.getPageCount(), 1)}쪽
         </div>
         <div className="flex items-center space-x-2">
           <Button
-            aria-label="Go to first page"
+            aria-label="첫 쪽"
             variant="outline"
             size="icon"
             className="hidden size-8 lg:flex"
@@ -70,7 +74,7 @@ export function DataTablePagination<TData extends RowData>({
             <ChevronsLeft />
           </Button>
           <Button
-            aria-label="Go to previous page"
+            aria-label="이전 쪽"
             variant="outline"
             size="icon"
             className="size-8"
@@ -80,7 +84,7 @@ export function DataTablePagination<TData extends RowData>({
             <ChevronLeftIcon />
           </Button>
           <Button
-            aria-label="Go to next page"
+            aria-label="다음 쪽"
             variant="outline"
             size="icon"
             className="size-8"
@@ -90,7 +94,7 @@ export function DataTablePagination<TData extends RowData>({
             <ChevronRightIcon />
           </Button>
           <Button
-            aria-label="Go to last page"
+            aria-label="마지막 쪽"
             variant="outline"
             size="icon"
             className="hidden size-8 lg:flex"

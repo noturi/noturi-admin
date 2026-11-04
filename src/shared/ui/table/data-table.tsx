@@ -9,9 +9,22 @@ import { DataTablePagination } from './data-table-pagination';
 interface DataTableProps<TData extends RowData> extends React.ComponentProps<'div'> {
   table: DataTableInstance<TData>;
   actionBar?: React.ReactNode;
+  /** 서버 응답의 전체 개수 — 없으면 현재 페이지 행 수로 대신 */
+  totalCount?: number;
+  /** 빈 상태 문구. 필터가 걸려 있으면 filteredEmptyMessage를 보여줌 */
+  emptyMessage?: React.ReactNode;
+  filteredEmptyMessage?: React.ReactNode;
 }
 
-export function DataTable<TData extends RowData>({ table, actionBar, children }: DataTableProps<TData>) {
+export function DataTable<TData extends RowData>({
+  table,
+  actionBar,
+  totalCount,
+  emptyMessage = '아직 항목이 없어요.',
+  filteredEmptyMessage = '조건에 맞는 항목이 없어요. 필터를 바꿔 보세요.',
+  children,
+}: DataTableProps<TData>) {
+  const isFiltered = table.state.columnFilters.length > 0;
   return (
     <div className="w-full space-y-4">
       {children}
@@ -37,7 +50,7 @@ export function DataTable<TData extends RowData>({ table, actionBar, children }:
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                <TableRow key={row.id} data-state={row.getIsSelected() ? 'selected' : undefined}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
@@ -52,8 +65,11 @@ export function DataTable<TData extends RowData>({ table, actionBar, children }:
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
-                  검색 결과가 없습니다.
+                <TableCell
+                  colSpan={table.getAllColumns().length}
+                  className="h-32 text-center break-keep whitespace-normal text-muted-foreground"
+                >
+                  {isFiltered ? filteredEmptyMessage : emptyMessage}
                 </TableCell>
               </TableRow>
             )}
@@ -61,7 +77,7 @@ export function DataTable<TData extends RowData>({ table, actionBar, children }:
         </Table>
       </div>
       <div className="flex flex-col gap-2.5">
-        <DataTablePagination table={table} />
+        <DataTablePagination table={table} totalCount={totalCount} />
         {actionBar && table.getFilteredSelectedRowModel().rows.length > 0 && actionBar}
       </div>
     </div>
