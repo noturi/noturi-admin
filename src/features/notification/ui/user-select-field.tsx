@@ -6,7 +6,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/shared/ui/command';
 import { cn } from '@/shared/lib';
-import { searchUsers } from '@/features/notification/api/user-search-action';
+import { getUserList } from '@/entities/user/api/user-api';
 import type { User } from '@/entities/user/model/types';
 import { CheckIcon, X, Users } from 'lucide-react';
 import logger from '@/shared/lib/utils/logger';
@@ -26,8 +26,9 @@ export function UserSelectField({ value, onChange, placeholder = '유저 검색 
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const userList = await searchUsers();
-        setUsers(userList);
+        // #http 브라우저 구현 → /api/proxy (Server Action 우회 없이 entities 조회 함수를 그대로 사용)
+        const response = await getUserList({ limit: 100, notification: true });
+        setUsers(response.data ?? []);
       } catch (error) {
         logger.error('Failed to load users:', error);
       }

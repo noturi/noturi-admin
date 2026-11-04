@@ -44,7 +44,8 @@ pnpm dlx shadcn@latest add [name]  # shadcn/ui 컴포넌트 추가
 ## 데이터 흐름
 
 ```
-Server Component → entities/api (GET) → 데이터 표시
+Server Component → entities/api (GET, #http 서버 구현) → 데이터 표시
+Client Component → entities/api (GET, #http 브라우저 구현 → /api/proxy) → 데이터 표시
 Client Component → features/api/actions.ts (CUD) → revalidatePath → 자동 갱신
 ```
 

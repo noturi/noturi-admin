@@ -62,5 +62,11 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5"
+  },
+  "imports": {
+    "#http": {
+      "react-server": "./src/shared/api/http/http.server.ts",
+      "default": "./src/shared/api/http/http.client.ts"
+    }
   }
 }
