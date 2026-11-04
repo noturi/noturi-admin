@@ -57,9 +57,9 @@ export function EmailStep({ defaultValues = {}, next }: EmailStepProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className={errors.email ? 'border-red-500' : ''}
+                className={errors.email ? 'border-destructive' : ''}
               />
-              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="name">이름</Label>
@@ -71,9 +71,9 @@ export function EmailStep({ defaultValues = {}, next }: EmailStepProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className={errors.name ? 'border-red-500' : ''}
+                className={errors.name ? 'border-destructive' : ''}
               />
-              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+              {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="nickname">닉네임</Label>
@@ -85,9 +85,9 @@ export function EmailStep({ defaultValues = {}, next }: EmailStepProps) {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 required
-                className={errors.nickname ? 'border-red-500' : ''}
+                className={errors.nickname ? 'border-destructive' : ''}
               />
-              {errors.nickname && <p className="text-sm text-red-500">{errors.nickname}</p>}
+              {errors.nickname && <p className="text-sm text-destructive">{errors.nickname}</p>}
             </div>
             <Button type="submit" className="w-full">
               다음 단계

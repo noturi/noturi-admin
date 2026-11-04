@@ -11,8 +11,9 @@ import type { DataTableFeatures } from '@/shared/ui/table/table-features';
 
 const getRoleDisplay = (role: string) => {
   const roleConfig = {
-    SUPER_ADMIN: { label: '슈퍼어드민', className: 'bg-purple-100 text-purple-800 border-purple-200' },
-    ADMIN: { label: '어드민', className: 'bg-blue-100 text-blue-800 border-blue-200' },
+    // 강조색 대신 배지 변형으로 구분 (DESIGN.md: The One Red Rule / Token Only)
+    SUPER_ADMIN: { label: '슈퍼어드민', variant: 'default' as const },
+    ADMIN: { label: '어드민', variant: 'secondary' as const },
   };
   return roleConfig[role as keyof typeof roleConfig] || roleConfig.ADMIN;
 };
@@ -94,13 +95,9 @@ export function getOperatorColumns(currentUser: AuthUser): ColumnDef<DataTableFe
       ),
       cell: ({ cell }) => {
         const role = cell.getValue<string>();
-        const { label, className } = getRoleDisplay(role);
+        const { label, variant } = getRoleDisplay(role);
 
-        return (
-          <Badge variant="secondary" className={className}>
-            {label}
-          </Badge>
-        );
+        return <Badge variant={variant}>{label}</Badge>;
       },
       enableSorting: true,
       meta: {

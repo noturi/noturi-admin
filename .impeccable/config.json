@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "#000000",
+        "createdAt": "2026-11-04T01:25:17.338Z",
+        "reason": "카테고리 색 데이터의 기본값(사용자 데이터), UI 색 아님"
+      }
+    ]
+  }
+}

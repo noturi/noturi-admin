@@ -17,6 +17,7 @@ import {
 import { ROUTES, type AuthUser } from '@/shared/lib';
 import { logoutAction } from '@/features/auth';
 import Link from 'next/link';
+import { ThemeToggleButton } from './theme-toggle-button';
 
 interface AppSidebarProps {
   /** 로그인한 관리자 — 서버(dashboard/layout)에서 쿠키로 읽어 전달 */
@@ -91,6 +92,9 @@ export function AppSidebar({ user }: AppSidebarProps) {
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
+          <SidebarMenuItem>
+            <ThemeToggleButton />
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => logoutAction()}>
               <LogOut />

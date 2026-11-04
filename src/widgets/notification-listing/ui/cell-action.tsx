@@ -101,7 +101,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             )}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-600" onClick={() => setDeleteDialogOpen(true)}>
+          <DropdownMenuItem variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
             <Trash className="mr-2 h-4 w-4" />
             삭제
           </DropdownMenuItem>
@@ -118,7 +118,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+            <AlertDialogAction variant="destructive" onClick={handleDelete}>
               삭제
             </AlertDialogAction>
           </AlertDialogFooter>

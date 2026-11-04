@@ -119,7 +119,7 @@ export function getNotificationColumns(): ColumnDef<DataTableFeatures, Notificat
 
         return (
           <div className="flex items-center gap-1">
-            <Repeat className="h-3 w-3 text-blue-500" />
+            <Repeat className="h-3 w-3 text-muted-foreground" />
             <Badge variant="secondary">{formatRepeatSchedule(repeatType, repeatDays, sendOnLastDay)}</Badge>
           </div>
         );

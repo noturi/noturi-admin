@@ -207,13 +207,13 @@ export function NotificationDetailView({ notification }: NotificationDetailViewP
                           <TableRow key={log.id}>
                             <TableCell>{new Date(log.sentAt).toLocaleString('ko-KR')}</TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-1 text-green-600">
+                              <div className="flex items-center gap-1 tabular-nums">
                                 <CheckCircle2 className="h-4 w-4" />
                                 {successCount.toLocaleString()}
                               </div>
                             </TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-1 text-red-600">
+                              <div className="flex items-center gap-1 text-destructive tabular-nums">
                                 <XCircle className="h-4 w-4" />
                                 {failureCount.toLocaleString()}
                               </div>

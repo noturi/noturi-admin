@@ -80,10 +80,12 @@ export function RoleStep({ defaultValue, next }: RoleStepProps) {
                     />
                     <div
                       className={`h-4 w-4 rounded-full border-2 ${
-                        role === roleOption.value ? 'border-primary bg-primary' : 'border-gray-300'
+                        role === roleOption.value ? 'border-primary bg-primary' : 'border-border'
                       }`}
                     >
-                      {role === roleOption.value && <div className="m-0.5 h-2 w-2 rounded-full bg-white" />}
+                      {role === roleOption.value && (
+                        <div className="m-0.5 h-2 w-2 rounded-full bg-primary-foreground" />
+                      )}
                     </div>
                     <div>
                       <p className={`font-medium ${roleOption.disabled ? 'text-muted-foreground' : ''}`}>
@@ -95,7 +97,7 @@ export function RoleStep({ defaultValue, next }: RoleStepProps) {
                   </div>
                 </div>
               ))}
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
             <Button type="submit" className="w-full" disabled={!role}>
               다음 단계

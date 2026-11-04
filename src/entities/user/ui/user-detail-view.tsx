@@ -232,7 +232,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
                             <TableCell>
                               {memo.rating !== undefined && (
                                 <div className="flex items-center gap-1">
-                                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                  <Star className="h-4 w-4 fill-rating text-rating" />
                                   <span>{memo.rating}</span>
                                 </div>
                               )}
@@ -295,7 +295,7 @@ export function UserDetailView({ user }: UserDetailViewProps) {
                             <TableCell>
                               {memo.hasNotification ? (
                                 <div className="flex items-center gap-1">
-                                  <Bell className="h-4 w-4 text-blue-500" />
+                                  <Bell className="h-4 w-4 text-primary" />
                                   <span className="text-xs">{formatNotifyBefore(memo.notifyBefore)}</span>
                                 </div>
                               ) : (

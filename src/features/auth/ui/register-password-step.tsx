@@ -77,9 +77,9 @@ export function PasswordStep({ defaultValues, next }: PasswordStepProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className={errors.password ? 'border-red-500' : ''}
+                className={errors.password ? 'border-destructive' : ''}
               />
-              {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
 
             <div className="space-y-2">
@@ -92,9 +92,9 @@ export function PasswordStep({ defaultValues, next }: PasswordStepProps) {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className={errors.confirmPassword ? 'border-red-500' : ''}
+                className={errors.confirmPassword ? 'border-destructive' : ''}
               />
-              {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
+              {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>

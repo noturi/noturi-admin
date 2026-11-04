@@ -4,6 +4,7 @@ import * as React from 'react';
 import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog';
 
 import { cn } from '@/shared/lib/index';
+import type { VariantProps } from 'class-variance-authority';
 import { buttonVariants } from '@/shared/ui/button';
 
 function AlertDialog({ ...props }: AlertDialogPrimitive.Root.Props) {
@@ -90,11 +91,15 @@ function AlertDialogDescription({ className, ...props }: AlertDialogPrimitive.De
 /**
  * Base UI에는 Action 부품이 없음 — 기존처럼 누르면 닫히도록 Close로 버튼을 렌더 (onClick은 그대로 실행)
  */
-function AlertDialogAction({ className, ...props }: AlertDialogPrimitive.Close.Props) {
+function AlertDialogAction({
+  className,
+  variant,
+  ...props
+}: AlertDialogPrimitive.Close.Props & Pick<VariantProps<typeof buttonVariants>, 'variant'>) {
   return (
     <AlertDialogPrimitive.Close
       data-slot="alert-dialog-action"
-      className={cn(buttonVariants(), className)}
+      className={cn(buttonVariants({ variant }), className)}
       {...props}
     />
   );
