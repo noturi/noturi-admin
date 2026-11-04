@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 
-import { deleteCategory, toggleCategoryActive } from '../api/actions';
+import { deleteCategory, updateCategory } from '../api/actions';
 
 interface CategoryRowActionsProps {
   category: Category;
@@ -36,7 +36,8 @@ export function CategoryRowActions({ category, isLastActive }: CategoryRowAction
 
   /** 켜기·끄기는 확인 대신 되돌리기 — 기존 사용자에게 영향이 없고 바로 되돌릴 수 있음 */
   const toggle = async () => {
-    const result = await executeAction(() => toggleCategoryActive(category.id), {
+    const next = !category.isActive;
+    const result = await executeAction(() => updateCategory(category.id, { isActive: next }), {
       errorMessage: '상태를 바꾸지 못했어요.',
     });
     if (!result.ok) return;
@@ -47,7 +48,8 @@ export function CategoryRowActions({ category, isLastActive }: CategoryRowAction
       action: {
         label: '되돌리기',
         onClick: () =>
-          void executeAction(() => toggleCategoryActive(category.id), {
+          // 토글을 다시 부르지 않고 원래 상태를 명시 — 두 번 눌러도, 그사이 누가 바꿔도 결과가 같음
+          void executeAction(() => updateCategory(category.id, { isActive: !next }), {
             successMessage: '되돌렸어요.',
             errorMessage: '되돌리지 못했어요.',
           }),

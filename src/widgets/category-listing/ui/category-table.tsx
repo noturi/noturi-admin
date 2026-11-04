@@ -48,7 +48,7 @@ function SortableRow({ category, order, isLastActive }: { category: Category; or
         <Badge variant={category.isActive ? 'secondary' : 'outline'}>{category.isActive ? '켜짐' : '꺼짐'}</Badge>
       </TableCell>
       <TableCell className="text-muted-foreground tabular-nums">{formatKstDate(category.createdAt)}</TableCell>
-      <TableCell className="w-12">
+      <TableCell className="sticky right-0 w-12 bg-background">
         <CategoryRowActions category={category} isLastActive={isLastActive} />
       </TableCell>
     </TableRow>
@@ -72,7 +72,6 @@ export function CategoryTable({ data }: { data: Category[] }) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const before = categories;
     const reordered = arrayMove(
       categories,
       categories.findIndex((c) => c.id === active.id),
@@ -85,7 +84,8 @@ export function CategoryTable({ data }: { data: Category[] }) {
       { successMessage: '순서를 바꿨어요.', errorMessage: '순서를 바꾸지 못했어요. 원래 순서로 돌려놨어요.' }
     );
     // 실패했을 때만 되돌림 (예전에는 void 액션의 성공을 실패로 오인해 항상 되돌아갔음)
-    if (!result.ok) setCategories(before);
+    // 실패하면 서버가 가진 마지막 순서(data)로 — 연속으로 끈 경우에도 화면과 서버가 어긋나지 않게
+    if (!result.ok) setCategories(data);
   };
 
   const itemIds = categories.map((c) => c.id); // React Compiler가 메모이즈
@@ -105,10 +105,10 @@ export function CategoryTable({ data }: { data: Category[] }) {
                 </TableHead>
                 <TableHead className="w-12 text-right">순서</TableHead>
                 <TableHead>이름</TableHead>
-                <TableHead>메모</TableHead>
+                <TableHead>운영 메모</TableHead>
                 <TableHead>상태</TableHead>
                 <TableHead>만든 날</TableHead>
-                <TableHead className="w-12">
+                <TableHead className="sticky right-0 w-12 bg-background">
                   <span className="sr-only">작업</span>
                 </TableHead>
               </TableRow>

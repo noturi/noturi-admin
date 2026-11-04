@@ -6,6 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { getCommonPinningStyles } from './data-table-util';
 import { DataTablePagination } from './data-table-pagination';
 
+/** 작업(⋯) 열은 오른쪽에 고정 — 좁은 화면에서 가로 스크롤해도 항상 보이게 */
+const STICKY_ACTIONS = 'sticky right-0 z-[1] w-12 bg-background';
+
 interface DataTableProps<TData extends RowData> extends React.ComponentProps<'div'> {
   table: DataTableInstance<TData>;
   actionBar?: React.ReactNode;
@@ -37,6 +40,7 @@ export function DataTable<TData extends RowData>({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
+                    className={header.column.id === 'actions' ? STICKY_ACTIONS : undefined}
                     style={{
                       ...getCommonPinningStyles({ column: header.column }),
                     }}
@@ -54,6 +58,7 @@ export function DataTable<TData extends RowData>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
+                      className={cell.column.id === 'actions' ? STICKY_ACTIONS : undefined}
                       style={{
                         ...getCommonPinningStyles({ column: cell.column }),
                       }}

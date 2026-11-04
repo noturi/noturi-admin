@@ -30,7 +30,7 @@ export function NotificationTable({ data, pageCount, totalCount }: NotificationT
     <DataTable
       table={table}
       totalCount={totalCount}
-      emptyMessage="아직 만든 알림이 없어요. 오른쪽 위 '알림 만들기'로 시작하세요."
+      emptyMessage="아직 만든 알림이 없어요. '알림 만들기'로 첫 알림을 만들어 보세요."
       filteredEmptyMessage="조건에 맞는 알림이 없어요."
     >
       <DataTableToolbar table={table} />

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
-import { formatKstDate, formatKstDateTime, formatKstLong } from '@/shared/lib/utils/format-time';
+import { formatKstDate, formatKstDateTime, formatKstLong, formatKstTime } from '@/shared/lib/utils/format-time';
 
 import { describeNotificationDestination, describeNotificationSchedule, getNotificationStatus } from '../model/status';
 import type { NotificationDetail } from '../model/types';
@@ -115,7 +115,11 @@ export function NotificationDetailView({ notification: n }: { notification: Noti
 
       <aside aria-label="휴대폰에 보이는 모습" className="space-y-2 lg:sticky lg:top-6">
         <p className="text-sm text-muted-foreground">휴대폰에 보이는 모습</p>
-        <NotificationPhonePreview title={n.title} body={n.body} />
+        <NotificationPhonePreview
+          title={n.title}
+          body={n.body}
+          time={n.isRepeat ? (n.scheduledTime ?? '') : n.scheduledAt ? formatKstTime(n.scheduledAt) : '지금'}
+        />
       </aside>
     </div>
   );

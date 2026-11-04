@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -45,7 +46,9 @@ export function CategoryForm({ category, mode, nextSortOrder = 1 }: CategoryForm
     defaultValues: getFormDefaultValues(category),
   });
   const [name, color, isActive] = useWatch({ control: form.control, name: ['name', 'color', 'isActive'] });
-  const isSubmitting = form.formState.isSubmitting;
+  // 성공 후 페이지가 넘어가는 동안에도 잠가 둠 — 그 사이 다시 누르면 중복 생성
+  const [leaving, setLeaving] = useState(false);
+  const isSubmitting = form.formState.isSubmitting || leaving;
 
   const onSubmit = async (values: FormValues) => {
     const data = buildCategoryData(values, category?.sortOrder ?? nextSortOrder);
@@ -57,7 +60,10 @@ export function CategoryForm({ category, mode, nextSortOrder = 1 }: CategoryForm
       }
     );
     // 성공했을 때만 목록으로 — 실패하면 입력을 그대로 두고 다시 시도
-    if (result.ok) router.push(ROUTES.DASHBOARD.CATEGORY);
+    if (result.ok) {
+      setLeaving(true);
+      router.push(ROUTES.DASHBOARD.CATEGORY);
+    }
   };
 
   return (
@@ -91,11 +97,13 @@ export function CategoryForm({ category, mode, nextSortOrder = 1 }: CategoryForm
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>메모 (선택)</FormLabel>
+                    <FormLabel>운영 메모 (선택)</FormLabel>
                     <FormControl>
                       <Input placeholder="운영자끼리 볼 설명" autoComplete="off" {...field} />
                     </FormControl>
-                    <FormDescription>앱에는 보이지 않아요.</FormDescription>
+                    <FormDescription>
+                      운영자만 봐요. 가입할 때는 이름과 색만 복사돼 앱에는 보이지 않아요.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

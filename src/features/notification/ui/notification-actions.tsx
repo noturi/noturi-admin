@@ -180,16 +180,17 @@ export function NotificationActions({ notification: n, variant }: NotificationAc
             켜기
           </Button>
         )}
+        {/* 되돌릴 수 없는 '지금 보내기'는 발송 안 됨일 때만 주 버튼 — 나머지는 수정이 주 작업 */}
+        <Button variant={status === 'missed' ? 'default' : 'outline'} onClick={() => setDialog('send')}>
+          <Send />
+          지금 보내기
+        </Button>
         {canEdit && (
-          <Button variant="outline" nativeButton={false} render={<Link href={`${detailHref}/edit`} />}>
+          <Button nativeButton={false} render={<Link href={`${detailHref}/edit`} />}>
             <Edit />
             수정
           </Button>
         )}
-        <Button onClick={() => setDialog('send')}>
-          <Send />
-          지금 보내기
-        </Button>
         {dialogs}
       </>
     );

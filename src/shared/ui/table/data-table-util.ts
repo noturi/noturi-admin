@@ -25,8 +25,10 @@ export function getCommonPinningStyles<TData extends RowData>({
     left: isPinned === 'start' ? `${column.getStart('start')}px` : undefined,
     right: isPinned === 'end' ? `${column.getAfter('end')}px` : undefined,
     opacity: isPinned ? 0.97 : 1,
-    position: isPinned ? 'sticky' : 'relative',
-    background: isPinned ? 'hsl(var(--background))' : 'hsl(var(--background))',
+    // 고정 안 한 열은 position을 정하지 않음 — inline relative가 클래스(sticky)를 덮어썼음
+    position: isPinned ? 'sticky' : undefined,
+    // 토큰은 oklch라 hsl(var(--background))는 무효였음
+    background: isPinned ? 'var(--background)' : undefined,
     width: column.getSize(),
     zIndex: isPinned ? 1 : 0,
   };
