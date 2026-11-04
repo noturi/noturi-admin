@@ -122,7 +122,7 @@ export function UserSelectField({
 
       {/* 사용자 검색 및 선택 */}
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger render={<Button variant="outline" role="combobox" className="w-full justify-between" />}>
+        <PopoverTrigger render={<Button variant="outline" className="w-full justify-between" />}>
           {placeholder}
           <Users className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </PopoverTrigger>
