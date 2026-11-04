@@ -17,8 +17,11 @@ pre-commit:
       run: pnpm exec oxfmt --no-error-on-unmatched-pattern {staged_files}
       stage_fixed: true
 
-# push 전 타입 검사 (TypeScript 7이라 1초 안팎)
+# push 전 타입 검사 + 테스트 (TypeScript 7·Vitest라 합쳐서 몇 초 안팎)
 pre-push:
+  parallel: true
   commands:
     typecheck:
       run: pnpm exec tsc --noEmit
+    test:
+      run: pnpm exec vitest run
